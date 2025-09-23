@@ -6,18 +6,17 @@ const shopSchema = new mongoose.Schema(
     ShopAddress: { type: String, required: true },
     ShopPhoneNumber: { type: String, required: true },
     ShopEmail: { type: String, unique: true, required: true },
-    ShopPassword: { type: String, required: true }, // store as hashed password
+    ShopPassword: { type: String, required: true }, 
     ShopOwnerName: { type: String, required: true },
     ShopOwnerPhoneNumber: { type: String, required: true },
     ShopOwnerEmail: { type: String, unique: true, required: true },
     ShopGstNumber: { type: String },
 
-    ShopLogo: { type: String }, // Cloudinary or file upload
+    ShopLogo: { type: String }, 
     ShopCoverPhoto: { type: String },
     ShopDescription: { type: String },
 
     ShopProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-    ShopServices: [{ type: String, default: [] }],
 
     ShopOpenAndCloseTime: {
       open: { type: String },
@@ -30,6 +29,7 @@ const shopSchema = new mongoose.Schema(
       whatsapp: { type: String },
       website: { type: String },
     },
+
 
     CreatedAt: { type: Date, default: Date.now },
   },

@@ -15,15 +15,14 @@ const ProductSchema = new mongoose.Schema(
     category: {
       type: String,
       enum: ["Food", "Beverage", "Stationery", "Electronics", "Other"],
-      default: "Other",
+      default: "Food",
     },
     costPrice: {
       type: Number,
-      required: true, // purchase price
     },
     sellingPrice: {
       type: Number,
-      required: true, // billing price
+      required: true,
     },
     stock: {
       type: Number,

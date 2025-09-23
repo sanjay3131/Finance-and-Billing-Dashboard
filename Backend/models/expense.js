@@ -21,7 +21,17 @@ const expenseSchema = new mongoose.Schema({
       "Maintenance",
       "Other",
     ],
-
-    required: true,
+    default: "Other",
   },
-});
+  expenseDate: {
+    type: Date,
+    default: Date.now,
+  },
+  notes: {
+    type: String,
+    default: "",
+  },
+}
+, { timestamps: true });
+
+export default mongoose.model("Expense", expenseSchema);

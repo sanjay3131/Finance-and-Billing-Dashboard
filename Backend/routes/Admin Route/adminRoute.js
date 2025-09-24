@@ -11,3 +11,5 @@ const router = experss.Router();
 // sales report of shop
 
 // expense report of shop
+
+export default router;

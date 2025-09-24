@@ -12,6 +12,9 @@ const ProductSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    image: {
+      type: String,
+    },
     category: {
       type: String,
       enum: ["Food", "Beverage", "Stationery", "Electronics", "Other"],
@@ -26,7 +29,6 @@ const ProductSchema = new mongoose.Schema(
     },
     stock: {
       type: Number,
-      required: true,
       default: 0,
     },
     unit: {

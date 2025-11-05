@@ -92,6 +92,7 @@ export const login = asyncHandler(async (req, res) => {
 
 export const checkShop = asyncHandler(async (req, res) => {
   const shop = await req.shop;
+
   if (!shop) {
     return res.status(401).json({ message: "no shop found" });
   }

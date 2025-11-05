@@ -1,14 +1,28 @@
 import { v2 as cloudinary } from "cloudinary";
 
-const uploadImage = async (filePath) => {
+export const uploadToCloudinary = async (
+  fileBuffer,
+  folderName = "uploads"
+) => {
   try {
-    const result = await cloudinary.uploader.upload(filePath);
-    console.log("Upload result:", result);
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: folderName },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      stream.end(fileBuffer);
+    });
+    console.log(" Cloudinary upload successful:");
 
-    return result;
+    return {
+      url: result.secure_url,
+      public_id: result.public_id,
+    };
   } catch (error) {
-    throw new Error("Error uploading image to Cloudinary");
+    console.error("Cloudinary upload error:", error);
+    throw new Error("Error uploading to Cloudinary");
   }
 };
-
-export default uploadImage;

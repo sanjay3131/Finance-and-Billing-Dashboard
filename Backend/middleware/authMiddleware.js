@@ -12,7 +12,7 @@ export const protect = async (req, res, next) => {
     if (!decoded) {
       return res.status(401).json({ message: "not authorized. token invalid" });
     }
-    console.log("decoded", decoded);
+    // console.log("decoded", decoded);
 
     req.shop = await Shop.findById(decoded.id).select("-showPassword");
 
@@ -21,7 +21,7 @@ export const protect = async (req, res, next) => {
         .status(401)
         .json({ message: "not authorized, shop not found" });
     }
-    console.log("req.shop", req.shop);
+    // console.log("req.shop", req.shop);
     next();
   } catch (error) {
     return res.status(401).json({ message: "not authorized, invalid token" });

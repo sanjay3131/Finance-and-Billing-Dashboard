@@ -1,9 +1,10 @@
 import express from "express";
 import {
   createProduct,
+  deleteSingleProduct,
   singleProducts,
   updateProducts,
-  viewAllPoducts,
+  viewAllProducts,
 } from "../controllers/productController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import upload from "../middleware/multer.js";
@@ -16,7 +17,7 @@ router.post("/addProduct", protect, upload.single("image"), createProduct);
 // read Product
 
 // get all Products
-router.get("/viewAllProducts", protect, viewAllPoducts);
+router.get("/viewAllProducts", protect, viewAllProducts);
 
 // get single Product by ID
 router.get("/singleProduct/:id", protect, singleProducts);
@@ -30,5 +31,6 @@ router.put(
 );
 
 // delete Product
+router.delete("/deleteSingleProduct/:id", protect, deleteSingleProduct);
 
 export default router;

@@ -84,8 +84,10 @@ export const createProduct = asyncHandler(async (req, res) => {
 
 // view all Products
 
-export const viewAllPoducts = asyncHandler(async (req, res) => {
-  const allProducts = await Product.find({});
+export const viewAllProducts = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+
+  const allProducts = await Product.find({ shop: shopId });
 
   if (!allProducts || allProducts.length === 0)
     return res.status(404).json({ message: "No Products Avaliable" });
@@ -163,6 +165,16 @@ export const updateProducts = asyncHandler(async (req, res) => {
   if (req.file) {
     console.log("file is there");
 
+    if (productToUpdate.image && productToUpdate.image.public_id) {
+      try {
+        await cloudinary.uploader.destroy(productToUpdate.image.public_id);
+        console.log("old image destroyed");
+      } catch (err) {
+        console.error("failed to destroy old image:", err);
+        // continue — not fatal for update
+      }
+    }
+
     const imageData = await uploadToCloudinary(
       req.file.buffer,
       "product-images"
@@ -177,3 +189,45 @@ export const updateProducts = asyncHandler(async (req, res) => {
     productToUpdate,
   });
 });
+
+// Delete Products
+
+// delete single products
+
+export const deleteSingleProduct = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const shopId = req.shop._id;
+  const yourShop = await Shop.findById(shopId);
+
+  if (!id) return res.status(401).json("id required to delete");
+
+  if (!shopId) return res.status(404).json("not authorized");
+
+  const productToDelete = await Product.findById(id);
+
+  if (!productToDelete)
+    return res.status(404).json("Item not found to delete ");
+
+  if (productToDelete.shop.toString() !== shopId.toString()) {
+    return res
+      .status(400)
+      .json("you are not authorized to delete this product");
+  } else {
+    if (productToDelete.image && productToDelete.image.public_id) {
+      try {
+        await cloudinary.uploader.destroy(productToDelete.image.public_id);
+        console.log("image destroyed on delete");
+      } catch (err) {
+        console.error("failed to destroy image on delete:", err);
+      }
+    }
+    await Product.findByIdAndDelete(id);
+    yourShop.ShopProducts.pull(productToDelete._id);
+
+    await yourShop.save();
+
+    res.status(200).json({ message: "product deleted ", productToDelete });
+  }
+});
+
+//delete all products

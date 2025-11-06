@@ -1,6 +1,7 @@
 import express from "express";
 import {
   createProduct,
+  deleteAllProducts,
   deleteSingleProduct,
   singleProducts,
   updateProducts,
@@ -31,6 +32,9 @@ router.put(
 );
 
 // delete Product
+// delete single product
 router.delete("/deleteSingleProduct/:id", protect, deleteSingleProduct);
 
+// delete all products
+router.delete("/deleteAllProducts", protect, deleteAllProducts);
 export default router;

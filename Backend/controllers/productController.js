@@ -231,3 +231,38 @@ export const deleteSingleProduct = asyncHandler(async (req, res) => {
 });
 
 //delete all products
+
+export const deleteAllProducts = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+
+  // populate only the fields we need (image and _id)
+  const yourShop = await Shop.findById(shopId).populate(
+    "ShopProducts",
+    "image"
+  );
+  if (!yourShop) return res.status(403).json({ message: "Not authorized" });
+
+  const products = yourShop.ShopProducts || [];
+
+  // destroy images in Cloudinary (best-effort)
+  for (const p of products) {
+    try {
+      if (p.image && p.image.public_id) {
+        await cloudinary.uploader.destroy(p.image.public_id);
+      }
+    } catch (err) {
+      console.error(`Failed to destroy image for product ${p._id}:`, err);
+    }
+  }
+
+  await Product.deleteMany({ shop: shopId });
+
+  yourShop.ShopProducts = [];
+  await yourShop.save();
+
+  res.status(200).json({
+    message: "All products deleted for this shop",
+    deletedCount: products.length,
+  });
+});
+// ...existing code...

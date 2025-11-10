@@ -8,10 +8,6 @@ import { uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 export const createProduct = asyncHandler(async (req, res) => {
   const shopId = req.shop._id;
 
-  if (!shopId) {
-    return res.status(401).json({ message: "Shop not found" });
-  }
-
   const yourShop = await Shop.findById(shopId);
   if (!yourShop) {
     return res.status(404).json({ message: "Shop does not exist" });
@@ -265,4 +261,3 @@ export const deleteAllProducts = asyncHandler(async (req, res) => {
     deletedCount: products.length,
   });
 });
-// ...existing code...

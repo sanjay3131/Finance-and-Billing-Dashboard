@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDb from "./database/connectDB.js";
 import authRoute from "./routes/authRoute.js";
 import productRoute from "./routes/productRoute.js";
+import expenseRoute from "./routes/expenseRoute.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 });
 app.use("/api/auth", authRoute);
 app.use("/api/product", productRoute);
+app.use("/api/expense", expenseRoute);
 
 const Port = process.env.PORT || 5000;
 app.listen(Port, () => {

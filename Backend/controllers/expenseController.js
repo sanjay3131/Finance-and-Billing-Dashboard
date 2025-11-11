@@ -83,5 +83,34 @@ export const getAllExpenses = asyncHandler(async (req, res) => {
 });
 
 // update expense
+export const updateExpense = asyncHandler(async (req, res) => {
+  const shopId = req.shop && req.shop._id;
+  const { id } = req.params;
+
+  if (!id) return res.status(400).json({ message: "id is required to update" });
+  if (!req.body)
+    return res.status(400).json({ message: "Request body is missing" });
+
+  const { title, amount, category, note } = req.body;
+
+  const expenseToUpdate = await Expense.findOne({ _id: id, Shop: shopId });
+  if (!expenseToUpdate) {
+    return res
+      .status(404)
+      .json({ message: "expense not found or not authorized" });
+  }
+
+  if (title !== undefined) expenseToUpdate.title = title;
+  if (amount !== undefined) expenseToUpdate.amount = Number(amount);
+  if (category !== undefined) expenseToUpdate.category = category;
+  if (note !== undefined) expenseToUpdate.notes = note;
+
+  await expenseToUpdate.save();
+
+  res.status(200).json({
+    message: "expense updated",
+    data: expenseToUpdate,
+  });
+});
 
 // delete expense

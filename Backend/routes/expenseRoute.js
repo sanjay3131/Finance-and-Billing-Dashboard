@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addExpense,
+  deleteExpense,
   getAllExpenses,
   getExpense,
   updateExpense,
@@ -22,5 +23,7 @@ router.post("/getAllExpenses", protect, getAllExpenses);
 router.put("/updateExpense/:id", protect, updateExpense);
 
 // delete expense
+
+router.delete("/deleteExpense/:id", protect, deleteExpense);
 
 export default router;

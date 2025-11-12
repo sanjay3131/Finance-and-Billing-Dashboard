@@ -114,3 +114,21 @@ export const updateExpense = asyncHandler(async (req, res) => {
 });
 
 // delete expense
+export const deleteExpense = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const shopId = req.shop._id;
+
+  const expenseToDelete = await Expense.findByIdAndDelete({
+    _id: id,
+    Shop: shopId,
+  });
+  if (!expenseToDelete)
+    return res.status(400).json({
+      message: "expense is not found or not authroized",
+    });
+
+  res.status(200).json({
+    message: "expense deleted",
+    expenseToDelete,
+  });
+});

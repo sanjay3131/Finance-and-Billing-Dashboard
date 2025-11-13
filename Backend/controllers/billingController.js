@@ -88,4 +88,68 @@ export const getAllBills = asyncHandler(async (req, res) => {
 
 //update bill
 
+export const updateBill = asyncHandler(async (req, res) => {
+  const shopId = req.shop && req.shop._id;
+  const { id } = req.params;
+  const { items, totalAmount, customerName, customerPhone, paymentMethod } =
+    req.body;
+
+  let bill = await Billing.findById(id);
+  if (!bill) {
+    res.status(404).json({
+      success: false,
+      message: "Bill not found",
+    });
+    return;
+  }
+
+  if (bill.Shop.toString() !== shopId.toString()) {
+    res.status(401).json({
+      success: false,
+      message: "Not authorized to update this bill",
+    });
+    return;
+  }
+
+  bill.items = items || bill.items;
+  bill.totalAmount = totalAmount || bill.totalAmount;
+  bill.customerName = customerName || bill.customerName;
+  bill.customerPhone = customerPhone || bill.customerPhone;
+  bill.paymentMethod = paymentMethod || bill.paymentMethod;
+
+  await bill.save();
+  res.status(200).json({
+    success: true,
+    message: "Bill updated successfully",
+    data: bill,
+  });
+});
+
 //delete bill
+export const deleteBill = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+  const { id } = req.params;
+
+  const bill = await Billing.findOneAndDelete({ _id: id, Shop: shopId });
+  if (!bill) {
+    res.status(404).json({
+      success: false,
+      message: "Bill not found",
+    });
+    return;
+  }
+
+  if (bill.Shop.toString() !== shopId.toString()) {
+    res.status(401).json({
+      success: false,
+      message: "Not authorized to delete this bill",
+    });
+    return;
+  }
+
+  // await bill.remove();
+  res.status(200).json({
+    success: true,
+    message: "Bill deleted successfully",
+  });
+});

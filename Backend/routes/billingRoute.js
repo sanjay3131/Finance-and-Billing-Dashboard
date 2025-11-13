@@ -1,8 +1,10 @@
 import express from "express";
 import {
   addBill,
+  deleteBill,
   getAllBills,
   getBill,
+  updateBill,
 } from "../controllers/billingController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -20,5 +22,11 @@ router.get("/getBill/:id", protect, getBill);
 
 // get all bills from to date
 router.post("/getAllBills", protect, getAllBills);
+
+// update bill
+router.put("/updateBill/:id", protect, updateBill);
+
+// delete bill
+router.delete("/deleteBill/:id", protect, deleteBill);
 
 export default router;

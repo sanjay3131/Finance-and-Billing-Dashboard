@@ -6,6 +6,7 @@ import authRoute from "./routes/authRoute.js";
 import productRoute from "./routes/productRoute.js";
 import expenseRoute from "./routes/expenseRoute.js";
 import billingRoute from "./routes/billingRoute.js";
+import salesReportRoute from "./routes/salesReportRoute.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/product", productRoute);
 app.use("/api/expense", expenseRoute);
 app.use("/api/billing", billingRoute);
+app.use("/api/report", salesReportRoute);
 
 const Port = process.env.PORT || 5000;
 app.listen(Port, () => {

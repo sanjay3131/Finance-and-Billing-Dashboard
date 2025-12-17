@@ -1,6 +1,7 @@
 import express from "express";
 import {
   addBill,
+  billAnalytics,
   deleteBill,
   getAllBills,
   getBill,
@@ -13,12 +14,8 @@ const router = express.Router();
 // create bill
 router.post("/addBill", protect, addBill);
 
-// edit bill
-
-// delete bill
-
 // show bill
-router.get("/getBill/:id", protect, getBill);
+router.get("/getBill/:billNumber", protect, getBill);
 
 // get all bills from to date
 router.post("/getAllBills", protect, getAllBills);
@@ -28,5 +25,8 @@ router.put("/updateBill/:id", protect, updateBill);
 
 // delete bill
 router.delete("/deleteBill/:id", protect, deleteBill);
+
+// bill analytics
+router.get("/billAnalytics", protect, billAnalytics);
 
 export default router;

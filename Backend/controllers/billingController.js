@@ -7,7 +7,6 @@ export const addBill = asyncHandler(async (req, res) => {
 
   const {
     Shop,
-    billNumber,
     items,
     totalAmount,
     PaymentMethod,
@@ -19,14 +18,13 @@ export const addBill = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "not authorized to add bill" });
   }
 
-  if (!Shop || !billNumber || !items || !totalAmount) {
+  if (!Shop || !items || !totalAmount) {
     return res.status(400).json({
       message: "all filed required",
     });
   }
   const bill = await Billing.create({
     Shop,
-    billNumber,
     items,
     totalAmount,
     PaymentMethod,
@@ -39,10 +37,21 @@ export const addBill = asyncHandler(async (req, res) => {
 
 //read bill
 export const getBill = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const { billNumber } = req.params;
+  console.log(billNumber);
+
   const shopId = req.shop._id;
 
-  const bill = await Billing.findOne({ _id: id, Shop: shopId });
+  const bill = await Billing.findOne({ Shop: shopId, billNumber: billNumber });
+  if (!bill) {
+    res.status(404).json({
+      success: false,
+      message: "Bill not found",
+    });
+    return;
+  }
+  console.log(bill);
+
   if (bill.Shop.toString() !== shopId.toString()) {
     res.status(404).json({
       success: false,
@@ -139,17 +148,122 @@ export const deleteBill = asyncHandler(async (req, res) => {
     return;
   }
 
-  if (bill.Shop.toString() !== shopId.toString()) {
-    res.status(401).json({
-      success: false,
-      message: "Not authorized to delete this bill",
-    });
-    return;
-  }
-
-  // await bill.remove();
   res.status(200).json({
     success: true,
     message: "Bill deleted successfully",
+  });
+});
+
+// bill analytics - total sales
+export const billAnalytics = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+  const today = new Date();
+  const startOfToday = new Date(today.setHours(0, 0, 0, 0));
+  const endOfToday = new Date(today.setHours(23, 59, 59, 999));
+
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const endOfMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+
+  const sixMonthsAgo = new Date();
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+  sixMonthsAgo.setDate(1);
+  sixMonthsAgo.setHours(0, 0, 0, 0);
+  const endOfSixMonths = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  );
+  const getFullYear = today.getFullYear();
+
+  const totalSalesToday = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: startOfToday, $lte: endOfToday },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalSales: { $sum: "$totalAmount" },
+      },
+    },
+  ]);
+
+  const totalSalesThisMonth = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: startOfMonth, $lte: endOfMonth },
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalSales: { $sum: "$totalAmount" },
+      },
+    },
+  ]);
+
+  const totalSalesLastSixMonths = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: sixMonthsAgo, $lte: endOfSixMonths },
+      },
+    },
+    {
+      $group: {
+        _id: { month: { $month: "$billingDate" } },
+        totalSales: { $sum: "$totalAmount" },
+      },
+    },
+    {
+      $sort: { "_id.month": 1 },
+    },
+  ]);
+  const totalSalesThisYear = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: {
+          $gte: new Date(getFullYear, 0, 1),
+          $lte: new Date(getFullYear, 11, 31, 23, 59, 59, 999),
+        },
+      },
+    },
+    {
+      $group: {
+        _id: { month: { $month: "$billingDate" } },
+        totalSales: { $sum: "$totalAmount" },
+      },
+    },
+    {
+      $sort: { "_id.month": 1 },
+    },
+  ]);
+
+  res.status(200).json({
+    success: true,
+    data: {
+      totalSalesToday: totalSalesToday[0] ? totalSalesToday[0].totalSales : 0,
+      totalSalesThisMonth: totalSalesThisMonth[0]
+        ? totalSalesThisMonth[0].totalSales
+        : 0,
+      totalSalesLastSixMonths,
+      totalSalesThisYear,
+    },
   });
 });

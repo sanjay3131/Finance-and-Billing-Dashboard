@@ -2,6 +2,7 @@ import express from "express";
 import {
   addExpense,
   deleteExpense,
+  expenseAnalytics,
   getAllExpenses,
   getExpense,
   updateExpense,
@@ -26,4 +27,6 @@ router.put("/updateExpense/:id", protect, updateExpense);
 
 router.delete("/deleteExpense/:id", protect, deleteExpense);
 
+// analytics
+router.get("/expenseAnalytics", protect, expenseAnalytics);
 export default router;

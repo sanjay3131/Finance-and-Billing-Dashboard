@@ -23,6 +23,7 @@ export const createProduct = asyncHandler(async (req, res) => {
     unit,
     description,
     isActive,
+    itemCategory,
   } = req.body;
 
   if (shop !== shopId.toString()) {
@@ -61,6 +62,7 @@ export const createProduct = asyncHandler(async (req, res) => {
     stock,
     unit,
     description,
+    itemCategory,
     isActive,
   });
 
@@ -136,6 +138,7 @@ export const updateProducts = asyncHandler(async (req, res) => {
     isActive,
     unit,
     description,
+    itemCategory,
   } = req.body;
 
   const productToUpdate = await Product.findById(id);
@@ -158,6 +161,7 @@ export const updateProducts = asyncHandler(async (req, res) => {
   isActive === undefined ? null : (productToUpdate.isActive = isActive);
   !unit ? null : (productToUpdate.unit = unit);
   !description ? null : (productToUpdate.description = description);
+  !itemCategory ? null : (productToUpdate.itemCategory = itemCategory);
   if (req.file) {
     console.log("file is there");
 

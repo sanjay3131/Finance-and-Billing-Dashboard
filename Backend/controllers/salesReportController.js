@@ -1,0 +1,214 @@
+import asyncHandler from "express-async-handler";
+import Billing from "../models/billing.js";
+import Expense from "../models/expense.js";
+
+// Per Day Sales Report
+export const perdaySalesReport = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+
+  // date from params OR current date
+  const date = req.params.date || new Date();
+
+  const day = new Date(date);
+  const start = new Date(day.setHours(0, 0, 0, 0));
+  const end = new Date(day.setHours(23, 59, 59, 999));
+
+  const sales = await Billing.find({
+    Shop: shopId, // FIXED
+    billingDate: { $gte: start, $lte: end }, // FIXED
+  });
+
+  const expense = await Expense.find({
+    Shop: shopId,
+    expenseDate: { $gte: start, $lte: end },
+  });
+  const totalExpense = expense.reduce((acc, exp) => acc + exp.amount, 0);
+
+  const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
+  const profit = totalSales - totalExpense;
+
+  res.status(200).json({
+    success: true,
+    message: "Per Day Sales Report",
+    date: start.toDateString(),
+
+    billsCount: sales.length,
+
+    totalSales,
+    totalExpense,
+    profit,
+  });
+});
+
+// seven days sales report
+export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+
+  const end = new Date();
+  const start = new Date();
+  start.setDate(start.getDate() - 7);
+
+  const sales = await Billing.find({
+    Shop: shopId,
+    billingDate: { $gte: start, $lte: end },
+  });
+
+  const expense = await Expense.find({
+    Shop: shopId,
+    expenseDate: { $gte: start, $lte: end },
+  });
+  if (!expense || (expense.length === 0 && !sales) || sales.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "No sales or expense data available for the last seven days",
+    });
+  }
+
+  const totalExpense = expense.reduce((acc, exp) => acc + exp.amount, 0);
+
+  const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
+  const profit = totalSales - totalExpense;
+
+  res.status(200).json({
+    success: true,
+    message: "Seven Days Sales Report",
+    startDate: start.toDateString(),
+    endDate: end.toDateString(),
+
+    billsCount: sales.length,
+
+    totalSales,
+    totalExpense,
+    profit,
+  });
+});
+
+// 30 days sales report
+export const thirtyDaysSalesReport = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+
+  const end = new Date();
+  const start = new Date();
+  start.setDate(start.getDate() - 30);
+
+  const sales = await Billing.find({
+    Shop: shopId,
+    billingDate: { $gte: start, $lte: end },
+  });
+
+  const expense = await Expense.find({
+    Shop: shopId,
+    expenseDate: { $gte: start, $lte: end },
+  });
+  if (!expense || (expense.length === 0 && !sales) || sales.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "No sales or expense data available for the last thirty days",
+    });
+  }
+
+  const totalExpense = expense.reduce((acc, exp) => acc + exp.amount, 0);
+
+  const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
+  const profit = totalSales - totalExpense;
+
+  res.status(200).json({
+    success: true,
+    message: "Thirty Days Sales Report",
+    startDate: start.toDateString(),
+    endDate: end.toDateString(),
+
+    billsCount: sales.length,
+
+    totalSales,
+    totalExpense,
+    profit,
+  });
+});
+
+// six months sales report
+export const sixMonthsSalesReport = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+
+  const end = new Date();
+  const start = new Date();
+  start.setMonth(start.getMonth() - 6);
+
+  const sales = await Billing.find({
+    Shop: shopId,
+    billingDate: { $gte: start, $lte: end },
+  });
+
+  const expense = await Expense.find({
+    Shop: shopId,
+    expenseDate: { $gte: start, $lte: end },
+  });
+  if (!expense || (expense.length === 0 && !sales) || sales.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "No sales or expense data available for the last six months",
+    });
+  }
+
+  const totalExpense = expense.reduce((acc, exp) => acc + exp.amount, 0);
+
+  const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
+  const profit = totalSales - totalExpense;
+
+  res.status(200).json({
+    success: true,
+    message: "Six Months Sales Report",
+    startDate: start.toDateString(),
+    endDate: end.toDateString(),
+
+    billsCount: sales.length,
+
+    totalSales,
+    totalExpense,
+    profit,
+  });
+});
+
+// custom sales report can be added similarly
+export const customSalesReport = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+  const { startDate, endDate } = req.body;
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  end.setHours(23, 59, 59, 999); // include the entire end date
+
+  const sales = await Billing.find({
+    Shop: shopId,
+    billingDate: { $gte: start, $lte: end },
+  });
+
+  const expense = await Expense.find({
+    Shop: shopId,
+    expenseDate: { $gte: start, $lte: end },
+  });
+  if (!expense || (expense.length === 0 && !sales) || sales.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "No sales or expense data available for the selected date range",
+    });
+  }
+
+  const totalExpense = expense.reduce((acc, exp) => acc + exp.amount, 0);
+
+  const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
+  const profit = totalSales - totalExpense;
+
+  res.status(200).json({
+    success: true,
+    message: "Custom Sales Report",
+    startDate: start.toDateString(),
+    endDate: end.toDateString(),
+
+    billsCount: sales.length,
+
+    totalSales,
+    totalExpense,
+    profit,
+  });
+});

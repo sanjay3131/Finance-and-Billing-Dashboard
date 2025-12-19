@@ -1,7 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Shop from "../models/shop.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import generateToken from "../utils/generateToken.js";
 
 // Signup a shop

@@ -105,7 +105,7 @@ export const updateExpense = asyncHandler(async (req, res) => {
   if (!req.body)
     return res.status(400).json({ message: "Request body is missing" });
 
-  const { title, amount, category, note } = req.body;
+  const { title, amount, category, note, date } = req.body;
 
   const expenseToUpdate = await Expense.findOne({ _id: id, Shop: shopId });
   if (!expenseToUpdate) {
@@ -118,6 +118,7 @@ export const updateExpense = asyncHandler(async (req, res) => {
   if (amount !== undefined) expenseToUpdate.amount = Number(amount);
   if (category !== undefined) expenseToUpdate.category = category;
   if (note !== undefined) expenseToUpdate.notes = note;
+  if (date !== undefined) expenseToUpdate.expenseDate = date;
 
   await expenseToUpdate.save();
 

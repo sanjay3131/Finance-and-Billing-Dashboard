@@ -1,11 +1,20 @@
 import AppRoutes from "./routes/AppRoutes.tsx";
 import { BrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./context/authContext.tsx";
+
+const queryClient = new QueryClient();
+
 const App = () => {
   return (
     <div>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </AuthProvider>
+      </QueryClientProvider>
     </div>
   );
 };

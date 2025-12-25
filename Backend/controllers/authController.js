@@ -68,6 +68,8 @@ export const login = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
   const shop = await Shop.findOne({ ShopEmail });
+  console.log("=>> " + shop);
+
   if (!shop) {
     return res.status(400).json({ message: "Shop does not exist" });
   }
@@ -81,9 +83,20 @@ export const login = asyncHandler(async (req, res) => {
       .status(500)
       .json({ message: "Something went wrong in token generation" });
   }
+  // console.log("shop details " + req.shop);
+
   res.status(200).json({
     message: "Login successful",
-    token,
+    shop: {
+      id: shop._id,
+      ShopName: shop.ShopName,
+      ShopEmail: shop.ShopEmail,
+      ShopAddress: shop.ShopAddress,
+      ShopOwnerName: shop.ShopOwnerName,
+      ShopOwnerPhoneNumber: shop.ShopOwnerPhoneNumber,
+      ShopOwnerEmail: shop.ShopOwnerEmail,
+      ShopPhoneNumber: shop.ShopPhoneNumber,
+    },
   });
 });
 

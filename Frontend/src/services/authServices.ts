@@ -31,3 +31,9 @@ export const registerService = async (
   });
   return response;
 };
+
+// check authentication service
+export const checkAuth = async () => {
+  const response = await axiosInstance.get("/auth/checkshop");
+  return response;
+};

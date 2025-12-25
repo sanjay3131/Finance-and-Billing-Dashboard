@@ -16,8 +16,14 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (user: User) => setUser(user);
-  const logout = () => setUser(null);
+  const login = (user: User) => {
+    setUser(user);
+    console.log("auth context ==> " + JSON.stringify(user));
+  };
+  const logout = () => {
+    setUser(null);
+    console.log("user logout");
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

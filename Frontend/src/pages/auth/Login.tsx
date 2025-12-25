@@ -1,7 +1,9 @@
+import { useAuth } from "../../hooks/useAuthContext";
 import { useLogin } from "../../hooks/useAuthMutation";
 
 const Login = () => {
   const loginMutation = useLogin();
+  const { logout } = useAuth();
 
   const handleLogin = () => {
     loginMutation.mutate({
@@ -15,6 +17,8 @@ const Login = () => {
       <button onClick={handleLogin}>
         {loginMutation.isPending ? "Logging in..." : "Login"}
       </button>
+
+      <button onClick={logout}> logout</button>
 
       {loginMutation.isError && <p>Login failed</p>}
     </div>

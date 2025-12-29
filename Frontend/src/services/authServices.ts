@@ -37,3 +37,9 @@ export const checkAuth = async () => {
   const response = await axiosInstance.get("/auth/checkshop");
   return response;
 };
+
+// logout
+export const logOut = async () => {
+  const response = await axiosInstance.get("/auth/logout");
+  return response;
+};

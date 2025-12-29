@@ -14,7 +14,7 @@ export const protect = async (req, res, next) => {
     }
     // console.log("decoded", decoded);
 
-    req.shop = await Shop.findById(decoded.id).select("-showPassword");
+    req.shop = await Shop.findById(decoded.id).select("-ShopPassword");
 
     if (!req.shop) {
       return res

@@ -69,7 +69,9 @@ const Login = () => {
       </div>
 
       {/* form area */}
-      <div>{isSelected === "login" ? <LoginUI /> : <RegisterUI />}</div>
+      <div className=" ">
+        {isSelected === "login" ? <LoginUI /> : <RegisterUI />}
+      </div>
     </div>
   );
 };

@@ -124,3 +124,63 @@ export const logout = asyncHandler(async (req, res) => {
     message: "shop is logged out",
   });
 });
+
+// update shop details
+export const updateShopDetails = asyncHandler(async (req, res) => {
+  const shop = await Shop.findById(req.shop._id);
+  if (!shop) {
+    return res.status(404).json({ message: "Shop not found" });
+  }
+  const {
+    ShopName,
+    ShopEmail,
+    ShopAddress,
+    ShopPhoneNumber,
+    ShopOwnerName,
+    ShopOwnerPhoneNumber,
+    ShopOwnerEmail,
+  } = req.body;
+
+  shop.ShopName = ShopName || shop.ShopName;
+  shop.ShopEmail = ShopEmail || shop.ShopEmail;
+  shop.ShopAddress = ShopAddress || shop.ShopAddress;
+  shop.ShopPhoneNumber = ShopPhoneNumber || shop.ShopPhoneNumber;
+  shop.ShopOwnerName = ShopOwnerName || shop.ShopOwnerName;
+  shop.ShopOwnerPhoneNumber = ShopOwnerPhoneNumber || shop.ShopOwnerPhoneNumber;
+  shop.ShopOwnerEmail = ShopOwnerEmail || shop.ShopOwnerEmail;
+
+  const updatedShop = await shop.save();
+  res.status(200).json({
+    message: "Shop details updated successfully",
+    shop: {
+      id: updatedShop._id,
+      ShopName: updatedShop.ShopName,
+      ShopEmail: updatedShop.ShopEmail,
+      ShopAddress: updatedShop.ShopAddress,
+      ShopOwnerName: updatedShop.ShopOwnerName,
+      ShopOwnerPhoneNumber: updatedShop.ShopOwnerPhoneNumber,
+      ShopOwnerEmail: updatedShop.ShopOwnerEmail,
+      ShopPhoneNumber: updatedShop.ShopPhoneNumber,
+    },
+  });
+});
+
+// update shop password
+export const updateShopPassword = asyncHandler(async (req, res) => {
+  const shop = await Shop.findById(req.shop._id);
+  if (!shop) {
+    return res.status(404).json({ message: "Shop not found" });
+  }
+  const { oldPassword, newPassword } = req.body;
+  if (!oldPassword || !newPassword) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+  const isPasswordValid = await bcrypt.compare(oldPassword, shop.ShopPassword);
+  if (!isPasswordValid) {
+    return res.status(400).json({ message: "Old password is incorrect" });
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  shop.ShopPassword = hashedPassword;
+  await shop.save();
+  res.status(200).json({ message: "Password updated successfully" });
+});

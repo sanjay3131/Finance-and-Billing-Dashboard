@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLogin } from "../../hooks/useAuthMutation";
-import { FaLockOpen } from "react-icons/fa";
-import { FaLock } from "react-icons/fa";
+import { FaLockOpen, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -35,16 +34,23 @@ const LoginUI = () => {
     );
   };
   return (
-    <div className=" mt-8 flex flex-col justify-center items-center gap-4 px-4">
+    <form
+      className=" mt-8 flex flex-col justify-center items-center gap-4 px-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleLogin();
+      }}
+    >
       {/* email */}
-      <span className=" gap-2 w-full sm:w-4/5 md:w-2/5 h- items-center justify-center">
-        <label htmlFor="email " className="text-xl">
+      <span className=" gap-2 w-full sm:w-4/5 md:w-2/5 items-center justify-center">
+        <label htmlFor="email" className="text-xl">
           Email
         </label>
         <input
           type="email"
           placeholder="Enter your email"
           id="email"
+          value={email}
           className="bg-primaryBg border  border-[#ebecf0] focus:border rounded-xl w-full h-8 p-2"
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -60,11 +66,14 @@ const LoginUI = () => {
           type={showPassword ? "text" : "password"}
           id="password"
           placeholder="Enter your password"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
+          type="button"
           className=" ml-2 cursor-pointer absolute right-2 top-9"
-          onClick={() => setShowPassword(!showPassword)}
+          onClick={() => setShowPassword((v) => !v)}
+          aria-pressed={showPassword}
         >
           {showPassword ? <FaLockOpen /> : <FaLock />}
         </button>
@@ -72,19 +81,25 @@ const LoginUI = () => {
       {/* submit */}
       <span className=" w-2/5 h-8 flex items-center justify-center">
         <button
-          className="bg-gray-800 text-white font-semibold rounded-xl w-fit h-8 px-4"
-          onClick={handleLogin}
+          type="submit"
+          className={`bg-gray-800 text-white font-semibold rounded-xl w-fit h-8 px-4 ${
+            loginMutation.isPending
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:opacity-90"
+          }`}
+          disabled={loginMutation.isPending}
+          aria-busy={loginMutation.isPending}
         >
-          Login
+          {loginMutation.isPending ? "Logging in..." : "Login"}
         </button>
       </span>
+      {/* google login */}
       <div className=" flex flex-col justify-center items-center mt-4">
-        <p>-------- or -------</p>
         <button className=" bg-blue-600 text-white font-semibold rounded-xl w-fit h-8 px-4 mt-4">
           Login with Google
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 

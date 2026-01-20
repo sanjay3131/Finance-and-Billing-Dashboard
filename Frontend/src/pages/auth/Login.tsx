@@ -1,21 +1,9 @@
-import { useAuth } from "../../hooks/useAuthContext";
-import { useLogin } from "../../hooks/useAuthMutation";
-import loginSvg from "../../assets/login-removebg-preview.png";
 import { useState } from "react";
 import LoginUI from "../../components/ui/LoginUI";
 import RegisterUI from "../../components/ui/RegisterUI";
 
 const Login = () => {
-  const loginMutation = useLogin();
-  const { logout } = useAuth();
-
-  const handleLogin = () => {
-    loginMutation.mutate({
-      ShopEmail: "hahahomefoods@gmail.com",
-      ShopPassword: "Tms10cm31.",
-    });
-  };
-  const [isSelected, setIsSelected] = useState<string>("login");
+  const [isSelected, setIsSelected] = useState<string>("register");
 
   return (
     <div className=" h-screen w-full  relative py-4 px-2 min-w-90">

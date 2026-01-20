@@ -1,3 +1,4 @@
+import type { RegisterForm } from "../utils/constants";
 import axiosInstance from "./axiosInstance";
 
 //login service
@@ -9,25 +10,16 @@ export const loginService = async (ShopEmail: string, ShopPassword: string) => {
   return response;
 };
 //register service
-export const registerService = async (
-  ShopName: string,
-  ShopEmail: string,
-  ShopPassword: string,
-  ShopAddress: string,
-  ShopOwnerName: string,
-  ShopOwnerPhoneNumber: string,
-  ShopPhoneNumber: string,
-  ShopOwnerEmail: string
-) => {
+export const registerService = async ({ form }: { form: RegisterForm }) => {
   const response = await axiosInstance.post("/auth/signup", {
-    ShopName,
-    ShopEmail,
-    ShopPassword,
-    ShopAddress,
-    ShopOwnerName,
-    ShopOwnerPhoneNumber,
-    ShopPhoneNumber,
-    ShopOwnerEmail,
+    ShopName: form.shopName,
+    ShopEmail: form.shopEmail,
+    ShopPassword: form.shopPassword,
+    ShopAddress: form.shopAddress,
+    ShopOwnerName: form.ownerName,
+    ShopOwnerPhoneNumber: form.ownerPhone,
+    ShopPhoneNumber: form.shopPhone,
+    ShopOwnerEmail: form.ownerEmail,
   });
   return response;
 };

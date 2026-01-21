@@ -1,5 +1,9 @@
 import { useAuth } from "../../hooks/useAuth";
 import { FaMoneyBill } from "react-icons/fa6";
+import { BsGraphDownArrow } from "react-icons/bs";
+import { BsGraphUpArrow } from "react-icons/bs";
+import { FaShoppingBag } from "react-icons/fa";
+import { TiTick } from "react-icons/ti";
 
 const Dashboard = () => {
   const { data } = useAuth();
@@ -7,7 +11,7 @@ const Dashboard = () => {
   return (
     <div className=" bg-primaryBg w-full min-h-screen p-4">
       {/* logged in user details */}
-      <div className="flex  justify-between bg-red-300 items-center">
+      <div className="flex  justify-between  items-center">
         {/* shop name */}
         <h1 className="font-bold">{shop?.ShopName}</h1>
         {/* notification */}
@@ -32,39 +36,50 @@ const Dashboard = () => {
       </div>
 
       {/* overview cards */}
-      <div className="grid grid-cols-2 gap-4 mt-4 ">
-        <h1>Todays Overviews</h1>
-        {/* total sales */}
-        <div className="flex flex-col items-center gap-2 bg-red-200">
-          <span className="text-green-500">
-            <FaMoneyBill />
-          </span>
-          <h1>Total Sales</h1>
-          <h2>$.548</h2>
-        </div>
-        {/* total orders */}
-        <div className="flex flex-col items-center gap-2 bg-red-200">
-          <span className="text-green-500">
-            <FaMoneyBill />
-          </span>
-          <h1>Total Orders</h1>
-          <h2>$.548</h2>
-        </div>
-        {/* total expenses */}
-        <div className="flex flex-col items-center gap-2 bg-red-200">
-          <span className="text-green-500">
-            <FaMoneyBill />
-          </span>
-          <h1>Total Expenses</h1>
-          <h2>$.548</h2>
-        </div>
-        {/* net Profit */}
-        <div className="flex flex-col items-center col-span-2 gap-2 bg-red-200">
-          <span className="text-green-500">
-            <FaMoneyBill />
-          </span>
-          <h1>Net Profit</h1>
-          <h2>$.548</h2>
+      <div className="w-full  ">
+        <h1 className="text-gray-400 font-semibold">Today's Overviews</h1>
+        {/* cards */}
+        <div className="grid grid-cols-3 gap-4  w-full p-4 ">
+          {/* total sales */}
+          <div className="flex flex-col justify-center p-2 rounded-2xl  shadow-md gap-2 bg-white px-4">
+            <span className="text-green-500 bg-green-300/20 p-2 rounded-sm w-fit">
+              <FaMoneyBill />
+            </span>
+            <h1 className="font-semibold text-gray-400 text-[14px]">
+              Total Sales
+            </h1>
+            <h2 className="text-2xl font-bold">$.548</h2>
+          </div>
+          {/* total orders */}
+          <div className="flex flex-col justify-center p-2 rounded-2xl shadow-md gap-2 bg-white px-4">
+            <span className="text-blue-500 bg-blue-300/20 p-2 rounded-sm w-fit">
+              <TiTick />
+            </span>
+            <h1 className="font-semibold text-gray-400 text-[14px]">
+              Total Orders
+            </h1>
+            <h2 className="text-2xl font-bold">$.548</h2>
+          </div>
+          {/* total expenses */}
+          <div className="flex flex-col justify-center p-2 rounded-2xl shadow-md gap-2 bg-white px-4">
+            <span className="text-red-500 bg-red-300/20 p-2 rounded-sm w-fit">
+              <FaShoppingBag />
+            </span>
+            <h1 className="font-semibold text-gray-400 text-[14px]">
+              Total Expenses
+            </h1>
+            <h2 className="text-2xl font-bold">$.548</h2>
+          </div>
+          {/* net Profit */}
+          <div className="flex flex-col  col-span-full rounded-2xl gap-2 bg-linear-45 from-black/95 from-60% to-green-800 px-4 py-6 shadow-md">
+            <span className=" flex justify-between items-center gap-4">
+              <h1 className="text-gray-400 font-semibold">Net Profit</h1>{" "}
+              <h1 className="text-green-500 font-semibold bg-green-500/20 px-4 rounded-full flex items-center gap-2">
+                <BsGraphUpArrow className="" /> +12%
+              </h1>
+            </span>
+            <h2 className="text-green-500 text-3xl font-bold">$ 548</h2>
+          </div>
         </div>
       </div>
     </div>

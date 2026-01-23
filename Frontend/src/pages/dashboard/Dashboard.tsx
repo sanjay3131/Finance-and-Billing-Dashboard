@@ -1,16 +1,29 @@
 import { useAuth } from "../../hooks/useAuth";
 import { FaMoneyBill } from "react-icons/fa6";
-import { BsGraphDownArrow } from "react-icons/bs";
 import { BsGraphUpArrow } from "react-icons/bs";
 import { FaShoppingBag } from "react-icons/fa";
 import { IoReceiptSharp } from "react-icons/io5";
 import { LuNotebookPen } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getSingleDayReport } from "../../services/reportService";
+import { formatAmount } from "../../utils/formatNumbers";
 
 const Dashboard = () => {
   const { data } = useAuth();
   const { shop } = data?.data || {};
   const navigate = useNavigate();
+
+  const {
+    data: reportData,
+    isLoading,
+    isError,
+    isPending,
+  } = useQuery({
+    queryKey: ["dailyReport"],
+    queryFn: () => getSingleDayReport(),
+  });
+  console.log("repot data", reportData);
 
   return (
     <div className=" bg-primaryBg w-full min-h-screen p-4 min-w-75">
@@ -52,28 +65,48 @@ const Dashboard = () => {
             <h1 className="font-semibold text-gray-400 text-[14px]">
               Total Sales
             </h1>
-            <h2 className="text-xl sm:text-2xl font-bold ">$.548</h2>
+            <h2 className="text-xl sm:text-2xl font-bold ">
+              {isLoading
+                ? "Loading..."
+                : isError
+                  ? "Error"
+                  : formatAmount(reportData?.data?.totalSales || 0)}
+            </h2>
           </div>
 
           {/* total expenses */}
           <div className="flex flex-col justify-center p-2 rounded-2xl shadow-md gap-2 bg-white px-4  min-w-25">
-            <span className="text-red-500 bg-red-300/20 p-2 rounded-sm w-fit">
+            <span className={`text-red-500 bg-red-300/20 p-2 rounded-sm w-fit`}>
               <FaShoppingBag />
             </span>
             <h1 className="font-semibold text-gray-400 text-[14px]">
               Total Expenses
             </h1>
-            <h2 className="text-2xl font-bold">$.548</h2>
+            <h2 className="text-xl font-bold">
+              {formatAmount(reportData?.data?.totalExpense || 0)}
+            </h2>
           </div>
           {/* net Profit */}
-          <div className="flex flex-col  col-span-full sm:col-span-1 rounded-2xl  gap-2 bg-linear-45 from-black/95 from-60% to-green-800 px-4 py-6 shadow-md">
+          <div
+            className={`flex flex-col  col-span-full sm:col-span-1 rounded-2xl  gap-2 bg-linear-45 from-black/95 from-50% ${reportData?.data?.isLoss ? "to-red-800" : "to-green-800"} px-4 py-6 shadow-md`}
+          >
             <span className=" flex justify-between items-center gap-4">
-              <h1 className="text-gray-400 font-semibold">Net Profit</h1>{" "}
-              <h1 className="text-green-500 font-semibold bg-green-500/20 px-4 py-1 rounded-full flex items-center gap-2">
+              <h1 className="text-gray-400 font-semibold">Net Profit</h1>
+              <h1
+                className={` ${reportData?.data?.isLoss ? "text-red-500" : "text-green-500"} font-semibold bg-green-500/20 px-4 py-1 rounded-full flex items-center gap-2`}
+              >
                 <BsGraphUpArrow className="" /> +12%
               </h1>
             </span>
-            <h2 className="text-green-500 text-3xl font-bold">$ 548</h2>
+            <h2
+              className={`${reportData?.data?.isLoss ? "text-red-500" : "text-green-500"} text-2xl font-bold`}
+            >
+              {isLoading
+                ? "Loading..."
+                : isError
+                  ? "Error"
+                  : formatAmount(reportData?.data?.profit || 0)}
+            </h2>
           </div>
         </div>
       </div>

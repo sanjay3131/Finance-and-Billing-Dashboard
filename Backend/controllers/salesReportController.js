@@ -26,7 +26,7 @@ export const perdaySalesReport = asyncHandler(async (req, res) => {
 
   const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
   const profit = totalSales - totalExpense;
-
+  const isLoss = profit < 0;
   res.status(200).json({
     success: true,
     message: "Per Day Sales Report",
@@ -36,7 +36,8 @@ export const perdaySalesReport = asyncHandler(async (req, res) => {
 
     totalSales,
     totalExpense,
-    profit,
+    profit: Math.abs(profit),
+    isLoss,
   });
 });
 
@@ -52,6 +53,9 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
     Shop: shopId,
     billingDate: { $gte: start, $lte: end },
   });
+  console.log(sales);
+
+  const sevenDaysSales = Array(7).fill(0);
 
   const expense = await Expense.find({
     Shop: shopId,

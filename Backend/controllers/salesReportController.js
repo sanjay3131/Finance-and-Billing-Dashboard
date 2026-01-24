@@ -2,6 +2,14 @@ import asyncHandler from "express-async-handler";
 import Billing from "../models/billing.js";
 import Expense from "../models/expense.js";
 
+// Helper function to calculate profit/loss percentage
+const calculateProfitLossPercentage = (totalSales, totalExpense) => {
+  if (totalExpense === 0) return 0;
+  const profit = totalSales - totalExpense;
+  const percentage = (profit / totalExpense) * 100;
+  return percentage.toFixed(2);
+};
+
 // Per Day Sales Report
 export const perdaySalesReport = asyncHandler(async (req, res) => {
   const shopId = req.shop._id;
@@ -27,6 +35,10 @@ export const perdaySalesReport = asyncHandler(async (req, res) => {
   const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
   const profit = totalSales - totalExpense;
   const isLoss = profit < 0;
+  const profitPercentage = calculateProfitLossPercentage(
+    totalSales,
+    totalExpense,
+  );
   res.status(200).json({
     success: true,
     message: "Per Day Sales Report",
@@ -38,6 +50,7 @@ export const perdaySalesReport = asyncHandler(async (req, res) => {
     totalExpense,
     profit: Math.abs(profit),
     isLoss,
+    profitPercentage: profitPercentage,
   });
 });
 
@@ -72,6 +85,10 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
 
   const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
   const profit = totalSales - totalExpense;
+  const profitPercentage = calculateProfitLossPercentage(
+    totalSales,
+    totalExpense,
+  );
 
   res.status(200).json({
     success: true,
@@ -84,6 +101,7 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
     profit,
+    profitPercentage,
   });
 });
 
@@ -115,6 +133,10 @@ export const thirtyDaysSalesReport = asyncHandler(async (req, res) => {
 
   const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
   const profit = totalSales - totalExpense;
+  const profitPercentage = calculateProfitLossPercentage(
+    totalSales,
+    totalExpense,
+  );
 
   res.status(200).json({
     success: true,
@@ -127,6 +149,7 @@ export const thirtyDaysSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
     profit,
+    profitPercentage,
   });
 });
 
@@ -158,6 +181,10 @@ export const sixMonthsSalesReport = asyncHandler(async (req, res) => {
 
   const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
   const profit = totalSales - totalExpense;
+  const profitPercentage = calculateProfitLossPercentage(
+    totalSales,
+    totalExpense,
+  );
 
   res.status(200).json({
     success: true,
@@ -170,6 +197,7 @@ export const sixMonthsSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
     profit,
+    profitPercentage,
   });
 });
 
@@ -202,6 +230,10 @@ export const customSalesReport = asyncHandler(async (req, res) => {
 
   const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
   const profit = totalSales - totalExpense;
+  const profitPercentage = calculateProfitLossPercentage(
+    totalSales,
+    totalExpense,
+  );
 
   res.status(200).json({
     success: true,
@@ -214,5 +246,6 @@ export const customSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
     profit,
+    profitPercentage,
   });
 });

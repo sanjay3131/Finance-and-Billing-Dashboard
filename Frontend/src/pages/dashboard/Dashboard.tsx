@@ -1,6 +1,6 @@
 import { useAuth } from "../../hooks/useAuth";
 import { FaMoneyBill } from "react-icons/fa6";
-import { BsGraphUpArrow } from "react-icons/bs";
+import { BsGraphDownArrow, BsGraphUpArrow } from "react-icons/bs";
 import { FaShoppingBag } from "react-icons/fa";
 import { IoReceiptSharp } from "react-icons/io5";
 import { LuNotebookPen } from "react-icons/lu";
@@ -18,7 +18,6 @@ const Dashboard = () => {
     data: reportData,
     isLoading,
     isError,
-    isPending,
   } = useQuery({
     queryKey: ["dailyReport"],
     queryFn: () => getSingleDayReport(),
@@ -95,7 +94,12 @@ const Dashboard = () => {
               <h1
                 className={` ${reportData?.data?.isLoss ? "text-red-500" : "text-green-500"} font-semibold bg-green-500/20 px-4 py-1 rounded-full flex items-center gap-2`}
               >
-                <BsGraphUpArrow className="" /> +12%
+                {reportData?.data?.isLoss ? (
+                  <BsGraphDownArrow className="" />
+                ) : (
+                  <BsGraphUpArrow className="" />
+                )}
+                {reportData?.data?.profitPercentage}%
               </h1>
             </span>
             <h2
@@ -142,6 +146,47 @@ const Dashboard = () => {
 
         {/* revenue Trends */}
         <div className="col-span-full bg-amber-400 size-56 rounded-2xl w-full"></div>
+
+        {/* recent bills */}
+        <div className="col-span-full  rounded-2xl w-full mt-4 p-4">
+          <section className="w-full flex justify-between">
+            <h1 className="font-bold text-xl">Recent</h1>
+            <button className="text-green-500 font-semibold">View All </button>
+          </section>
+          {/* recent bills list top 3 */}
+          <section>
+            <div>
+              {/* icon */}
+              <div className="flex flex-col gap-4 mt-4">
+                {[1, 2, 3].map((item) => (
+                  <div
+                    key={item}
+                    className="flex justify-between items-center bg-white p-4 rounded-xl shadow-md"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="bg-green-100 p-2 rounded-lg text-green-500">
+                        <IoReceiptSharp className="text-2xl" />
+                      </span>
+                      <div>
+                        <h1 className="font-semibold">Bill #12345</h1>
+                      </div>
+                    </div>
+                    <div>
+                      <h1 className="font-bold text-lg">$150.00</h1>
+                      <p
+                        className={`text-sm font-semibold ${
+                          item % 2 === 0 ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
+                        {item % 2 === 0 ? "Paid" : "Pending"}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );

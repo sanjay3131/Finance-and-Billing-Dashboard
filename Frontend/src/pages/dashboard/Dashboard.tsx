@@ -169,6 +169,7 @@ const Dashboard = () => {
                       </span>
                       <div>
                         <h1 className="font-semibold">Bill #12345</h1>
+                        <p className="text-sm text-gray-400">Jan 15, 2024</p>
                       </div>
                     </div>
                     <div>

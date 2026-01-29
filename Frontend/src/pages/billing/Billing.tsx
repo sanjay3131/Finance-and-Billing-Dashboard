@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { IoSearch } from "react-icons/io5";
-import { ViewAllProducts } from "../../services/productService";
+import {
+  ViewAllProducts,
+  ViewProductsCategory,
+} from "../../services/productService";
 import { formatAmount } from "../../utils/formatNumbers";
 import type { Product as productType } from "../../utils/constants";
 
@@ -9,18 +12,13 @@ const Billing = () => {
     queryKey: ["products"],
     queryFn: () => ViewAllProducts(),
   });
-  console.log(
-    Products?.data.allProducts.map(
-      (product: productType) => product.itemCategory,
-    ),
-  );
-  const categories: string[] = [
-    ...new Set(
-      (Products?.data.allProducts ?? []).map(
-        (product: productType) => product.itemCategory,
-      ),
-    ),
-  ];
+
+  const { data: Categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => ViewProductsCategory(),
+  });
+  console.log(Products?.data);
+  console.log(Categories);
 
   return (
     <div className="px-4 py-8 bg-primaryBg w-full min-h-screen">
@@ -42,7 +40,7 @@ const Billing = () => {
           {/* categories */}
           <div>
             <div className="flex gap-4 overflow-x-auto pb-2">
-              {categories?.map((category) => (
+              {Categories?.data?.data.map((category: string) => (
                 <button className="whitespace-nowrap px-4 py-2 bg-white rounded-2xl shadow-md">
                   {category}
                 </button>

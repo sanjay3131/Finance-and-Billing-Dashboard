@@ -3,6 +3,8 @@ import {
   createProduct,
   deleteAllProducts,
   deleteSingleProduct,
+  getAllCategories,
+  getProductsByCategory,
   singleProducts,
   updateProducts,
   viewAllProducts,
@@ -18,7 +20,10 @@ router.post("/addProduct", protect, upload.single("image"), createProduct);
 // read Product
 
 // get all Products
-router.get("/viewAllProducts", protect, viewAllProducts);
+router.post("/viewAllProducts", protect, viewAllProducts);
+
+// get products category
+router.get("/productCategories", protect, getAllCategories);
 
 // get single Product by ID
 router.get("/singleProduct/:id", protect, singleProducts);
@@ -28,7 +33,7 @@ router.put(
   "/updateProduct/:id",
   protect,
   upload.single("image"),
-  updateProducts
+  updateProducts,
 );
 
 // delete Product
@@ -37,4 +42,8 @@ router.delete("/deleteSingleProduct/:id", protect, deleteSingleProduct);
 
 // delete all products
 router.delete("/deleteAllProducts", protect, deleteAllProducts);
+
+//get products by category (optional)
+router.get("/productsByCategory/:category", getProductsByCategory);
+
 export default router;

@@ -82,21 +82,26 @@ export const createProduct = asyncHandler(async (req, res) => {
 
 // view all Products
 
+// ...existing code...
 export const viewAllProducts = asyncHandler(async (req, res) => {
   const shopId = req.shop._id;
+  const { itemCategory } = req.body;
 
-  const allProducts = await Product.find({ shop: shopId });
+  const query = { shop: shopId };
+  if (itemCategory) query.itemCategory = itemCategory;
+
+  const allProducts = await Product.find(query);
 
   if (!allProducts || allProducts.length === 0)
-    return res.status(404).json({ message: "No Products Avaliable" });
-  const length = allProducts.length;
+    return res.status(404).json({ message: "No Products Available" });
 
   res.status(200).json({
     message: "products of shop",
     allProducts,
-    length,
+    length: allProducts.length,
   });
 });
+// ...existing code...
 
 // view single
 
@@ -177,7 +182,7 @@ export const updateProducts = asyncHandler(async (req, res) => {
 
     const imageData = await uploadToCloudinary(
       req.file.buffer,
-      "product-images"
+      "product-images",
     );
     productToUpdate.image = imageData;
   }
@@ -238,7 +243,7 @@ export const deleteAllProducts = asyncHandler(async (req, res) => {
   // populate only the fields we need (image and _id)
   const yourShop = await Shop.findById(shopId).populate(
     "ShopProducts",
-    "image"
+    "image",
   );
   if (!yourShop) return res.status(403).json({ message: "Not authorized" });
 
@@ -263,5 +268,55 @@ export const deleteAllProducts = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: "All products deleted for this shop",
     deletedCount: products.length,
+  });
+});
+
+// get products by category
+
+export const getProductsByCategory = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+  const { category } = req.params;
+
+  if (!category)
+    return res.status(400).json({ message: "Category parameter is required" });
+
+  const products = await Product.find({
+    shop: shopId,
+    itemCategory: category,
+  });
+
+  if (!products || products.length === 0) {
+    return res
+      .status(404)
+      .json({ message: `No products found in category: ${category}` });
+  }
+
+  res.status(200).json({
+    data: products,
+    message: `${products.length} Products fetched successfully in category: ${category}`,
+  });
+});
+
+// get products  category
+
+export const getAllCategories = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+
+  const products = await Product.find({
+    shop: shopId,
+    itemCategory,
+  });
+
+  const categories = [
+    ...new Set(
+      products
+        .map((product) => product.itemCategory)
+        .filter((category) => category !== undefined && category !== null),
+    ),
+  ];
+
+  res.status(200).json({
+    message: "Categories fetched successfully",
+    data: categories,
   });
 });

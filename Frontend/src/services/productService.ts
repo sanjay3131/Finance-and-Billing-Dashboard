@@ -1,7 +1,9 @@
 import axiosInstance from "./axiosInstance";
 
-export const ViewAllProducts = async () => {
-  const response = await axiosInstance.get("/product/viewAllProducts");
+export const ViewAllProducts = async (itemCategory?: string) => {
+  const response = await axiosInstance.post("/product/viewAllProducts", {
+    itemCategory,
+  });
   return response;
 };
 

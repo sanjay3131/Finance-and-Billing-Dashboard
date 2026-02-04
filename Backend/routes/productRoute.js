@@ -44,6 +44,6 @@ router.delete("/deleteSingleProduct/:id", protect, deleteSingleProduct);
 router.delete("/deleteAllProducts", protect, deleteAllProducts);
 
 //get products by category (optional)
-router.get("/productsByCategory/:category", getProductsByCategory);
+router.get("/productsByCategory/:category", protect, getProductsByCategory);
 
 export default router;

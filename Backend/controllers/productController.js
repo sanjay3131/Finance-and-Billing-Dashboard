@@ -88,7 +88,10 @@ export const viewAllProducts = asyncHandler(async (req, res) => {
   const { itemCategory } = req.body;
 
   const query = { shop: shopId };
+  console.log(query);
+
   if (itemCategory) query.itemCategory = itemCategory;
+  console.log("query after itemCategory:", query);
 
   const allProducts = await Product.find(query);
 
@@ -304,7 +307,6 @@ export const getAllCategories = asyncHandler(async (req, res) => {
 
   const products = await Product.find({
     shop: shopId,
-    itemCategory,
   });
 
   const categories = [

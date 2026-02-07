@@ -4,12 +4,42 @@ import {
   ViewAllProducts,
   ViewProductsCategory,
 } from "../../services/productService";
-import type { Product as productType } from "../../utils/constants";
+import type { BillItem, Product as productType } from "../../utils/constants";
 import { useState } from "react";
 import ItemCard from "../../components/ui/ItemCard";
 
 const Billing = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [billItems, setBillItems] = useState<BillItem[]>([]);
+  // add bill
+  const addItemToBill = (billItem: BillItem) => {
+    setBillItems((prevBillItems) => {
+      const existingItem = prevBillItems.find(
+        (item) => item.product === billItem.product,
+      );
+      if (existingItem) {
+        return prevBillItems.map((item) =>
+          item.product === billItem.product
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        );
+      }
+      return [...prevBillItems, billItem];
+    });
+  };
+
+  const removeItemFromBill = (productId: string) => {
+    setBillItems((prevBillItems) =>
+      prevBillItems
+        .map((item) =>
+          item.product === productId
+            ? { ...item, quantity: item.quantity - 1 }
+            : item,
+        )
+        .filter((item) => item.quantity > 0),
+    );
+  };
+  console.log(billItems);
 
   const { data: Products } = useQuery({
     queryKey: ["products", selectedCategory],
@@ -69,10 +99,20 @@ const Billing = () => {
             </div>
           </div>
           {/* items list */}
-          <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4 justify-items-center ">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center max-h-75 overflow-y-auto py-6 px-4 hide-scrollbar">
             {Products?.data.allProducts.map((product: productType) => (
-              <ItemCard key={product._id} product={product} />
+              <ItemCard
+                key={product._id}
+                product={product}
+                onAdd={addItemToBill}
+                onRemove={removeItemFromBill}
+              />
             ))}
+          </div>
+          {/*  bill cart */}
+          <div className="mt-4 bg-white p-4 rounded-2xl shadow-md">
+            <h2 className="text-xl font-bold">Bill Cart</h2>
+            <p className="text-gray-500">No items added yet</p>
           </div>
         </div>
       </div>

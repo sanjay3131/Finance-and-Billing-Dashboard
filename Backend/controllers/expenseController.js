@@ -67,7 +67,6 @@ export const getAllExpenses = asyncHandler(async (req, res) => {
   const endOfToday = new Date(today.setHours(23, 59, 59, 999));
 
   const { from = startOfToday, to = endOfToday } = req.body;
-  console.log(from, to);
   // sorting
   const sortBy = req.query.sort || "-expenseDate";
   // pagination
@@ -79,8 +78,7 @@ export const getAllExpenses = asyncHandler(async (req, res) => {
     expenseDate: { $gte: from, $lte: to },
   };
 
-  const expenses = await Expense.find(filter)
-    .sort(sortBy)
+  const expenses = await Expense.find(filter).sort(sortBy)``
     .skip(skip)
     .limit(limit);
 

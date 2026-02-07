@@ -33,7 +33,7 @@ export const useRegister = () => {
     },
 
     onError: (error) => {
-      console.error("Registration failed", error.response?.data.message);
+      console.error("Registration failed", error);
       toast.error("Registration failed. Please try again.");
     },
   });

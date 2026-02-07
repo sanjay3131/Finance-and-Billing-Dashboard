@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Billing from "../models/billing.js";
+import { calculateTotal, normalizeItems } from "../utils/helperFunctions.js";
 
 //create bill
 export const addBill = asyncHandler(async (req, res) => {
@@ -9,9 +10,10 @@ export const addBill = asyncHandler(async (req, res) => {
     Shop,
     items,
     totalAmount,
-    PaymentMethod,
+    paymentMethod,
     customerName,
     customerPhone,
+    status,
   } = req.body;
 
   if (Shop.toString() !== shopId.toString()) {
@@ -23,13 +25,16 @@ export const addBill = asyncHandler(async (req, res) => {
       message: "all filed required",
     });
   }
+  const normalizedItems = normalizeItems(items);
+  const calulateTotalAmount = calculateTotal(normalizedItems);
   const bill = await Billing.create({
     Shop,
-    items,
-    totalAmount,
-    PaymentMethod,
+    items: normalizedItems,
+    totalAmount: calulateTotalAmount,
+    paymentMethod,
     customerName,
     customerPhone,
+    status,
   });
 
   res.status(201).json(bill);
@@ -169,7 +174,7 @@ export const billAnalytics = asyncHandler(async (req, res) => {
     23,
     59,
     59,
-    999
+    999,
   );
 
   const sixMonthsAgo = new Date();
@@ -183,7 +188,7 @@ export const billAnalytics = asyncHandler(async (req, res) => {
     23,
     59,
     59,
-    999
+    999,
   );
   const getFullYear = today.getFullYear();
 

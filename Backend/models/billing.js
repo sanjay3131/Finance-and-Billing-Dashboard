@@ -14,6 +14,7 @@ const BillingSchema = new mongoose.Schema(
           ref: "Product",
           required: true,
         },
+
         quantity: { type: Number, required: true, default: 1 },
         price: { type: Number, required: true },
       },
@@ -26,12 +27,16 @@ const BillingSchema = new mongoose.Schema(
       default: "cash",
     },
     billingDate: { type: Date, default: Date.now },
-    completed: { type: Boolean, default: false },
+    status: {
+      type: String,
+      enum: ["pending", "closed", "cancelled"],
+      default: "pending",
+    },
 
     customerName: { type: String },
     customerPhone: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 BillingSchema.pre("save", async function (next) {
@@ -45,7 +50,7 @@ BillingSchema.pre("save", async function (next) {
   const counter = await Counter.findOneAndUpdate(
     { name: `bill-${year}` },
     { $inc: { seq: 1 } },
-    { new: true, upsert: true }
+    { new: true, upsert: true },
   );
 
   const num = counter.seq.toString().padStart(3, "0");

@@ -9,6 +9,25 @@
   --font-nabla: "Nabla", sans-serif;
   --color-primaryBg: #f2f5f6;
 }
+/* hide scrollbar while keeping scroll functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+@layer base {
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

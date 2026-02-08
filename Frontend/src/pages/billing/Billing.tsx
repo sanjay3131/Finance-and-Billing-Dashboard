@@ -7,6 +7,7 @@ import {
 import type { BillItem, Product as productType } from "../../utils/constants";
 import { useState } from "react";
 import ItemCard from "../../components/ui/ItemCard";
+import BillCart from "../../components/ui/BillCart";
 
 const Billing = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -39,6 +40,30 @@ const Billing = () => {
         .filter((item) => item.quantity > 0),
     );
   };
+
+  const setItemQuantity = (
+    productId: string,
+    quantity: number,
+    price: number,
+    productName: string,
+  ) => {
+    setBillItems((prev) => {
+      if (quantity <= 0) {
+        return prev.filter((item) => item.product !== productId);
+      }
+
+      const exists = prev.find((item) => item.product === productId);
+
+      if (exists) {
+        return prev.map((item) =>
+          item.product === productId ? { ...item, quantity } : item,
+        );
+      }
+
+      return [...prev, { product: productId, quantity, price, productName }];
+    });
+  };
+
   console.log(billItems);
 
   const { data: Products } = useQuery({
@@ -106,13 +131,17 @@ const Billing = () => {
                 product={product}
                 onAdd={addItemToBill}
                 onRemove={removeItemFromBill}
+                onSetQuantity={setItemQuantity}
+                quantity={
+                  billItems.find((item) => item.product === product._id)
+                    ?.quantity || 0
+                }
               />
             ))}
           </div>
           {/*  bill cart */}
           <div className="mt-4 bg-white p-4 rounded-2xl shadow-md">
-            <h2 className="text-xl font-bold">Bill Cart</h2>
-            <p className="text-gray-500">No items added yet</p>
+            <BillCart BillingItems={billItems} />
           </div>
         </div>
       </div>

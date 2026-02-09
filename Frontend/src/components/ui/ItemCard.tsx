@@ -21,15 +21,8 @@ const ItemCard = ({
     productName: string,
   ) => void;
 }) => {
-  // const incrementQuantity = () => {
-  //   setQuantity((prevQuantity) => prevQuantity + 1);
-  // };
-
-  // const decrementQuantity = () => {
-  //   setQuantity((prevQuantity) => (prevQuantity > 0 ? prevQuantity - 1 : 0));
-  // };
   return (
-    <div className="p-2 bg-white  shadow-md rounded-2xl flex gap-4 w-full justify-center items-center">
+    <div className="p-2 bg-white  shadow-md rounded-2xl flex gap-4 w-full h-24 justify-center items-center">
       {/* image */}
       <div>
         <img src={product.image.url} alt="" className=" size-20 rounded-xl" />

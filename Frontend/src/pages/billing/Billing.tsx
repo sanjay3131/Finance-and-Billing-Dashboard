@@ -86,7 +86,7 @@ const Billing = () => {
       </div>
       {/* search items */}
       <div>
-        <div className="mt-8 w-full flex flex-col gap-4">
+        <div className="mt-8 w-full min-h-screen flex flex-col gap-4  ">
           <div className="relative">
             <IoSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
@@ -96,7 +96,7 @@ const Billing = () => {
             />
           </div>
           {/* categories */}
-          <div className="">
+          <div className=" ">
             <div className="flex gap-4 flex-wrap pb-2">
               <button
                 onClick={() => setSelectedCategory("")}
@@ -123,25 +123,28 @@ const Billing = () => {
               ))}
             </div>
           </div>
-          {/* items list */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center max-h-75 overflow-y-auto py-6 px-4 hide-scrollbar">
-            {Products?.data.allProducts.map((product: productType) => (
-              <ItemCard
-                key={product._id}
-                product={product}
-                onAdd={addItemToBill}
-                onRemove={removeItemFromBill}
-                onSetQuantity={setItemQuantity}
-                quantity={
-                  billItems.find((item) => item.product === product._id)
-                    ?.quantity || 0
-                }
-              />
-            ))}
-          </div>
-          {/*  bill cart */}
-          <div className="mt-4 bg-white p-4 rounded-2xl shadow-md">
-            <BillCart BillingItems={billItems} />
+          {/* billing section */}
+          <div className="flex flex-col ">
+            {/* items list */}
+            <div className="  grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center max-h-75 overflow-y-auto  px-4 py-6 hide-scrollbar">
+              {Products?.data.allProducts.map((product: productType) => (
+                <ItemCard
+                  key={product._id}
+                  product={product}
+                  onAdd={addItemToBill}
+                  onRemove={removeItemFromBill}
+                  onSetQuantity={setItemQuantity}
+                  quantity={
+                    billItems.find((item) => item.product === product._id)
+                      ?.quantity || 0
+                  }
+                />
+              ))}
+            </div>
+            {/*  bill cart */}
+            <div className=" py-6 flex justify-center items-center">
+              <BillCart BillingItems={billItems} />
+            </div>
           </div>
         </div>
       </div>

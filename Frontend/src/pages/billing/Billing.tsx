@@ -143,7 +143,10 @@ const Billing = () => {
             </div>
             {/*  bill cart */}
             <div className=" py-6 flex justify-center items-center">
-              <BillCart BillingItems={billItems} />
+              <BillCart
+                BillingItems={billItems}
+                clearCart={() => setBillItems([])}
+              />
             </div>
           </div>
         </div>

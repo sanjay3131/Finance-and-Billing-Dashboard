@@ -5,7 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 const ProtectedRoute = () => {
   const { data, isLoading, isError } = useAuth();
   // Use comma or JSON.stringify to properly log objects instead of getting "[object Object]"
-  console.log("auth data ==>:", data);
+  console.log("auth data ==>:", data?.shop);
 
   if (isLoading) {
     return <p>Checking auth...</p>;

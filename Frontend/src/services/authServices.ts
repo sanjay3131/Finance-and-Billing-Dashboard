@@ -1,4 +1,4 @@
-import type { RegisterForm } from "../utils/constants";
+import type { AuthShopResponse, RegisterForm } from "../utils/constants";
 import axiosInstance from "./axiosInstance";
 
 //login service
@@ -25,9 +25,10 @@ export const registerService = async ({ form }: { form: RegisterForm }) => {
 };
 
 // check authentication service
-export const checkAuth = async () => {
-  const response = await axiosInstance.get("/auth/checkshop");
-  return response;
+
+export const checkAuth = async (): Promise<AuthShopResponse> => {
+  const response = await axiosInstance.get<AuthShopResponse>("/auth/checkshop");
+  return response.data; // ✅ ONLY DATA
 };
 
 // logout

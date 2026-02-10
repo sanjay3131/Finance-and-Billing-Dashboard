@@ -28,6 +28,36 @@ export interface Product {
 // billing interface
 export interface BillItem {
   product: string;
+  productName: string;
   quantity: number;
   price: number;
+}
+
+// create bill interface
+export interface CreateBillInterface {
+  Shop: string;
+  items: BillItem[];
+  totalAmount: number;
+  paymentMethod: string;
+  status: string;
+}
+
+export interface Shop {
+  _id: string;
+  ShopName: string;
+  ShopAddress: string;
+  ShopPhoneNumber: string;
+  ShopEmail: string;
+  ShopOwnerName: string;
+  ShopOwnerPhoneNumber: string;
+  ShopOwnerEmail: string;
+  ShopProducts: string[];
+  CreatedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+export interface AuthShopResponse {
+  message: string;
+  shop: Shop;
 }

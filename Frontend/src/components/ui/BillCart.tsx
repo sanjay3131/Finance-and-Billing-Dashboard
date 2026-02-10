@@ -1,10 +1,14 @@
-import type { BillItem } from "../../utils/constants";
+import { useAuth } from "../../hooks/useAuth";
+import type { BillItem, CreateBillInterface } from "../../utils/constants";
+import { CreateBill } from "../../services/billingServices";
+import { toast } from "sonner";
 
 type BillCartProps = {
   BillingItems: BillItem[];
+  clearCart: () => void;
 };
 
-const BillCart = ({ BillingItems }: BillCartProps) => {
+const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
   const totalItemsInCart = BillingItems.length;
 
   const totalBillAmount = (items: BillItem[]) => {
@@ -12,6 +16,37 @@ const BillCart = ({ BillingItems }: BillCartProps) => {
       (sum: number, item: BillItem) => sum + item.quantity * item.price,
       0,
     );
+  };
+  // shop data from auth context
+  const { data } = useAuth();
+  console.log("auth data", data?.shop);
+
+  const createBillMutation = CreateBill();
+
+  // handle create bill
+  const handleCreateBill = () => {
+    if (!data?.shop?._id) {
+      toast.error("Shop not loaded yet");
+      return;
+    }
+
+    const billData: CreateBillInterface = {
+      Shop: data.shop._id,
+      items: BillingItems,
+      totalAmount: totalBillAmount(BillingItems),
+      paymentMethod: "cash",
+      status: "pending",
+    };
+
+    createBillMutation.mutate(billData, {
+      onSuccess: () => {
+        toast.success("Bill created successfully!");
+        clearCart();
+      },
+      onError: () => {
+        toast.error("Failed to create bill. Please try again.");
+      },
+    });
   };
 
   return (
@@ -36,7 +71,10 @@ const BillCart = ({ BillingItems }: BillCartProps) => {
 
         {totalItemsInCart > 0 ? (
           BillingItems.map((item) => (
-            <div className="flex gap-0 justify-between items-center ">
+            <div
+              key={item.product}
+              className="flex gap-0 justify-between items-center "
+            >
               {/* item name */}
               <div className="flex-1">
                 <h1 className="font-semibold capitalize ">
@@ -76,6 +114,20 @@ const BillCart = ({ BillingItems }: BillCartProps) => {
             {Math.trunc(totalBillAmount(BillingItems))}
           </span>
         </h2>
+      </div>
+
+      {/* generate bill  */}
+      <div>
+        <button
+          onClick={() => {
+            handleCreateBill();
+          }}
+          className={`w-full bg-green-500 text-white py-2 rounded-lg mt-4
+             hover:bg-green-600 transition-colors duration-300 
+             ${totalItemsInCart === 0 ? "disabled:opacity-50 disabled:cursor-not-allowed" : ""}`}
+        >
+          Generate Bill
+        </button>
       </div>
     </div>
   );

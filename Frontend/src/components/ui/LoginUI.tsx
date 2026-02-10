@@ -3,8 +3,11 @@ import { useLogin } from "../../hooks/useAuthMutation";
 import { FaLockOpen, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useAuth } from "../../hooks/useAuthContext";
 
 const LoginUI = () => {
+  const { login } = useAuth();
+
   const loginMutation = useLogin();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -22,15 +25,16 @@ const LoginUI = () => {
         onSuccess: (data) => {
           console.log("Login successful:", data);
           navigate("/dashboard");
+          login(data.data);
           toast.success("Login successful!");
         },
         onError: (error) => {
           console.error("Login failed:", error);
           toast.error(
-            "Login failed. Please check your credentials and try again."
+            "Login failed. Please check your credentials and try again.",
           );
         },
-      }
+      },
     );
   };
   return (

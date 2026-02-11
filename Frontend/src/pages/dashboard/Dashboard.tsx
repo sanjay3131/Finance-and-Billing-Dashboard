@@ -11,7 +11,9 @@ import { formatAmount } from "../../utils/formatNumbers";
 
 const Dashboard = () => {
   const { data } = useAuth();
-  const { shop } = data?.data || {};
+  console.log("auth data", data);
+
+  const { shop } = data || {};
   const navigate = useNavigate();
 
   const {

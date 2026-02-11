@@ -13,6 +13,7 @@ import { FaUser } from "react-icons/fa6";
 import { useState } from "react";
 import type { RegisterForm } from "../../utils/constants";
 import { useRegister } from "../../hooks/useAuthMutation";
+import { toast } from "sonner";
 
 const RegisterUI = () => {
   const [form, setForm] = useState<RegisterForm>({
@@ -51,9 +52,11 @@ const RegisterUI = () => {
       {
         onSuccess: (data) => {
           console.log("Registration successful:", data);
+          toast.success("Register success ");
         },
         onError: (error) => {
           console.error("Registration failed:", error);
+          toast.error("Register error ");
         },
       },
     );

@@ -2,6 +2,7 @@ import { useAuth } from "../../hooks/useAuth";
 import type { BillItem, CreateBillInterface } from "../../utils/constants";
 import { CreateBill } from "../../services/billingServices";
 import { toast } from "sonner";
+import { useState } from "react";
 
 type BillCartProps = {
   BillingItems: BillItem[];
@@ -20,6 +21,8 @@ const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
   // shop data from auth context
   const { data } = useAuth();
   console.log("auth data", data?.shop);
+  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [billStatus, setBillStatus] = useState("pending");
 
   const createBillMutation = CreateBill();
 
@@ -34,8 +37,8 @@ const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
       Shop: data.shop._id,
       items: BillingItems,
       totalAmount: totalBillAmount(BillingItems),
-      paymentMethod: "cash",
-      status: "pending",
+      paymentMethod: paymentMethod,
+      status: billStatus,
     };
 
     createBillMutation.mutate(billData, {
@@ -107,7 +110,7 @@ const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
           </div>
         )}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 border-b-2 border-dashed border-gray-400  py-4">
         <h2 className="font-semibold text-lg border-t-2 border-dashed border-gray-400 pt-2">
           Total Bill Amount : ₹{" "}
           <span className="font-extrabold text-lg">
@@ -115,18 +118,76 @@ const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
           </span>
         </h2>
       </div>
+      {/* status and bill method */}
+      <div className="flex items-center justify-evenly">
+        {/* status */}
+        <div>
+          <h2 className="font-semibold text-lg mt-4">Payment Method</h2>
+          <div className="flex gap-4 mt-2">
+            <input
+              type="radio"
+              id="cash"
+              name="paymentMethod"
+              value="cash"
+              checked={paymentMethod === "cash"}
+              onChange={() => setPaymentMethod("cash")}
+            />
+            <label htmlFor="cash">Cash</label>
+            <input
+              type="radio"
+              className=""
+              id="upi"
+              name="paymentMethod"
+              value="upi"
+              checked={paymentMethod === "upi"}
+              onChange={() => setPaymentMethod("upi")}
+            />
+            <label htmlFor="upi">UPI</label>
+          </div>
+        </div>
+        {/* bill status */}
+        <div>
+          <h2 className="font-semibold text-lg mt-4">Bill Status</h2>
+          <div className="flex gap-4 mt-2">
+            <input
+              type="radio"
+              id="pending"
+              name="billStatus"
+              value="pending"
+              checked={billStatus === "pending"}
+              onChange={() => setBillStatus("pending")}
+            />
+            <label htmlFor="pending">Pending</label>
+            <input
+              type="radio"
+              id="closed"
+              name="billStatus"
+              value="closed"
+              checked={billStatus === "closed"}
+              onChange={() => setBillStatus("closed")}
+            />
+            <label htmlFor="closed">Paid</label>
+          </div>
+        </div>
+      </div>
 
       {/* generate bill  */}
+
       <div>
         <button
+          disabled={totalItemsInCart === 0 || createBillMutation.isPending}
           onClick={() => {
             handleCreateBill();
           }}
           className={`w-full bg-green-500 text-white py-2 rounded-lg mt-4
-             hover:bg-green-600 transition-colors duration-300 
-             ${totalItemsInCart === 0 ? "disabled:opacity-50 disabled:cursor-not-allowed" : ""}`}
+             hover:bg-green-600 transition-all duration-300  cursor-pointer font-bold capitalize
+             ${totalItemsInCart === 0 || createBillMutation.isPending ? "disabled:opacity-50 disabled:cursor-not-allowed" : ""}`}
         >
-          Generate Bill
+          {totalItemsInCart === 0
+            ? "add Items in Cart"
+            : createBillMutation.isPending
+              ? "Generating Bill..."
+              : "Generate Bill"}
         </button>
       </div>
     </div>

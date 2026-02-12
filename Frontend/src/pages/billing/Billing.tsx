@@ -8,8 +8,10 @@ import type { BillItem, Product as productType } from "../../utils/constants";
 import { useState } from "react";
 import ItemCard from "../../components/ui/ItemCard";
 import BillCart from "../../components/ui/BillCart";
+import { useNavigate } from "react-router-dom";
 
 const Billing = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [billItems, setBillItems] = useState<BillItem[]>([]);
   // add bill
@@ -82,6 +84,12 @@ const Billing = () => {
     <div className="px-4 py-8 bg-primaryBg w-full min-h-screen min-w-75">
       {/* header */}
       <div>
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-gray-200 px-4 py-2 rounded-lg"
+        >
+          Back
+        </button>
         <h1 className="text-2xl font-bold text-center">New Bill</h1>
       </div>
       {/* search items */}

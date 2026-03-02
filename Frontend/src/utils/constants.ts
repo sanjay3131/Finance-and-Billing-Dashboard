@@ -42,6 +42,28 @@ export interface CreateBillInterface {
   status: string;
 }
 
+// read bill interface
+export interface readBillInterface {
+  shop: string;
+  billNumber: string;
+  billingDate: Date;
+  createdAt: Date;
+  items: [
+    {
+      price: number;
+      product: string;
+      productName: string;
+      quantity: number;
+      _id: string;
+    },
+  ];
+  paymentMethod: "cash" | "upi";
+  status: "pending" | "closed";
+  totalAmount: number;
+  updatedAt: Date;
+  _id: string;
+}
+
 export interface Shop {
   _id: string;
   ShopName: string;

@@ -79,6 +79,7 @@ export const getAllBills = asyncHandler(async (req, res) => {
   const startOfToday = new Date(today.setHours(0, 0, 0, 0));
   const endOfToday = new Date(today.setHours(23, 59, 59, 999));
 
+  console.log("Body: ", req.body);
   const { fromDate = startOfToday, toDate = endOfToday } = req.body;
   console.log(fromDate, toDate);
 

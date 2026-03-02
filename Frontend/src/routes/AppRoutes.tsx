@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/dashboard/Dashboard.tsx";
 import Login from "../pages/auth/Login.tsx";
 import Billing from "../pages/billing/Billing.tsx";
-import BillHistory from "../pages/bill/BillHistory.tsx";
+import BillHistory from "../pages/billing/BillHistory.tsx";
 import Expense from "../pages/expense/Expense.tsx";
 import Products from "../pages/products/Products.tsx";
 import Settings from "../pages/settings/Settings.tsx";

@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { GetAllBills } from "../../services/billingServices";
+import { GetAllBills, useUpdateBill } from "../../services/billingServices";
 import { useState } from "react";
-import type { BillItem, readBillInterface } from "../../utils/constants";
+import type { readBillInterface } from "../../utils/constants";
 import { FaArrowLeft, FaMoneyBillWave } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { formatAmount } from "../../utils/formatNumbers";
-import { IoQrCodeSharp } from "react-icons/io5";
+import { IoQrCodeSharp, IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { LuPrinter } from "react-icons/lu";
 
 const BillHistory = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const BillHistory = () => {
     toDate: isoToday,
   });
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["bills", date],
     queryFn: () => {
       // ensure toDate covers end of selected day so today's bills are included
@@ -31,6 +32,17 @@ const BillHistory = () => {
   });
   const bills = data?.data || [];
   console.log("bills data", bills, date);
+
+  const updateBillMutation = useUpdateBill();
+  // toglgeStatus
+  const handleToggle = (bill: readBillInterface) => {
+    const newStatus = bill.status === "closed" ? "pending" : "closed";
+
+    updateBillMutation.mutate({
+      id: bill._id,
+      billDetails: { ...bill, status: newStatus },
+    });
+  };
   return (
     <div className="px-4 py-2 flex flex-col gap-4 bg-primaryBg w-full min-h-screen min-w-75">
       {/* header */}
@@ -79,80 +91,102 @@ const BillHistory = () => {
           </div>
         </div>
       </div>
-
       {/*   bill list  */}
-      {/* 
-           "_id": "69a67e35df17aa6e1f26f6f1",
-            "Shop": "690b1c9532ffe47c29cd64a2",
-            "items": [
-                {
-                    "product": "691443b33a5c052804166326",
-                    "productName": "dosa3",
-                    "quantity": 4,
-                    "price": 20,
-                    "_id": "69a67e35df17aa6e1f26f6f2"
-                }
-            ],
-            "totalAmount": 80,
-            "paymentMethod": "cash",
-            "status": "pending",
-            "billingDate": "2026-03-03T06:22:45.819Z",
-            "createdAt": "2026-03-03T06:22:45.828Z",
-            "updatedAt": "2026-03-03T06:22:45.828Z",
-            "billNumber": "BILL-3-3-2026-085",
-            "__v": 0
-        }, */}
       <div>
         <h2 className="font-bold text-lg">Bill List</h2>
-        <div className=" p-4 rounded-lg flex flex-col  gap-2">
-          {bills?.data && bills.data.length > 0 ? (
-            bills.data.map((bill: readBillInterface) => (
-              <div
-                key={bill._id}
-                className=" bg-white p-1 rounded-xl px-4 py-2"
-              >
-                <div className="flex justify-between items-center">
-                  {/* payment icon and bill num */}
-                  <div className="flex gap-4 justify-center items-center">
-                    {bill.paymentMethod === "cash" ? (
-                      <span className="text-green-500 p-2 rounded-md bg-green-100 ">
-                        <FaMoneyBillWave />
-                      </span>
-                    ) : bill.paymentMethod === "upi" ? (
-                      <span className="text-violet-500">
-                        <IoQrCodeSharp />
-                      </span>
-                    ) : null}
-                    {/* bill number  */}
+        {isLoading ? (
+          <div>
+            <h1>loading list</h1>
+          </div>
+        ) : (
+          <div className=" p-4 rounded-lg flex flex-col  gap-2">
+            <h1 className="font-semibold text-gray-500 text-md  mb-3">
+              Total Bill :
+              {
+                <span className="font-bold text-black text-xl">
+                  {bills?.data.length || 0}
+                </span>
+              }
+            </h1>
+            {/* bill card */}
+            {bills?.data && bills.data.length > 0 ? (
+              bills.data.map((bill: readBillInterface) => (
+                <div
+                  key={bill._id}
+                  className=" bg-white p-1 rounded-xl px-4 py-2 flex flex-col gap-4"
+                >
+                  <div className="flex justify-between items-center">
+                    {/* payment icon and bill num */}
+                    <div className="flex gap-4 justify-center items-center">
+                      {bill.paymentMethod === "cash" ? (
+                        <span className="text-green-500 p-2 rounded-md bg-green-100 ">
+                          <FaMoneyBillWave />
+                        </span>
+                      ) : bill.paymentMethod === "upi" ? (
+                        <span className="text-violet-500">
+                          <IoQrCodeSharp />
+                        </span>
+                      ) : null}
+                      {/* bill number  */}
+                      <div className="">
+                        <h1 className="font-semibold text-sm">
+                          # {bill.billNumber}
+                        </h1>
+                        <h3 className="text-gray-500 text-sm">
+                          {new Date(bill.updatedAt).toLocaleTimeString()}
+                        </h3>{" "}
+                      </div>
+                    </div>
+                    {/* bill amount  */}
                     <div>
-                      <h1 className="font-bold"># {bill.billNumber}</h1>
-                      <h3 className="text-gray-500">
-                        {new Date(bill.updatedAt).toLocaleTimeString()}
-                      </h3>{" "}
+                      <h2 className="font-bold text-xl">
+                        {formatAmount(bill.totalAmount)}
+                      </h2>
+                      <button
+                        onClick={() => handleToggle(bill)}
+                        className={`px-2 py-1 text-sm capitalize rounded-md flex justify-center items-center hover:scale-105 transition-all duration-150 ease-in-out ${
+                          bill.status === "pending"
+                            ? "bg-red-100 text-red-500"
+                            : updateBillMutation.isPending
+                              ? " bg-purple-100 text-purple-500"
+                              : "bg-green-100 text-green-500"
+                        }`}
+                      >
+                        {updateBillMutation.isPending ? "loading" : bill.status}
+                      </button>
                     </div>
                   </div>
-                  {/* bill amount  */}
-                  <div>
-                    <h2 className="font-bold text-2xl">
-                      {formatAmount(bill.totalAmount)}
-                    </h2>
-                    <button
-                      className={`px-2 py-1 text-sm capitalize rounded-md flex justify-center items-center ${
-                        bill.status === "pending"
-                          ? "bg-red-100 text-red-500"
-                          : "bg-green-100 text-green-500"
-                      }`}
-                    >
-                      {bill.status}
-                    </button>
+                  {/* bill details */}
+                  <div className="flex  justify-between items-center">
+                    <div>
+                      {" "}
+                      <h1>
+                        {" "}
+                        <span className="  rounded-full">
+                          {bill.items.length}
+                        </span>{" "}
+                        items
+                      </h1>
+                    </div>
+                    <div className="flex gap-5">
+                      <button>
+                        <LuPrinter />
+                      </button>
+                      <button>
+                        <IoShareSocialOutline />
+                      </button>
+                      <button className=" bg-gray-200 py-1 px-4 rounded-md hover:bg-gray-300">
+                        Details
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          ) : (
-            <p>No bills available for the selected date range.</p>
-          )}
-        </div>
+              ))
+            ) : (
+              <p>No bills available for the selected date range.</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

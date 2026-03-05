@@ -106,8 +106,14 @@ export const getAllBills = asyncHandler(async (req, res) => {
 export const updateBill = asyncHandler(async (req, res) => {
   const shopId = req.shop && req.shop._id;
   const { id } = req.params;
-  const { items, totalAmount, customerName, customerPhone, paymentMethod } =
-    req.body;
+  const {
+    items,
+    totalAmount,
+    customerName,
+    customerPhone,
+    paymentMethod,
+    status,
+  } = req.body;
 
   let bill = await Billing.findById(id);
   if (!bill) {
@@ -131,6 +137,7 @@ export const updateBill = asyncHandler(async (req, res) => {
   bill.customerName = customerName || bill.customerName;
   bill.customerPhone = customerPhone || bill.customerPhone;
   bill.paymentMethod = paymentMethod || bill.paymentMethod;
+  bill.status = status || bill.status;
 
   await bill.save();
   res.status(200).json({

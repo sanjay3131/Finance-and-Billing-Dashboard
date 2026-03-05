@@ -1,5 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
-import type { CreateBillInterface } from "../utils/constants";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type {
+  CreateBillInterface,
+  readBillInterface,
+} from "../utils/constants";
 import axiosInstance from "./axiosInstance";
 
 // add bill
@@ -21,20 +24,6 @@ export const CreateBill = () => {
   });
 };
 
-// view all bills
-// export const GetAllBills = () => {
-//   return useMutation({
-//     mutationFn: (date: string) => {
-//       return axiosInstance.post(`billing/getAllBills`, { date });
-//     },
-//     onSuccess: (data) => {
-//       console.log("Bills retrieved successfully", data);
-//     },
-//     onError: (error) => {
-//       console.error("Failed to retrieve bills", error);
-//     },
-//   });
-// };
 type dateType = {
   fromDate: string;
   toDate: string;
@@ -42,4 +31,29 @@ type dateType = {
 export const GetAllBills = async (date: dateType) => {
   const res = await axiosInstance.post(`/billing/getAllBills`, date);
   return res;
+};
+
+// update bill
+export const useUpdateBill = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      billDetails,
+    }: {
+      id: string;
+      billDetails: readBillInterface;
+    }) => {
+      return axiosInstance.put(`billing/updateBill/${id}`, billDetails);
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["bills"] });
+
+      console.log("Bill updated successfully", data);
+    },
+    onError: (error) => {
+      console.error("Failed to update bill", error);
+    },
+  });
 };

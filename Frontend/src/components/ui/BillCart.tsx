@@ -75,7 +75,7 @@ const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
         {totalItemsInCart > 0 ? (
           BillingItems.map((item) => (
             <div
-              key={item.product}
+              key={item.productName}
               className="flex gap-0 justify-between items-center "
             >
               {/* item name */}

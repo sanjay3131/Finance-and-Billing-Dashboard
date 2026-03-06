@@ -47,7 +47,13 @@ export const getBill = asyncHandler(async (req, res) => {
 
   const shopId = req.shop._id;
 
-  const bill = await Billing.findOne({ Shop: shopId, billNumber: billNumber });
+  const bill = await Billing.findOne({
+    Shop: shopId,
+    billNumber: billNumber,
+  }).populate({
+    path: "items.product",
+    select: "image", // include image and product id
+  });
   if (!bill) {
     res.status(404).json({
       success: false,
@@ -86,7 +92,13 @@ export const getAllBills = asyncHandler(async (req, res) => {
   const bills = await Billing.find({
     Shop: shopId,
     billingDate: { $gte: fromDate, $lte: toDate },
-  }).sort({ billingDate: -1 });
+  })
+    // include product reference with image and id
+    .populate({
+      path: "items.product",
+      select: "image", // id is included by default
+    })
+    .sort({ billingDate: -1 });
 
   if (!bills || bills.length === 0) {
     return res.status(404).json({

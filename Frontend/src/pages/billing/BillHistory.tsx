@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GetAllBills, useUpdateBill } from "../../services/billingServices";
 import { useState } from "react";
 import type { readBillInterface } from "../../utils/constants";
+import BillDetailsCard from "../../components/ui/BillDetailsCard";
 import { FaArrowLeft, FaMoneyBillWave } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { formatAmount } from "../../utils/formatNumbers";
@@ -18,7 +19,10 @@ const BillHistory = () => {
     fromDate: isoToday,
     toDate: isoToday,
   });
-
+  const [modalOpen, setModalOpen] = useState(true);
+  const [selectedBill, setSelectedBill] = useState<readBillInterface | null>(
+    null,
+  );
   const { data, isLoading } = useQuery({
     queryKey: ["bills", date],
     queryFn: () => {
@@ -44,7 +48,33 @@ const BillHistory = () => {
     });
   };
   return (
-    <div className="px-4 py-2 flex flex-col gap-4 bg-primaryBg w-full min-h-screen min-w-75">
+    <div className="px-4 py-2 flex flex-col gap-4 bg-primaryBg w-full min-h-screen min-w-75 relative">
+      {/* modal for bill details */}
+      {modalOpen && selectedBill && (
+        <div
+          className="fixed inset-0 bg-black/20 backdrop-blur-md z-10 flex justify-center items-center"
+          onClick={() => {
+            setModalOpen(false);
+            setSelectedBill(null);
+          }}
+        >
+          <div
+            className="bg-white/80 backdrop-blur-sm max-w-lg w-full p-4 z-20 rounded-lg relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => {
+                setModalOpen(false);
+                setSelectedBill(null);
+              }}
+              className="absolute top-2 right-2 text-lg text-red-500 hover:text-red-700"
+            >
+              x
+            </button>
+            {selectedBill && <BillDetailsCard {...selectedBill} />}
+          </div>
+        </div>
+      )}
       {/* header */}
       <div className="bg-white p-2 flex flex-col gap-4 rounded-lg">
         <nav className="flex justify-between  items-center gap-5 ">
@@ -104,7 +134,7 @@ const BillHistory = () => {
               Total Bill :
               {
                 <span className="font-bold text-black text-xl">
-                  {bills?.data.length || 0}
+                  {bills?.data?.length || 0}
                 </span>
               }
             </h1>
@@ -113,7 +143,7 @@ const BillHistory = () => {
               bills.data.map((bill: readBillInterface) => (
                 <div
                   key={bill._id}
-                  className=" bg-white p-1 rounded-xl px-4 py-2 flex flex-col gap-4"
+                  className=" bg-white p-1 rounded-xl px-4 py-2 flex flex-col gap-4 shadow-md"
                 >
                   <div className="flex justify-between items-center">
                     {/* payment icon and bill num */}
@@ -158,10 +188,18 @@ const BillHistory = () => {
                   </div>
                   {/* bill details */}
                   <div className="flex  justify-between items-center">
-                    <div>
-                      {" "}
+                    <div className="flex items-center gap-2">
+                      {bill.items &&
+                        bill.items[0] &&
+                        typeof bill.items[0].product !== "string" &&
+                        bill.items[0].product.image?.url && (
+                          <img
+                            src={bill.items[0].product.image.url}
+                            alt={bill.items[0].productName}
+                            className="w-8 h-8 object-cover rounded"
+                          />
+                        )}
                       <h1>
-                        {" "}
                         <span className="  rounded-full">
                           {bill.items.length}
                         </span>{" "}
@@ -175,7 +213,13 @@ const BillHistory = () => {
                       <button>
                         <IoShareSocialOutline />
                       </button>
-                      <button className=" bg-gray-200 py-1 px-4 rounded-md hover:bg-gray-300">
+                      <button
+                        onClick={() => {
+                          setSelectedBill(bill);
+                          setModalOpen(true);
+                        }}
+                        className=" bg-gray-200 py-1 px-4 rounded-md hover:bg-gray-300"
+                      >
                         Details
                       </button>
                     </div>

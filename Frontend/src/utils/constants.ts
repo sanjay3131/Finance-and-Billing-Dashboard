@@ -27,7 +27,7 @@ export interface Product {
 
 // billing interface
 export interface BillItem {
-  product: string;
+  product: Product; // when populated this will be a Product object
   productName: string;
   quantity: number;
   price: number;
@@ -48,15 +48,13 @@ export interface readBillInterface {
   billNumber: string;
   billingDate: Date;
   createdAt: Date;
-  items: [
-    {
-      price: number;
-      product: string;
-      productName: string;
-      quantity: number;
-      _id: string;
-    },
-  ];
+  items: Array<{
+    price: number;
+    product: string | Product;
+    productName: string;
+    quantity: number;
+    _id: string;
+  }>;
   paymentMethod: "cash" | "upi";
   status: "pending" | "closed";
   totalAmount: number;

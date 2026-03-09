@@ -57,3 +57,9 @@ export const useUpdateBill = () => {
     },
   });
 };
+
+// get bill by id
+export const getBillById = async (billId: string) => {
+  const res = await axiosInstance.get(`/billing/getBill/${billId}`);
+  return res;
+};

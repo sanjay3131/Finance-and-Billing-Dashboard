@@ -14,8 +14,8 @@ const router = express.Router();
 // create bill
 router.post("/addBill", protect, addBill);
 
-// show bill
-router.get("/getBill/:billNumber", protect, getBill);
+// show bill by id
+router.get("/getBill/:billId", protect, getBill);
 
 // get all bills from to date
 router.post("/getAllBills", protect, getAllBills);

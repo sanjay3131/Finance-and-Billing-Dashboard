@@ -1,0 +1,97 @@
+import { FaMoneyBillWave } from "react-icons/fa6";
+import { IoQrCodeSharp, IoShareSocialOutline } from "react-icons/io5";
+import { formatAmount } from "../../utils/formatNumbers";
+import { LuPrinter } from "react-icons/lu";
+import { useUpdateBill } from "../../services/billingServices";
+import type { readBillInterface } from "../../utils/constants";
+
+const Billcard = ({
+  bill,
+  setSelectedBill,
+  setModalOpen,
+}: {
+  bill: readBillInterface;
+  setSelectedBill: any;
+  setModalOpen: any;
+}) => {
+  const updateBillMutation = useUpdateBill();
+  const handleToggle = (bill: readBillInterface) => {
+    const newStatus = bill.status === "closed" ? "pending" : "closed";
+
+    updateBillMutation.mutate({
+      id: bill._id,
+      billDetails: { ...bill, status: newStatus },
+    });
+  };
+
+  return (
+    <div className=" bg-white p-1 rounded-xl px-4 py-2 flex flex-col gap-4 shadow-md">
+      <div className="flex justify-between items-center">
+        {/* payment icon and bill num */}
+        <div className="flex gap-4 justify-center items-center">
+          {bill.paymentMethod === "cash" ? (
+            <span className="text-green-500 p-2 rounded-md bg-green-100 ">
+              <FaMoneyBillWave />
+            </span>
+          ) : bill.paymentMethod === "upi" ? (
+            <span className="text-violet-500">
+              <IoQrCodeSharp />
+            </span>
+          ) : null}
+          {/* bill number  */}
+          <div className="">
+            <h1 className="font-semibold text-sm"># {bill.billNumber}</h1>
+            <h3 className="text-gray-500 text-sm">
+              {new Date(bill.updatedAt).toLocaleTimeString()}
+            </h3>{" "}
+          </div>
+        </div>
+        {/* bill amount  */}
+        <div>
+          <h2 className="font-bold text-xl">
+            {formatAmount(bill.totalAmount)}
+          </h2>
+          <button
+            onClick={() => handleToggle(bill)}
+            className={`px-2 py-1 text-sm capitalize rounded-md flex justify-center items-center hover:scale-105 transition-all duration-150 ease-in-out ${
+              bill.status === "pending"
+                ? "bg-red-100 text-red-500"
+                : updateBillMutation.isPending
+                  ? " bg-purple-100 text-purple-500"
+                  : "bg-green-100 text-green-500"
+            }`}
+          >
+            {updateBillMutation.isPending ? "loading" : bill.status}
+          </button>
+        </div>
+      </div>
+      {/* bill details */}
+      <div className="flex  justify-between items-center">
+        <div className="flex items-center gap-2">
+          <h1>
+            <span className="  rounded-full">{bill.items.length}</span> items
+          </h1>
+        </div>
+        <div className="flex gap-5">
+          <button>
+            <LuPrinter />
+          </button>
+          <button>
+            <IoShareSocialOutline />
+          </button>
+          <button
+            onClick={() => {
+              setSelectedBill(bill);
+              setModalOpen(true);
+            }}
+            className=" bg-gray-200 py-1 px-4 rounded-md hover:bg-gray-300"
+          >
+            Details
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Billcard;

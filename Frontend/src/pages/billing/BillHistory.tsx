@@ -1,14 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { GetAllBills, useUpdateBill } from "../../services/billingServices";
+import { GetAllBills } from "../../services/billingServices";
 import { useState } from "react";
 import type { readBillInterface } from "../../utils/constants";
 import BillDetailsCard from "../../components/ui/BillDetailsCard";
-import { FaArrowLeft, FaMoneyBillWave } from "react-icons/fa6";
+import { FaArrowLeft } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
-import { formatAmount } from "../../utils/formatNumbers";
-import { IoQrCodeSharp, IoShareSocialOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { LuPrinter } from "react-icons/lu";
+import Billcard from "../../components/ui/Billcard";
 
 const BillHistory = () => {
   const navigate = useNavigate();
@@ -37,16 +35,8 @@ const BillHistory = () => {
   const bills = data?.data || [];
   console.log("bills data", bills, date);
 
-  const updateBillMutation = useUpdateBill();
   // toglgeStatus
-  const handleToggle = (bill: readBillInterface) => {
-    const newStatus = bill.status === "closed" ? "pending" : "closed";
 
-    updateBillMutation.mutate({
-      id: bill._id,
-      billDetails: { ...bill, status: newStatus },
-    });
-  };
   return (
     <div className="px-4 py-2 flex flex-col gap-4 bg-primaryBg w-full min-h-screen min-w-75 relative">
       {/* modal for bill details */}
@@ -67,11 +57,11 @@ const BillHistory = () => {
                 setModalOpen(false);
                 setSelectedBill(null);
               }}
-              className="absolute top-2 right-2 text-lg text-red-500 hover:text-red-700"
+              className="absolute top-2 right-2 text-lg text-red-500 hover:text-red-700  bg-red-100 hover:bg-red-200 rounded-full w-8 h-8 flex justify-center items-center transition-all duration-300 ease-in-out"
             >
               x
             </button>
-            {selectedBill && <BillDetailsCard {...selectedBill} />}
+            {selectedBill && <BillDetailsCard bill={selectedBill} />}
           </div>
         </div>
       )}
@@ -141,90 +131,12 @@ const BillHistory = () => {
             {/* bill card */}
             {bills?.data && bills.data.length > 0 ? (
               bills.data.map((bill: readBillInterface) => (
-                <div
+                <Billcard
                   key={bill._id}
-                  className=" bg-white p-1 rounded-xl px-4 py-2 flex flex-col gap-4 shadow-md"
-                >
-                  <div className="flex justify-between items-center">
-                    {/* payment icon and bill num */}
-                    <div className="flex gap-4 justify-center items-center">
-                      {bill.paymentMethod === "cash" ? (
-                        <span className="text-green-500 p-2 rounded-md bg-green-100 ">
-                          <FaMoneyBillWave />
-                        </span>
-                      ) : bill.paymentMethod === "upi" ? (
-                        <span className="text-violet-500">
-                          <IoQrCodeSharp />
-                        </span>
-                      ) : null}
-                      {/* bill number  */}
-                      <div className="">
-                        <h1 className="font-semibold text-sm">
-                          # {bill.billNumber}
-                        </h1>
-                        <h3 className="text-gray-500 text-sm">
-                          {new Date(bill.updatedAt).toLocaleTimeString()}
-                        </h3>{" "}
-                      </div>
-                    </div>
-                    {/* bill amount  */}
-                    <div>
-                      <h2 className="font-bold text-xl">
-                        {formatAmount(bill.totalAmount)}
-                      </h2>
-                      <button
-                        onClick={() => handleToggle(bill)}
-                        className={`px-2 py-1 text-sm capitalize rounded-md flex justify-center items-center hover:scale-105 transition-all duration-150 ease-in-out ${
-                          bill.status === "pending"
-                            ? "bg-red-100 text-red-500"
-                            : updateBillMutation.isPending
-                              ? " bg-purple-100 text-purple-500"
-                              : "bg-green-100 text-green-500"
-                        }`}
-                      >
-                        {updateBillMutation.isPending ? "loading" : bill.status}
-                      </button>
-                    </div>
-                  </div>
-                  {/* bill details */}
-                  <div className="flex  justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      {bill.items &&
-                        bill.items[0] &&
-                        typeof bill.items[0].product !== "string" &&
-                        bill.items[0].product.image?.url && (
-                          <img
-                            src={bill.items[0].product.image.url}
-                            alt={bill.items[0].productName}
-                            className="w-8 h-8 object-cover rounded"
-                          />
-                        )}
-                      <h1>
-                        <span className="  rounded-full">
-                          {bill.items.length}
-                        </span>{" "}
-                        items
-                      </h1>
-                    </div>
-                    <div className="flex gap-5">
-                      <button>
-                        <LuPrinter />
-                      </button>
-                      <button>
-                        <IoShareSocialOutline />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedBill(bill);
-                          setModalOpen(true);
-                        }}
-                        className=" bg-gray-200 py-1 px-4 rounded-md hover:bg-gray-300"
-                      >
-                        Details
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                  bill={bill}
+                  setSelectedBill={setSelectedBill}
+                  setModalOpen={setModalOpen}
+                />
               ))
             ) : (
               <p>No bills available for the selected date range.</p>

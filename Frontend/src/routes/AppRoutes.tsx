@@ -8,6 +8,7 @@ import Products from "../pages/products/Products.tsx";
 import Settings from "../pages/settings/Settings.tsx";
 import Register from "../pages/auth/Register.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
+import EditBill from "../pages/billing/EditBill.tsx";
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/billing" element={<Billing />} />
         <Route path="/billHistory" element={<BillHistory />} />
+        <Route path="/billing/edit/:billId" element={<EditBill />} />
         <Route path="/expense" element={<Expense />} />
         <Route path="/products" element={<Products />} />
         <Route path="/settings" element={<Settings />} />

@@ -107,7 +107,7 @@ const BillingUI = ({
               onClick={() => setSelectedCategory("")}
               className={`whitespace-nowrap px-4 py-2 rounded-2xl shadow-md transition-all font-bold capitalize  ${
                 selectedCategory === ""
-                  ? "bg-green-500 text-white scale-110"
+                  ? "bg-green-500 text-white  "
                   : "bg-white"
               }`}
             >
@@ -119,7 +119,7 @@ const BillingUI = ({
                 key={category}
                 className={`whitespace-nowrap px-4  rounded-2xl shadow-md transition-all font-bold capitalize  ${
                   selectedCategory === category
-                    ? "bg-green-500 text-white scale-110"
+                    ? "bg-green-500 text-white "
                     : "bg-white"
                 }`}
               >

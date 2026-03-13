@@ -1,4 +1,4 @@
-import type { BillItem, Product as ProductType } from "../../utils/constants";
+import type { BillItem, Product } from "../../utils/constants";
 import { formatAmount } from "../../utils/formatNumbers";
 
 const ItemCard = ({
@@ -9,7 +9,7 @@ const ItemCard = ({
 
   onSetQuantity,
 }: {
-  product: ProductType;
+  product: Product;
   quantity: number;
 
   onAdd: (item: BillItem) => void;
@@ -21,6 +21,8 @@ const ItemCard = ({
     productName: string,
   ) => void;
 }) => {
+  console.log("quantity", quantity);
+
   return (
     <div className="p-2 bg-white  shadow-md rounded-2xl flex gap-4 w-full h-24 justify-center items-center">
       {/* image */}

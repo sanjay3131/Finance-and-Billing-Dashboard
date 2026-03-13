@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { getBillById } from "../../services/billingServices";
 import { useQuery } from "@tanstack/react-query";
-import type { BillItem } from "../../utils/constants";
+import type { BillItem, readBillInterface } from "../../utils/constants";
 import { useState, useEffect } from "react";
 import BillingUI from "../../components/ui/BillingUI";
 
@@ -14,19 +14,32 @@ const EditBill = () => {
     queryKey: ["billById", param.billId],
     queryFn: () => getBillById(param.billId || ""),
   });
+  // unwrap axios response: axios returns { data: { message, data: { ... } } }
+  const editBillData = data?.data?.data || {};
 
   useEffect(() => {
-    if (data?.data?.items) {
-      setEditBillItems(data.data.items);
+    const items = data?.data?.data?.items;
+    if (items) {
+      setEditBillItems(items);
+      console.log("bill set===>", items);
     }
   }, [data]);
 
-  console.log("edit data: ", data);
+  console.log("edit data: ", editBillData);
+  console.log("edit items ::: ", editBillItems);
 
   return (
-    <div>
-      EditBill
-      <BillingUI billItems={editBillItems} setBillItems={setEditBillItems} />
+    <div className="px-4 py-8 bg-primaryBg w-full min-h-screen min-w-75">
+      <div>
+        <h1 className="text-2xl font-bold text-center mb-4">Edit Bill</h1>
+      </div>{" "}
+      <BillingUI
+        billItems={editBillItems}
+        setBillItems={setEditBillItems}
+        editBill={true}
+        initialPaymentMethod={(editBillData as readBillInterface).paymentMethod}
+        initialStatus={(editBillData as readBillInterface).status}
+      />
     </div>
   );
 };

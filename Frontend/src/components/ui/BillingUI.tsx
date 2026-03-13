@@ -5,16 +5,22 @@ import {
   ViewProductsCategory,
 } from "../../services/productService";
 import { useQuery } from "@tanstack/react-query";
-import type { BillItem, Product as productType } from "../../utils/constants";
+import type { BillItem, Product } from "../../utils/constants";
 import ItemCard from "./ItemCard";
 import BillCart from "./BillCart";
 
 const BillingUI = ({
   billItems,
   setBillItems,
+  editBill,
+  initialPaymentMethod,
+  initialStatus,
 }: {
   billItems: BillItem[];
   setBillItems: React.Dispatch<React.SetStateAction<BillItem[]>>;
+  editBill?: boolean;
+  initialPaymentMethod?: string;
+  initialStatus?: string;
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   // add bill
@@ -69,7 +75,7 @@ const BillingUI = ({
     });
   };
 
-  console.log(billItems);
+  console.log("billItems: *****", billItems);
 
   const { data: Products } = useQuery({
     queryKey: ["products", selectedCategory],
@@ -126,7 +132,7 @@ const BillingUI = ({
         <div className="flex flex-col ">
           {/* items list */}
           <div className="  grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center max-h-75 overflow-y-auto  px-4 py-6 hide-scrollbar">
-            {Products?.data.allProducts.map((product: productType) => (
+            {Products?.data.allProducts.map((product: Product) => (
               <ItemCard
                 key={product._id}
                 product={product}
@@ -145,6 +151,9 @@ const BillingUI = ({
             <BillCart
               BillingItems={billItems}
               clearCart={() => setBillItems([])}
+              editBill={editBill}
+              initialPaymentMethod={initialPaymentMethod}
+              initialStatus={initialStatus}
             />
           </div>
         </div>

@@ -50,9 +50,6 @@ export const getBill = asyncHandler(async (req, res) => {
   const bill = await Billing.findOne({
     Shop: shopId,
     _id: billId,
-  }).populate({
-    path: "items.product",
-    select: "image", // include image and product id
   });
   if (!bill) {
     res.status(404).json({

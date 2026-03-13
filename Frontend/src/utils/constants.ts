@@ -18,16 +18,30 @@ export interface Product {
   image: {
     url: string;
     public_id: string;
+    _id: string;
   };
   itemCategory: string;
   stock: number;
   unit: string;
   isActive: boolean;
 }
+export interface productType {
+  price: number;
+  _id: string;
+  productName: string;
+  product: {
+    image: string;
+    _id: string;
+  };
+}
 
 // billing interface
 export interface BillItem {
-  product: Product; // when populated this will be a Product object
+  product: {
+    image: string;
+    _id: string;
+  };
+  // when populated this will be a Product object
   productName: string;
   quantity: number;
   price: number;

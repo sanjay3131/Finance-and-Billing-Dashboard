@@ -1,15 +1,25 @@
 import { useAuth } from "../../hooks/useAuth";
 import type { BillItem, CreateBillInterface } from "../../utils/constants";
-import { CreateBill } from "../../services/billingServices";
+import { CreateBill, useUpdateBill } from "../../services/billingServices";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router";
 
 type BillCartProps = {
   BillingItems: BillItem[];
   clearCart: () => void;
+  editBill?: boolean;
+  initialPaymentMethod?: string;
+  initialStatus?: string;
 };
 
-const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
+const BillCart = ({
+  BillingItems,
+  clearCart,
+  editBill,
+  initialPaymentMethod,
+  initialStatus,
+}: BillCartProps) => {
   const totalItemsInCart = BillingItems.length;
 
   const totalBillAmount = (items: BillItem[]) => {
@@ -21,8 +31,12 @@ const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
   // shop data from auth context
   const { data } = useAuth();
   console.log("auth data", data?.shop);
-  const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [billStatus, setBillStatus] = useState("pending");
+  const [paymentMethod, setPaymentMethod] = useState(
+    editBill && initialPaymentMethod ? initialPaymentMethod : "cash",
+  );
+  const [billStatus, setBillStatus] = useState(
+    editBill && initialStatus ? initialStatus : "pending",
+  );
 
   const createBillMutation = CreateBill();
 
@@ -50,6 +64,51 @@ const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
         toast.error("Failed to create bill. Please try again.");
       },
     });
+  };
+
+  //
+  const updateBillMutation = useUpdateBill();
+  const params = useParams();
+  const navigate = useNavigate();
+
+  const handelEditBill = () => {
+    if (!params.billId) {
+      toast.error("No bill id provided");
+      return;
+    }
+
+    if (!data?.shop?._id) {
+      toast.error("Shop not loaded yet");
+      return;
+    }
+
+    const billDetails: Partial<CreateBillInterface> & {
+      items: BillItem[];
+      paymentMethod: string;
+      status: string;
+      totalAmount: number;
+    } = {
+      items: BillingItems,
+      paymentMethod,
+      status: billStatus,
+      totalAmount: totalBillAmount(BillingItems),
+    } as any;
+
+    updateBillMutation.mutate(
+      {
+        id: params.billId,
+        billDetails,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Bill updated successfully!");
+          navigate("/billHistory");
+        },
+        onError: () => {
+          toast.error("Failed to update bill. Please try again.");
+        },
+      },
+    );
   };
 
   return (
@@ -174,21 +233,41 @@ const BillCart = ({ BillingItems, clearCart }: BillCartProps) => {
       {/* generate bill  */}
 
       <div>
-        <button
-          disabled={totalItemsInCart === 0 || createBillMutation.isPending}
-          onClick={() => {
-            handleCreateBill();
-          }}
-          className={`w-full bg-green-500 text-white py-2 rounded-lg mt-4
+        {editBill ? (
+          <button
+            disabled={totalItemsInCart === 0 || updateBillMutation.isLoading}
+            onClick={handelEditBill}
+            className={`w-full bg-blue-500 text-white py-2 rounded-lg mt-4
+             hover:bg-blue-600 transition-all duration-300  cursor-pointer font-bold capitalize
+             ${
+               totalItemsInCart === 0 || updateBillMutation.isLoading
+                 ? "disabled:opacity-50 disabled:cursor-not-allowed"
+                 : ""
+             }`}
+          >
+            {totalItemsInCart === 0
+              ? "add Items in Cart"
+              : updateBillMutation.isPending
+                ? "Updating Bill..."
+                : "Save Changes"}
+          </button>
+        ) : (
+          <button
+            disabled={totalItemsInCart === 0 || createBillMutation.isPending}
+            onClick={() => {
+              handleCreateBill();
+            }}
+            className={`w-full bg-green-500 text-white py-2 rounded-lg mt-4
              hover:bg-green-600 transition-all duration-300  cursor-pointer font-bold capitalize
              ${totalItemsInCart === 0 || createBillMutation.isPending ? "disabled:opacity-50 disabled:cursor-not-allowed" : ""}`}
-        >
-          {totalItemsInCart === 0
-            ? "add Items in Cart"
-            : createBillMutation.isPending
-              ? "Generating Bill..."
-              : "Generate Bill"}
-        </button>
+          >
+            {totalItemsInCart === 0
+              ? "add Items in Cart"
+              : createBillMutation.isPending
+                ? "Generating Bill..."
+                : "Generate Bill"}
+          </button>
+        )}
       </div>
     </div>
   );

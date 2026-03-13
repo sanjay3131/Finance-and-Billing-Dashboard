@@ -11,8 +11,8 @@ const Billcard = ({
   setModalOpen,
 }: {
   bill: readBillInterface;
-  setSelectedBill: any;
-  setModalOpen: any;
+  setSelectedBill:  (value: React.SetStateAction<readBillInterface | null>) => void;
+  setModalOpen: (value: React.SetStateAction<boolean>) => void;
 }) => {
   const updateBillMutation = useUpdateBill();
   const handleToggle = (bill: readBillInterface) => {

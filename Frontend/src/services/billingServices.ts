@@ -38,12 +38,13 @@ export const useUpdateBill = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
+    // allow partial updates since frontend may only send changed fields
     mutationFn: ({
       id,
       billDetails,
     }: {
       id: string;
-      billDetails: readBillInterface;
+      billDetails: Partial<readBillInterface>;
     }) => {
       return axiosInstance.put(`billing/updateBill/${id}`, billDetails);
     },

@@ -1,6 +1,6 @@
 import type { BillItem, Product } from "../../utils/constants";
 import { formatAmount } from "../../utils/formatNumbers";
-
+import dummyImg from "../../assets/dummyProduct.jpg";
 const ItemCard = ({
   product,
   onAdd,
@@ -27,7 +27,11 @@ const ItemCard = ({
     <div className="p-2 bg-white  shadow-md rounded-2xl flex gap-4 w-full h-24 justify-center items-center">
       {/* image */}
       <div>
-        <img src={product.image.url} alt="" className=" size-20 rounded-xl" />
+        <img
+          src={product.image?.url ? product.image.url : dummyImg}
+          alt=""
+          className=" size-20 rounded-xl"
+        />
       </div>
       {/* name and price */}
       <div className="mt-2 flex flex-col gap-1 justify-evenly flex-1">

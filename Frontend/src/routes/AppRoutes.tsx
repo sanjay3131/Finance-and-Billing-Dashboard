@@ -10,6 +10,7 @@ import Register from "../pages/auth/Register.tsx";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import EditBill from "../pages/billing/EditBill.tsx";
 import Navbar from "../components/ui/Navbar.tsx";
+import Home from "../pages/home/Home.tsx";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -36,7 +37,7 @@ const AppRoutes = () => {
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          log
+          <Route path="/" element={<Home />} />
         </Routes>
       </div>
     </div>

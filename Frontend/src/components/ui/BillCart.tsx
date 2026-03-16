@@ -1,5 +1,9 @@
 import { useAuth } from "../../hooks/useAuth";
-import type { BillItem, CreateBillInterface } from "../../utils/constants";
+import type {
+  BillItem,
+  CreateBillInterface,
+  editBillInterface,
+} from "../../utils/constants";
 import { CreateBill, useUpdateBill } from "../../services/billingServices";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -82,17 +86,12 @@ const BillCart = ({
       return;
     }
 
-    const billDetails: Partial<CreateBillInterface> & {
-      items: BillItem[];
-      paymentMethod: string;
-      status: string;
-      totalAmount: number;
-    } = {
+    const billDetails: editBillInterface = {
       items: BillingItems,
       paymentMethod,
       status: billStatus,
       totalAmount: totalBillAmount(BillingItems),
-    } as any;
+    };
 
     updateBillMutation.mutate(
       {
@@ -235,12 +234,12 @@ const BillCart = ({
       <div>
         {editBill ? (
           <button
-            disabled={totalItemsInCart === 0 || updateBillMutation.isLoading}
+            disabled={totalItemsInCart === 0 || updateBillMutation.isPending}
             onClick={handelEditBill}
             className={`w-full bg-blue-500 text-white py-2 rounded-lg mt-4
              hover:bg-blue-600 transition-all duration-300  cursor-pointer font-bold capitalize
              ${
-               totalItemsInCart === 0 || updateBillMutation.isLoading
+               totalItemsInCart === 0 || updateBillMutation.isPending
                  ? "disabled:opacity-50 disabled:cursor-not-allowed"
                  : ""
              }`}

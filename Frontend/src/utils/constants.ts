@@ -37,11 +37,7 @@ export interface productType {
 
 // billing interface
 export interface BillItem {
-  product: {
-    image: string;
-    _id: string;
-  };
-  // when populated this will be a Product object
+  product: string;
   productName: string;
   quantity: number;
   price: number;
@@ -54,6 +50,15 @@ export interface CreateBillInterface {
   totalAmount: number;
   paymentMethod: string;
   status: string;
+}
+
+export interface editBillInterface {
+  items: BillItem[];
+  totalAmount: number;
+  customerName?: string;
+  customerPhone?: string;
+  paymentMethod?: string;
+  status?: string;
 }
 
 // read bill interface

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type {
   CreateBillInterface,
-  readBillInterface,
+  editBillInterface,
 } from "../utils/constants";
 import axiosInstance from "./axiosInstance";
 
@@ -44,7 +44,7 @@ export const useUpdateBill = () => {
       billDetails,
     }: {
       id: string;
-      billDetails: Partial<readBillInterface>;
+      billDetails: editBillInterface;
     }) => {
       return axiosInstance.put(`billing/updateBill/${id}`, billDetails);
     },

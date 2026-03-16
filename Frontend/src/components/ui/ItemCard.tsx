@@ -24,7 +24,7 @@ const ItemCard = ({
   console.log("quantity", quantity);
 
   return (
-    <div className="p-2 bg-white  shadow-md rounded-2xl flex gap-4 w-full h-24 justify-center items-center">
+    <div className="p-2 bg-white  shadow-md rounded-2xl flex gap-4 w-full h-fit justify-center items-center">
       {/* image */}
       <div>
         <img

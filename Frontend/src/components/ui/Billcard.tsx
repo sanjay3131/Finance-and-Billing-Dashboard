@@ -11,7 +11,9 @@ const Billcard = ({
   setModalOpen,
 }: {
   bill: readBillInterface;
-  setSelectedBill:  (value: React.SetStateAction<readBillInterface | null>) => void;
+  setSelectedBill: (
+    value: React.SetStateAction<readBillInterface | null>,
+  ) => void;
   setModalOpen: (value: React.SetStateAction<boolean>) => void;
 }) => {
   const updateBillMutation = useUpdateBill();
@@ -20,7 +22,15 @@ const Billcard = ({
 
     updateBillMutation.mutate({
       id: bill._id,
-      billDetails: { ...bill, status: newStatus },
+      billDetails: {
+        ...bill,
+        status: newStatus,
+        items: bill.items.map((item) => ({
+          ...item,
+          product:
+            typeof item.product === "string" ? item.product : item.product._id,
+        })),
+      },
     });
   };
 

@@ -38,7 +38,7 @@ const BillHistory = () => {
   // toglgeStatus
 
   return (
-    <div className="px-4 py-2 flex flex-col gap-4 bg-primaryBg w-full min-h-screen min-w-75 relative">
+    <div className="px-4 py-2 flex flex-col gap-4 bg-primaryBg w-full min-h-screen min-w-75 ">
       {/* modal for bill details */}
       {modalOpen && selectedBill && (
         <div
@@ -79,7 +79,7 @@ const BillHistory = () => {
         </nav>
         {/* search bill */}
         <div>
-          <div className="flex items-center gap-2 relative">
+          <div className="flex items-center gap-2  z-0 relative">
             <CiSearch className="text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2 font-bold" />
             <input
               type="text"

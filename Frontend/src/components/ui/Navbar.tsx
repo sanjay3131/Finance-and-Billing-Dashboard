@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { IoClose, IoMenu } from "react-icons/io5";
+
 const Navbar = () => {
   const navData = [
     { name: "Dashboard", path: "/dashboard" },
@@ -8,14 +11,50 @@ const Navbar = () => {
     { name: "Settings", path: "/settings" },
   ];
   const pathName = window.location.pathname;
+  const [isMenuOpen, setMenuOpen] = useState(false);
   return (
-    <div className="flex bg-primaryBg w-full backdrop-blur-xl">
-      <div className="flex gap-4 p-4 z-50">
+    <div className=" w-full backdrop-blur-xl z-20">
+      {/* desktop navigation */}
+      <div className="hidden md:flex items-center gap-6 p-4 justify-around ">
         {navData.map((nav) => (
           <a
             href={nav.path}
             key={nav.name}
             className={`font-semibold text-lg ${pathName === nav.path ? "text-blue-500" : "text-gray-700"}`}
+          >
+            {nav.name}
+          </a>
+        ))}
+      </div>
+
+      {/* mobile menu */}
+      <div className="md:hidden flex items-center gap-6 p-4 justify-around z-10">
+        {isMenuOpen ? (
+          <IoClose
+            size={28}
+            className="md:hidden absolute top-4 right-4 cursor-pointer"
+            onClick={() => setMenuOpen(false)}
+          />
+        ) : (
+          <IoMenu
+            size={28}
+            className="md:hidden absolute top-4 right-4 cursor-pointer"
+            onClick={() => setMenuOpen(true)}
+          />
+        )}
+      </div>
+      {/* mobile navigation */}
+      <div
+        className={`md:hidden fixed top-10 left-0 w-full h-fit bg-primaryBg bg-red-500 backdrop-blur-2xl flex flex-col items-center gap-6 p-4 justify-center transition-transform duration-300 ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {navData.map((nav) => (
+          <a
+            href={nav.path}
+            key={nav.name}
+            className={`font-semibold text-lg ${pathName === nav.path ? "text-blue-500" : "text-gray-700"}`}
+            onClick={() => setMenuOpen(!isMenuOpen)}
           >
             {nav.name}
           </a>

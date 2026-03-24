@@ -2,6 +2,7 @@ import { FaEdit } from "react-icons/fa";
 import type { readBillInterface } from "../../utils/constants";
 import { formatAmount } from "../../utils/formatNumbers";
 import { useNavigate } from "react-router-dom";
+import dummyProductImage from "../../assets/dummyProduct.jpg";
 
 interface BillDetailsCardProps {
   bill: readBillInterface;
@@ -10,7 +11,7 @@ interface BillDetailsCardProps {
 const BillDetailsCard = ({ bill }: BillDetailsCardProps) => {
   const navigate = useNavigate();
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 overflow-y-auto ">
       <div className="flex gap-5 ">
         <h1 className="font-bold ">{bill.billNumber}</h1>
         <span
@@ -25,11 +26,13 @@ const BillDetailsCard = ({ bill }: BillDetailsCardProps) => {
       </div>
       {bill.items.map((item) => {
         const prod = item.product; // could be string or object
+        console.log(prod);
+
         return (
           <div key={item._id} className="flex items-center gap-3 border-b pb-2">
-            {prod && typeof prod !== "string" && prod.image?.url && (
+            {prod && typeof prod !== "string" && (
               <img
-                src={prod.image.url}
+                src={prod.image?.url ? prod.image.url : dummyProductImage}
                 alt={item.productName}
                 className="w-10 h-10 object-cover rounded"
               />

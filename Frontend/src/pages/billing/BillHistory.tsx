@@ -49,7 +49,7 @@ const BillHistory = () => {
           }}
         >
           <div
-            className="bg-white/80 backdrop-blur-sm max-w-lg w-full p-4 z-20 rounded-lg relative overflow-y-auto max-h-[90vh]"
+            className="bg-white/80 backdrop-blur-sm max-w-lg w-full p-4 z-20 rounded-lg relative overflow-y-auto max-h-[90vh] hide-scrollbar"
             onClick={(e) => e.stopPropagation()}
           >
             <button

@@ -42,14 +42,15 @@ const BillHistory = () => {
       {/* modal for bill details */}
       {modalOpen && selectedBill && (
         <div
-          className="fixed top-0 left-0 p-6 bg-black/20 backdrop-blur-md z-10 flex justify-center items-center min-h-full max-w-full min-w-full overflow-y-auto "
+          className="fixed top-0 left-0 p-6 bg-black/20 backdrop-blur-sm z-10 flex justify-center items-center min-h-full max-w-full min-w-full overflow-y-auto "
           onClick={() => {
             setModalOpen(false);
             setSelectedBill(null);
           }}
         >
           <div
-            className="bg-white/80 backdrop-blur-sm max-w-lg w-full p-4 z-20 rounded-lg relative overflow-y-auto max-h-[90vh] hide-scrollbar"
+            className="bg-white/80 backdrop-blur-sm max-w-lg w-full p-4 z-20
+            shadow-lg rounded-lg relative overflow-y-auto max-h-[90vh] hide-scrollbar"
             onClick={(e) => e.stopPropagation()}
           >
             <button

@@ -17,6 +17,15 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+.topCircle::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  border-radius: 100%;
+  background-color: rgb(10, 102, 40);
+  top: 10;
+  right: 0;
+}
 @layer base {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {

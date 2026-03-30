@@ -7,6 +7,8 @@ import { MdOutlineCloud } from "react-icons/md";
 import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { TiTick } from "react-icons/ti";
 import { motion } from "framer-motion";
+import ChartHologram from "../../assets/ChartHologram.png";
+import Logo from "../../../logo.png";
 
 import type { JSX } from "react";
 
@@ -79,7 +81,7 @@ const Home = () => {
     },
   ];
   return (
-    <div className=" w-full h-full min-h-screen bg-primaryBg overflow-x-hidden">
+    <div className=" w-full h-full min-h-screen bg-primaryBg overflow-x-hidden pb-8">
       {/* hero section */}
       <div className="w-full h-full p-6 flex flex-col gap-6 justify-center items-center transition-all duration-300">
         <h1 className="font-extrabold text-3xl md:text-4xl text-center    px-4">
@@ -129,17 +131,24 @@ const Home = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
           className="w-full h-fit mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 "
         >
           {featuresData.map((feature, index) => (
             <motion.div
               initial={{ opacity: 0, x: 200 }}
               whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.2,
+                type: "spring",
+                stiffness: 100,
+              }}
+              viewport={{ once: true }}
               key={index}
               className="bg-gray-100 p-4 rounded-lg shadow-md"
             >
-              <div className="text-2xl bg-white rounded-xl text-blue-500 w-fit p-2 ">
+              <div className="text-2xl bg-white rounded-xl text-blue-500 w-fit p-2  shadow-md shadow-gray-900/35">
                 {feature.icon}
               </div>
               <h3 className="text-xl font-bold mt-2">{feature.title}</h3>
@@ -160,6 +169,98 @@ const Home = () => {
           ))}
         </motion.div>
       </div>
+      {/* chart area */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+        className="w-full  mt-12  rounded-lg flex flex-col p-4 gap-4"
+      >
+        <h1 className="text-2xl md:text-3xl text-center font-extrabold ">
+          Visualize your growth with dynamic data
+        </h1>
+        <p className="text-gray-600">
+          Stop guessing and start knowing. Our dashboard provides real-time
+          visualizations of your revenue trends, expense breakdowns, and profit
+          margins.
+        </p>
+        <div className="w-full text-gray-600 text-md flex flex-col gap-2">
+          <span className="flex gap-2">
+            <TiTick className="text-green-500" /> Weekly/Monthly Revenue
+            Comparison
+          </span>
+          <span className="flex gap-2">
+            <TiTick className="text-green-500" />
+            Instant Profit/Loss Statements
+          </span>
+          <span className="flex gap-2">
+            <TiTick className="text-green-500" />
+            Customizable KPI Widgets
+          </span>
+        </div>
+        <div className="flex justify-center items-center">
+          <img
+            src={ChartHologram}
+            alt="chat hologram image"
+            className=" w-full md:w-[60%] rounded-2xl shadow"
+          />
+        </div>
+      </motion.div>
+
+      {/* start create account */}
+      <motion.div className="p-5 ">
+        <div
+          className="bg-blue-500 w-full rounded-2xl text-white p-5 flex flex-col gap-6 text-center relative 
+        before:content-[''] before:animate-pulse before:absolute before:size-50 before:bg-white/10 before:backdrop-blur-sm overflow-hidden before:z-0 before:rounded-full before:-top-10 before:-left-10 
+        after:content-[''] after:absolute after:w-32 after:h-32 after:bg-white/30 after:rounded-full after:-bottom-16 after:-right-16 after:animate-pulse after:z-0 
+        after:backdrop-blur-sm justify-center items-center"
+        >
+          <h1
+            className="text-2xl md:text-4xl font-bold z-10
+          "
+          >
+            Start managing your finances smarter today
+          </h1>
+          <p className="z-10 ">
+            Join 10,000+ businesses who trust ShopTracker for their daily
+            financial operations. No credit card required.
+          </p>
+          <button
+            onClick={() => navigate("/login")}
+            className="bg-white text-blue-500  w-fit py-4 px-5 rounded-2xl font-semibold z-10 shadow-lg shadow-gray-900/30 hover:-translate-y-1 transition-all duration-300"
+          >
+            Create Free Account
+          </button>
+        </div>
+      </motion.div>
+      {/* footer */}
+      <motion.div>
+        <div>
+          {/* logo */}
+          <div className="p-6 flex flex-col gap-4">
+            <div className="flex justify-start items-center gap-2.5">
+              <img
+                src={Logo}
+                className="size-12 rounded-2xl"
+                alt="logo image"
+              />
+              <h1 className="text-2xl font-bold">ShopTracker</h1>
+            </div>
+            <p className="text-gray-500 text-center">
+              Premium financial tools for modern businesses. Effortless billing,
+              expense tracking, and powerful reporting in one place.
+            </p>
+
+            {/* copyRights * */}
+            <div className="  border-t-2  border-t-gray-300 pt-4 w-full">
+              <p className="text-sm text-center text-gray-500">
+                © 2023 ShopTracker Inc. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 };

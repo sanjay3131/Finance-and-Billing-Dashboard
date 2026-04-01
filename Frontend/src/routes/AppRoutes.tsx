@@ -11,6 +11,7 @@ import ProtectedRoute from "./ProtectedRoute.tsx";
 import EditBill from "../pages/billing/EditBill.tsx";
 import Navbar from "../components/ui/Navbar.tsx";
 import Home from "../pages/home/Home.tsx";
+import ProductEditPage from "../pages/products/ProductEditPage.tsx";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -33,6 +34,10 @@ const AppRoutes = () => {
             <Route path="/billing/edit/:billId" element={<EditBill />} />
             <Route path="/expense" element={<Expense />} />
             <Route path="/products" element={<Products />} />
+            <Route
+              path="/products/edit/:productId"
+              element={<ProductEditPage />}
+            />
             <Route path="/settings" element={<Settings />} />
           </Route>
           <Route path="/login" element={<Login />} />

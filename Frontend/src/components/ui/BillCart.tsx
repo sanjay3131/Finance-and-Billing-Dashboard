@@ -177,7 +177,7 @@ const BillCart = ({
         </h2>
       </div>
       {/* status and bill method */}
-      <div className="flex items-center justify-evenly">
+      <div className="flex items-center justify-evenly gap-2 flex-wrap">
         {/* status */}
         <div>
           <h2 className="font-semibold text-lg mt-4">Payment Method</h2>
@@ -204,7 +204,7 @@ const BillCart = ({
           </div>
         </div>
         {/* bill status */}
-        <div>
+        <div className=" ">
           <h2 className="font-semibold text-lg mt-4">Bill Status</h2>
           <div className="flex gap-4 mt-2">
             <input

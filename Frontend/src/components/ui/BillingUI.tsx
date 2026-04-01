@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { BillItem, Product } from "../../utils/constants";
 import ItemCard from "./ItemCard";
 import BillCart from "./BillCart";
+import CategoryTab from "./CategoryTab";
 
 const BillingUI = ({
   billItems,
@@ -86,7 +87,6 @@ const BillingUI = ({
     queryKey: ["categories"],
     queryFn: () => ViewProductsCategory(),
   });
-  console.log(Products?.data);
   console.log(Categories);
 
   return (
@@ -101,33 +101,11 @@ const BillingUI = ({
           />
         </div>
         {/* categories */}
-        <div className=" ">
-          <div className="flex gap-4 flex-wrap pb-2">
-            <button
-              onClick={() => setSelectedCategory("")}
-              className={`whitespace-nowrap px-4 py-2 rounded-2xl shadow-md transition-all font-bold capitalize  ${
-                selectedCategory === ""
-                  ? "bg-green-500 text-white  "
-                  : "bg-white"
-              }`}
-            >
-              All
-            </button>
-            {Categories?.data?.data.map((category: string) => (
-              <button
-                onClick={() => setSelectedCategory(category)}
-                key={category}
-                className={`whitespace-nowrap px-4  rounded-2xl shadow-md transition-all font-bold capitalize  ${
-                  selectedCategory === category
-                    ? "bg-green-500 text-white "
-                    : "bg-white"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
+        <CategoryTab
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          Categories={Categories?.data?.data || []}
+        />
         {/* billing section */}
         <div className="flex flex-col ">
           {/* items list */}
@@ -139,6 +117,7 @@ const BillingUI = ({
                 onAdd={addItemToBill}
                 onRemove={removeItemFromBill}
                 onSetQuantity={setItemQuantity}
+                card="billing"
                 quantity={
                   billItems.find((item) => item.product === product._id)
                     ?.quantity || 0

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "./axiosInstance";
+import { toast } from "sonner";
 
 export const ViewAllProducts = async (itemCategory?: string) => {
   const response = await axiosInstance.post("/product/viewAllProducts", {
@@ -45,9 +46,11 @@ export const useUpdateProduct = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       console.log("Product updated successfully", data);
+      toast.success("Product updated successfully");
     },
     onError: (error) => {
       console.error("Failed to update product", error);
+      toast.error("Failed to update product");
     },
   });
 };

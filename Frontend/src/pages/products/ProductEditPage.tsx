@@ -52,9 +52,10 @@ const ProductEditPage = () => {
         <input
           type="text"
           className="bg-white text-center text-xl font-semibold capitalize rounded-2xl h-12 w-fit"
-          defaultValue={productData?.name}
-          onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+          value={productData?.name}
+          name="name"
         />{" "}
+        <input type="text" className="" value={productData?.sellingPrice} />
       </div>
     </div>
   );

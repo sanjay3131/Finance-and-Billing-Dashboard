@@ -11,7 +11,6 @@ const ProductEditPage = () => {
   });
   const productData = product?.data.productById;
   console.log(productData);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [editData, setEditData] = useState({
     // name,
     // image: imageData,
@@ -35,6 +34,10 @@ const ProductEditPage = () => {
     image: productData?.image || null,
   });
   console.log("edit data", editData);
+  const handelEditData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditData((prev) => ({ ...prev, [name]: value }));
+  };
 
   return (
     <div className="w-full p-4 bg-primaryBg flex flex-col gap-4">
@@ -54,8 +57,14 @@ const ProductEditPage = () => {
           className="bg-white text-center text-xl font-semibold capitalize rounded-2xl h-12 w-fit"
           value={productData?.name}
           name="name"
+          onChange={handelEditData}
         />{" "}
-        <input type="text" className="" value={productData?.sellingPrice} />
+        <input
+          type="text"
+          onChange={handelEditData}
+          className=""
+          value={productData?.sellingPrice}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useUpdateProduct,
   ViewProductById,
@@ -6,6 +6,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import dummyProductImage from "../../assets/dummyProduct.jpg";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const ProductEditPage = () => {
   const param = useParams();
@@ -87,18 +88,33 @@ const ProductEditPage = () => {
       updatedData: formData,
     });
 
+    // if (updateproductMutation.isSuccess) {
+    //   navigate(-1);
+    // }
+
     // Here you can handle the form submission, e.g., send the updated data to the server
     console.log("Submitting form with data:", editData);
   };
+
+  const navigate = useNavigate();
   return (
     <div className="w-full p-4 h-full pb-8 bg-primaryBg flex flex-col gap-4 ">
       {/* heading */}
-      <h1 className=" text-xl font-bold ">Edit Product</h1>
+      <div className="flex gap-4 items-center">
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-white  px-4 py-2 rounded-md inline-flex items-center gap-2 text-sm font-medium hover:bg-gray-100 transition-colors duration-300 "
+        >
+          <IoMdArrowRoundBack />
+          Back
+        </button>
+        <h1 className=" text-xl font-bold ">Edit Product</h1>
+      </div>
       {/* edit form  */}
       <form onSubmit={submitForm} className="w-full">
         <div
           className="flex flex-col justify-center items-center
-      gap-5 "
+      gap-5 md:container md:mx-auto md:w-[80%]"
         >
           <img
             className="w-36 rounded-4xl "

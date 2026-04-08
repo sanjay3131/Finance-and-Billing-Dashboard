@@ -12,6 +12,7 @@ import EditBill from "../pages/billing/EditBill.tsx";
 import Navbar from "../components/ui/Navbar.tsx";
 import Home from "../pages/home/Home.tsx";
 import ProductEditPage from "../pages/products/ProductEditPage.tsx";
+import AddProducts from "../pages/products/AddProducts.tsx";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -38,6 +39,8 @@ const AppRoutes = () => {
               path="/products/edit/:productId"
               element={<ProductEditPage />}
             />
+            <Route path="/products/add" element={<AddProducts />} />
+
             <Route path="/settings" element={<Settings />} />
           </Route>
           <Route path="/login" element={<Login />} />

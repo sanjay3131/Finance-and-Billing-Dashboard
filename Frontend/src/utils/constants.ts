@@ -100,3 +100,28 @@ export interface AuthShopResponse {
   message: string;
   shop: Shop;
 }
+export interface editform {
+  name: string;
+  sellingPrice: number;
+  costPrice: number;
+  category: string;
+  description: string;
+  itemCategory: string;
+  isActive: boolean;
+  stock: number;
+  unit: string;
+  image: File | null;
+}
+
+export interface editAndAddProps {
+  editData: editform;
+  setEditData: React.Dispatch<
+    React.SetStateAction<editAndAddProps["editData"]>
+  >;
+  imageFile: string | null;
+  handelEditData: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  submitForm: (e: React.FormEvent<HTMLFormElement>) => void;
+  param?: string;
+  handelDeleteProduct?: (id: string) => void;
+  componentType: "edit" | "add";
+}

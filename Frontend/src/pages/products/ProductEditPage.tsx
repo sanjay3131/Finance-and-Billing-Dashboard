@@ -1,12 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  useDeleteProduct,
   useUpdateProduct,
   ViewProductById,
 } from "../../services/productService";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import dummyProductImage from "../../assets/dummyProduct.jpg";
-import { IoMdArrowRoundBack } from "react-icons/io";
+import ProductEditAndAddPage from "../../components/ui/ProductEditAndAddPage";
+import type { editform } from "../../utils/constants";
 
 const ProductEditPage = () => {
   const param = useParams();
@@ -17,7 +18,7 @@ const ProductEditPage = () => {
 
   const productData = product?.data.productById;
   console.log(productData);
-  const [editData, setEditData] = useState({
+  const [editData, setEditData] = useState<editform>({
     name: productData?.name || "",
     sellingPrice: productData?.sellingPrice || 0,
     costPrice: productData?.costPrice || 0,
@@ -29,7 +30,7 @@ const ProductEditPage = () => {
     itemCategory: productData?.itemCategory || "",
     image: productData?.image || null,
   });
-  const [imageFile, setImageFile] = useState<string | undefined>(undefined);
+  const [imageFile, setImageFile] = useState<string | null>(null);
 
   useEffect(() => {
     setEditData({
@@ -88,169 +89,36 @@ const ProductEditPage = () => {
       updatedData: formData,
     });
 
-    // if (updateproductMutation.isSuccess) {
-    //   navigate(-1);
-    // }
-
     // Here you can handle the form submission, e.g., send the updated data to the server
     console.log("Submitting form with data:", editData);
   };
 
   const navigate = useNavigate();
-  return (
-    <div className="w-full p-4 h-full pb-8 bg-primaryBg flex flex-col gap-4 ">
-      {/* heading */}
-      <div className="flex gap-4 items-center">
-        <button
-          onClick={() => navigate(-1)}
-          className="bg-white  px-4 py-2 rounded-md inline-flex items-center gap-2 text-sm font-medium hover:bg-gray-100 transition-colors duration-300 "
-        >
-          <IoMdArrowRoundBack />
-          Back
-        </button>
-        <h1 className=" text-xl font-bold ">Edit Product</h1>
-      </div>
-      {/* edit form  */}
-      <form onSubmit={submitForm} className="w-full">
-        <div
-          className="flex flex-col justify-center items-center
-      gap-5 md:container md:mx-auto md:w-[80%]"
-        >
-          <img
-            className="w-36 rounded-4xl "
-            src={imageFile ? imageFile : dummyProductImage}
-            alt={editData?.name}
-          />
-          <div>
-            <label
-              htmlFor="image"
-              className="cursor-pointer text-xl font-semibold"
-            >
-              Change Image
-            </label>
-            <input
-              type="file"
-              id="image"
-              name="image"
-              onChange={handelEditData}
-              className="hidden"
-            />
-          </div>
-          {/* product name */}
-          <div className=" bg-white w-full p-4  rounded-2xl shadow-md">
-            <label htmlFor="productName" className="text-lg font-semibold">
-              Product Name
-            </label>
-            <input
-              id="productName"
-              type="text"
-              className="bg-white  text-xl font-semibold capitalize rounded-xl h-12  border w-full px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={editData?.name}
-              name="name"
-              onChange={handelEditData}
-            />
-          </div>
-          {/* selling price */}
-          <div className=" bg-white w-full p-4  rounded-2xl shadow-md">
-            <label htmlFor="sellingPrice" className="text-lg font-semibold">
-              Selling Price
-            </label>
-            <input
-              id="sellingPrice"
-              type="text"
-              className="bg-white  text-xl font-semibold capitalize rounded-xl h-12  border w-full px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={editData?.sellingPrice}
-              name="sellingPrice"
-              onChange={handelEditData}
-            />
-          </div>
-          {/* cost price */}
-          <div className=" bg-white w-full p-4  rounded-2xl shadow-md">
-            <label htmlFor="costPrice" className="text-lg font-semibold">
-              Cost Price
-            </label>
-            <input
-              id="costPrice"
-              type="text"
-              className="bg-white  text-xl font-semibold capitalize rounded-xl h-12  border w-full px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={editData?.costPrice}
-              name="costPrice"
-              onChange={handelEditData}
-            />
-          </div>
+  if (updateproductMutation.isSuccess) {
+    navigate("/products");
+  }
 
-          {/* category */}
-          <div className=" bg-white w-full p-4  rounded-2xl shadow-md">
-            <label htmlFor="category" className="text-lg font-semibold">
-              Category
-            </label>
-            <input
-              id="category"
-              type="text"
-              className="bg-white  text-xl font-semibold capitalize rounded-xl h-12  border w-full px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={editData?.category}
-              name="category"
-              onChange={handelEditData}
-            />
-          </div>
-          {/* product description */}
-          <div className=" bg-white w-full p-4  rounded-2xl shadow-md">
-            <label htmlFor="description" className="text-lg font-semibold">
-              Description
-            </label>
-            <input
-              id="description"
-              type="text"
-              className="bg-white  text-xl font-semibold capitalize rounded-xl h-12  border w-full px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={editData?.description}
-              name="description"
-              onChange={handelEditData}
-            />
-          </div>
-          {/* product category */}
-          <div className=" bg-white w-full p-4  rounded-2xl shadow-md">
-            <label htmlFor="itemCategory" className="text-lg font-semibold">
-              Item Category
-            </label>
-            <input
-              id="itemCategory"
-              type="text"
-              className="bg-white  text-xl font-semibold capitalize rounded-xl h-12  border w-full px-3 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              value={editData?.itemCategory}
-              name="itemCategory"
-              onChange={handelEditData}
-            />
-          </div>
-          {/* isActive */}
-          <div className=" bg-white w-full p-4  rounded-2xl shadow-md flex items-center gap-4">
-            <label htmlFor="isActive" className="text-lg font-semibold">
-              Is Active
-            </label>
-            <input
-              id="isActive"
-              type="checkbox"
-              className="ml-2 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              checked={editData?.isActive}
-              name="isActive"
-              onChange={(e) =>
-                setEditData((prev) => ({
-                  ...prev,
-                  isActive: e.target.checked,
-                }))
-              }
-            />
-          </div>
-          {/* submit  */}
-          <button
-            type="submit"
-            onClick={() => submitForm}
-            className="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-colors duration-300 "
-          >
-            Save Changes
-          </button>
-        </div>
-      </form>
-    </div>
+  // handel delete product
+  const deleteProductMutation = useDeleteProduct();
+  const handelDeleteProduct = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      deleteProductMutation.mutate(id);
+    }
+  };
+  if (deleteProductMutation.isSuccess) {
+    navigate("/products");
+  }
+  return (
+    <ProductEditAndAddPage
+      editData={editData}
+      setEditData={setEditData}
+      imageFile={imageFile}
+      handelEditData={handelEditData}
+      submitForm={submitForm}
+      param={param.productId!}
+      componentType="edit"
+      handelDeleteProduct={handelDeleteProduct}
+    />
   );
 };
 

@@ -8,6 +8,7 @@ import {
 import type { Product } from "../../utils/constants";
 import ItemCard from "../../components/ui/ItemCard";
 import CategoryTab from "../../components/ui/CategoryTab";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -30,8 +31,20 @@ const Products = () => {
       updatedData: { isActive: newStatis },
     });
   };
+  const navigate = useNavigate();
   return (
-    <div className="px-4 py-6 w-full">
+    <div className="px-4 py-6 w-full flex flex-col gap-6">
+      {/* add a new product  */}
+      <div className=" flex gap-4 justify-start items-center ">
+        <h1 className="text-2xl font-bold ">Products</h1>
+        <button
+          onClick={() => navigate("/products/add")}
+          className=" bg-green-100 text-green-500 px-4 py-2 rounded-md "
+        >
+          {" "}
+          Add New Product
+        </button>
+      </div>
       {/* categories */}
       <CategoryTab
         selectedCategory={selectedCategory}

@@ -66,6 +66,8 @@ export const createProduct = asyncHandler(async (req, res) => {
     isActive,
   });
 
+  console.log(product);
+
   const createdProduct = await product.save();
 
   if (!createdProduct) {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IoSearch } from "react-icons/io5";
+import { IoClose, IoSearch } from "react-icons/io5";
 import {
   ViewAllProducts,
   ViewProductsCategory,
@@ -9,6 +9,7 @@ import type { BillItem, Product } from "../../utils/constants";
 import ItemCard from "./ItemCard";
 import BillCart from "./BillCart";
 import CategoryTab from "./CategoryTab";
+import { useSearch } from "../../hooks/customeHooks";
 
 const BillingUI = ({
   billItems,
@@ -89,16 +90,40 @@ const BillingUI = ({
   });
   console.log(Categories);
 
+  // search and filter
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredProducts = useSearch(
+    Products?.data?.allProducts || [],
+    searchTerm,
+  );
+
   return (
-    <div>
-      <div className="mt-8 w-full min-h-screen flex flex-col gap-4  ">
+    <div className="w-full">
+      <div className="mt-8 w-full min-h-screen flex flex-col gap-4   ">
+        {/* search bar */}
         <div className="relative">
           <IoSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
+            value={searchTerm}
+            onChange={handleSearchChange}
             type="text"
             placeholder="Search items..."
-            className="w-full p-4 pl-12 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            className="w-full p-1 pl-12 rounded-2xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
           />
+          {/* clear search */}
+          {searchTerm && (
+            <button
+              onClick={() => setSearchTerm("")}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <IoClose />
+            </button>
+          )}
         </div>
         {/* categories */}
         <CategoryTab
@@ -109,8 +134,8 @@ const BillingUI = ({
         {/* billing section */}
         <div className="flex flex-col ">
           {/* items list */}
-          <div className="  grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center max-h-75 overflow-y-auto  px-4 py-6 hide-scrollbar">
-            {Products?.data.allProducts.map((product: Product) => (
+          <div className="  grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center max-h-75 overflow-y-auto  px-2 py-1 hide-scrollbar">
+            {filteredProducts?.map((product: Product) => (
               <ItemCard
                 key={product._id}
                 product={product}

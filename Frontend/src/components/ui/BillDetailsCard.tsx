@@ -3,13 +3,24 @@ import type { readBillInterface } from "../../utils/constants";
 import { formatAmount } from "../../utils/formatNumbers";
 import { useNavigate } from "react-router-dom";
 import dummyProductImage from "../../assets/dummyProduct.jpg";
+import { MdDelete } from "react-icons/md";
+import { useDeleteBill } from "../../services/billingServices";
+import type React from "react";
 
 interface BillDetailsCardProps {
   bill: readBillInterface;
+  setModelOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const BillDetailsCard = ({ bill }: BillDetailsCardProps) => {
+const BillDetailsCard = ({ bill, setModelOpen }: BillDetailsCardProps) => {
+  const deleteProduct = useDeleteBill();
   const navigate = useNavigate();
+  const handelDeleteBill = () => {
+    if (window.confirm("Are you sure you want to delete this bill?")) {
+      deleteProduct.mutate(bill._id);
+      setModelOpen(false);
+    }
+  };
   return (
     <div className="flex flex-col gap-2 overflow-y-auto ">
       <div className="flex gap-5 ">
@@ -54,12 +65,19 @@ const BillDetailsCard = ({ bill }: BillDetailsCardProps) => {
         );
       })}
       {/* total  and edit bill */}
-      <div
-        onClick={() => navigate(`/billing/edit/${bill._id}`)}
-        className="flex justify-between mt-4"
-      >
-        <span className="flex justify-center items-center gap-1 text-gray-500 hover:text-gray-700 cursor-pointer">
+      <div className="flex justify-between mt-4">
+        <span
+          onClick={() => navigate(`/billing/edit/${bill._id}`)}
+          className="flex justify-center items-center gap-1 text-gray-500 hover:text-gray-700 cursor-pointer"
+        >
           Edit bill <FaEdit className="inline ml-1 text-gray-500" />
+        </span>
+
+        <span
+          onClick={() => handelDeleteBill()}
+          className="flex justify-center items-center gap-1 text-red-500 hover:text-red-700 cursor-pointer"
+        >
+          <MdDelete />
         </span>
         <span className="font-bold text-lg">
           Total: {formatAmount(bill.totalAmount)}

@@ -26,7 +26,9 @@ const ProductEditAndAddPage = ({
           <IoMdArrowRoundBack />
           Back
         </button>
-        <h1 className=" text-xl font-bold ">Edit Product</h1>
+        <h1 className=" text-xl font-bold ">
+          {componentType === "add" ? "Add Product" : "Edit Product"}
+        </h1>
       </div>
       {/* edit form  */}
       <form onSubmit={submitForm} className="w-full">

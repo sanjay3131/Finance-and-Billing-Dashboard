@@ -10,7 +10,7 @@ const Billing = () => {
   return (
     <div className="px-4 py-8 bg-primaryBg w-full min-h-screen min-w-75">
       {/* header */}
-      <div>
+      <div className=" flex  gap-4 justify-start items-center">
         <button
           onClick={() => navigate(-1)}
           className="bg-gray-200 px-4 py-2 rounded-lg"

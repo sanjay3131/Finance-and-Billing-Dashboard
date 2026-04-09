@@ -7,6 +7,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import Billcard from "../../components/ui/Billcard";
+import BillCardSkeleton from "../../components/ui/skeleton/BillCardSkeleton";
 
 const BillHistory = () => {
   const navigate = useNavigate();
@@ -62,7 +63,12 @@ const BillHistory = () => {
             >
               x
             </button>
-            {selectedBill && <BillDetailsCard bill={selectedBill} />}
+            {selectedBill && (
+              <BillDetailsCard
+                bill={selectedBill}
+                setModelOpen={setModalOpen}
+              />
+            )}
           </div>
         </div>
       )}
@@ -116,9 +122,7 @@ const BillHistory = () => {
       <div>
         <h2 className="font-bold text-lg">Bill List</h2>
         {isLoading ? (
-          <div>
-            <h1>loading list</h1>
-          </div>
+          <BillCardSkeleton />
         ) : (
           <div className=" p-4 rounded-lg flex flex-col  gap-2">
             <h1 className="font-semibold text-gray-500 text-md  mb-3">
@@ -140,7 +144,11 @@ const BillHistory = () => {
                 />
               ))
             ) : (
-              <p>No bills available for the selected date range.</p>
+              <div className=" ">
+                <p className="text-xl font-semibold text-gray-500 text-center py-10">
+                  No bills available for the selected date range.
+                </p>
+              </div>
             )}
           </div>
         )}

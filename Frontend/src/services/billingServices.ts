@@ -64,3 +64,24 @@ export const getBillById = async (billId: string) => {
   const res = await axiosInstance.get(`/billing/getBill/${billId}`);
   return res;
 };
+
+// delete bill
+export const deleteBill = async (billId: string) => {
+  const res = await axiosInstance.delete(`/billing/deleteBill/${billId}`);
+  return res;
+};
+
+export const useDeleteBill = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (billId: string) => deleteBill(billId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["bills"] });
+      console.log("Bill deleted successfully", data);
+    },
+    onError: (error) => {
+      console.error("Failed to delete bill", error);
+    },
+  });
+};

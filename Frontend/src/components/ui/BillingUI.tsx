@@ -10,6 +10,7 @@ import ItemCard from "./ItemCard";
 import BillCart from "./BillCart";
 import CategoryTab from "./CategoryTab";
 import { useSearch } from "../../hooks/customeHooks";
+import BillCardSkeleton from "./skeleton/BillCardSkeleton";
 
 const BillingUI = ({
   billItems,
@@ -79,7 +80,7 @@ const BillingUI = ({
 
   console.log("billItems: *****", billItems);
 
-  const { data: Products } = useQuery({
+  const { data: Products, isLoading: isProductsLoading } = useQuery({
     queryKey: ["products", selectedCategory],
     queryFn: () => ViewAllProducts(selectedCategory),
   });
@@ -134,22 +135,26 @@ const BillingUI = ({
         {/* billing section */}
         <div className="flex flex-col ">
           {/* items list */}
-          <div className="  grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center max-h-75 overflow-y-auto  px-2 py-1 hide-scrollbar">
-            {filteredProducts?.map((product: Product) => (
-              <ItemCard
-                key={product._id}
-                product={product}
-                onAdd={addItemToBill}
-                onRemove={removeItemFromBill}
-                onSetQuantity={setItemQuantity}
-                card="billing"
-                quantity={
-                  billItems.find((item) => item.product === product._id)
-                    ?.quantity || 0
-                }
-              />
-            ))}
-          </div>
+          {isProductsLoading ? (
+            <BillCardSkeleton />
+          ) : (
+            <div className="  grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center max-h-75 overflow-y-auto  px-2 py-1 hide-scrollbar">
+              {filteredProducts?.map((product: Product) => (
+                <ItemCard
+                  key={product._id}
+                  product={product}
+                  onAdd={addItemToBill}
+                  onRemove={removeItemFromBill}
+                  onSetQuantity={setItemQuantity}
+                  card="billing"
+                  quantity={
+                    billItems.find((item) => item.product === product._id)
+                      ?.quantity || 0
+                  }
+                />
+              ))}
+            </div>
+          )}
           {/*  bill cart */}
           <div className=" py-6 flex justify-center items-center">
             <BillCart

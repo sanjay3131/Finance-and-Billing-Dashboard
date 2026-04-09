@@ -9,10 +9,11 @@ import type { Product } from "../../utils/constants";
 import ItemCard from "../../components/ui/ItemCard";
 import CategoryTab from "../../components/ui/CategoryTab";
 import { useNavigate } from "react-router-dom";
+import BillCardSkeleton from "../../components/ui/skeleton/BillCardSkeleton";
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const { data: products } = useQuery({
+  const { data: products, isLoading: isProductsLoading } = useQuery({
     queryKey: ["products", selectedCategory],
     queryFn: () => ViewAllProducts(selectedCategory),
   });
@@ -52,16 +53,20 @@ const Products = () => {
         Categories={Categories?.data?.data || []}
       />
 
-      <div className="p-4 md:p-8 grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 gap-6">
-        {products?.data?.allProducts.map((product: Product) => (
-          <ItemCard
-            key={product._id}
-            product={product}
-            card="inventory"
-            toogleProductStatus={toogleProductStatus}
-          />
-        ))}
-      </div>
+      {isProductsLoading ? (
+        <BillCardSkeleton />
+      ) : (
+        <div className="p-4 md:p-8 grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 gap-6">
+          {products?.data?.allProducts.map((product: Product) => (
+            <ItemCard
+              key={product._id}
+              product={product}
+              card="inventory"
+              toogleProductStatus={toogleProductStatus}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

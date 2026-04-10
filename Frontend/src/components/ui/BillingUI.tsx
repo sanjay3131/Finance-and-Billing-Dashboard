@@ -120,9 +120,9 @@ const BillingUI = ({
           {searchTerm && (
             <button
               onClick={() => setSearchTerm("")}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-5 top-2 transform  text-gray-400 hover:text-gray-600 w-fit text-center"
             >
-              <IoClose />
+              <IoClose className="text-xl bg-red-100 text-red-500 rounded-sm " />
             </button>
           )}
         </div>

@@ -8,7 +8,7 @@ import expenseRoute from "./routes/expenseRoute.js";
 import billingRoute from "./routes/billingRoute.js";
 import salesReportRoute from "./routes/salesReportRoute.js";
 import cookieParser from "cookie-parser";
-const https = require("https");
+import https from "https";
 
 dotenv.config();
 

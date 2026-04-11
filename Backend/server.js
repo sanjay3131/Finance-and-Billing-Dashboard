@@ -8,6 +8,7 @@ import expenseRoute from "./routes/expenseRoute.js";
 import billingRoute from "./routes/billingRoute.js";
 import salesReportRoute from "./routes/salesReportRoute.js";
 import cookieParser from "cookie-parser";
+const https = require("https");
 
 dotenv.config();
 
@@ -26,9 +27,19 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("api is on :--)");
 });
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
+
+const keepAlive = () => {
+  https
+    .get(process.env.BACKEND_URL + "/health", (res) => {
+      console.log("Keep alive ping:", res.statusCode);
+    })
+    .on("error", (err) => {
+      console.log("Ping error:", err.message);
+    });
+};
+
+// Ping every 10 minutes
+setInterval(keepAlive, 10 * 60 * 1000);
 app.use("/api/auth", authRoute);
 app.use("/api/product", productRoute);
 app.use("/api/expense", expenseRoute);

@@ -26,6 +26,9 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("api is on :--)");
 });
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 app.use("/api/auth", authRoute);
 app.use("/api/product", productRoute);
 app.use("/api/expense", expenseRoute);

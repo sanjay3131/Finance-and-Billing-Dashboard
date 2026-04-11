@@ -119,7 +119,7 @@ const BillHistory = () => {
         </div>
       </div>
       {/*   bill list  */}
-      <div>
+      <div className="">
         <h2 className="font-bold text-lg">Bill List</h2>
         {isLoading ? (
           <BillCardSkeleton />
@@ -133,16 +133,18 @@ const BillHistory = () => {
                 </span>
               }
             </h1>
-            {/* bill card */}
+            {/* bill card  grid*/}
             {bills?.data && bills.data.length > 0 ? (
-              bills.data.map((bill: readBillInterface) => (
-                <Billcard
-                  key={bill._id}
-                  bill={bill}
-                  setSelectedBill={setSelectedBill}
-                  setModalOpen={setModalOpen}
-                />
-              ))
+              <div className="   hide-scrollbar grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ">
+                {bills.data.map((bill: readBillInterface) => (
+                  <Billcard
+                    key={bill._id}
+                    bill={bill}
+                    setSelectedBill={setSelectedBill}
+                    setModalOpen={setModalOpen}
+                  />
+                ))}
+              </div>
             ) : (
               <div className=" ">
                 <p className="text-xl font-semibold text-gray-500 text-center py-10">

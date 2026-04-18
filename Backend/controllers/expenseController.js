@@ -66,7 +66,7 @@ export const getAllExpenses = asyncHandler(async (req, res) => {
   const startOfToday = new Date(today.setHours(0, 0, 0, 0));
   const endOfToday = new Date(today.setHours(23, 59, 59, 999));
 
-  const { from = startOfToday, to = endOfToday } = req.body;
+  const { fromDate = startOfToday, toDate = endOfToday, category } = req.body;
   // sorting
   const sortBy = req.query.sort || "-expenseDate";
   // pagination
@@ -75,10 +75,12 @@ export const getAllExpenses = asyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;
   const filter = {
     Shop: shopId,
-    expenseDate: { $gte: from, $lte: to },
+    expenseDate: { $gte: fromDate, $lte: toDate },
+    category: category || { $exists: true },
   };
 
-  const expenses = await Expense.find(filter).sort(sortBy)``
+  const expenses = await Expense.find(filter)
+    .sort(sortBy)
     .skip(skip)
     .limit(limit);
 

@@ -2,7 +2,7 @@ import { v2 as cloudinary } from "cloudinary";
 
 export const uploadToCloudinary = async (
   fileBuffer,
-  folderName = "uploads"
+  folderName = "uploads",
 ) => {
   try {
     const result = await new Promise((resolve, reject) => {
@@ -11,7 +11,7 @@ export const uploadToCloudinary = async (
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
-        }
+        },
       );
       stream.end(fileBuffer);
     });

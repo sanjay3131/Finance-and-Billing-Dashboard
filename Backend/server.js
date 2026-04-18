@@ -29,6 +29,8 @@ app.get("/", (req, res) => {
 });
 
 const keepAlive = () => {
+  console.log(process.env.BACKEND_URL);
+
   https
     .get(process.env.BACKEND_URL + "/health", (res) => {
       console.log("Keep alive ping:", res.statusCode);

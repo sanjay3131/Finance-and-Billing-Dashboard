@@ -19,6 +19,7 @@ const expenseSchema = new mongoose.Schema(
         "Rent",
         "Electricity",
         "Maintenance",
+        "Gas",
         "Other",
       ],
       default: "Other",
@@ -32,7 +33,7 @@ const expenseSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 expenseSchema.index({ expenseDate: 1 });

@@ -22,7 +22,7 @@ const AppRoutes = () => {
   return (
     <div className="reletive ">
       {!hideNavbar && (
-        <div className="fixed top-0 left-0 w-full mb-20 ">
+        <div className="fixed top-0 left-0 w-full mb-2 ">
           <Navbar />
         </div>
       )}

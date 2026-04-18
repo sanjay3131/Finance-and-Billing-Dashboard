@@ -28,7 +28,7 @@ const Navbar = () => {
       </div>
 
       {/* mobile menu */}
-      <div className="md:hidden flex items-center gap-6 p-4 justify-around z-10">
+      <div className="md:hidden flex items-center gap- p-2  justify-around z-10">
         {isMenuOpen ? (
           <IoClose
             size={28}

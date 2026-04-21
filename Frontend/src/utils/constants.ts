@@ -125,3 +125,15 @@ export interface editAndAddProps {
   handelDeleteProduct?: (id: string) => void;
   componentType: "edit" | "add";
 }
+
+export interface expenseDataType {
+  shop: string;
+  amount: number;
+  category: string;
+  createdAt: string;
+  expenseDate: string;
+  updatedAt: string;
+  title: string;
+  notes: string;
+  _id: string;
+}

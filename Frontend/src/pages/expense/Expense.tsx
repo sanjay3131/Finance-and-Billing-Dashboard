@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { formatAmount } from "../../utils/formatNumbers";
-import dummyImage from "../../assets/dummyProduct.jpg";
 import DatePicker from "../../components/ui/DatePicker";
 import { getAllExpenses } from "../../services/expenseService";
 import { useQuery } from "@tanstack/react-query";
 import BillCardSkeleton from "../../components/ui/skeleton/BillCardSkeleton";
+import ExpenseCard from "../../components/ui/ExpenseCard";
+import type { expenseDataType } from "../../utils/constants";
 
 const Expense = () => {
   const data = 1240;
@@ -45,6 +46,7 @@ const Expense = () => {
       ),
   });
   console.log(expense);
+  const expenseData = expense?.data;
 
   return (
     <div className="w-full  bg-primaryBg min-h-screen ">
@@ -90,26 +92,19 @@ const Expense = () => {
       {isLoading ? (
         <BillCardSkeleton />
       ) : (
-        <div className="p-2">
-          <h1 className="text-xl font-semibold mb-4">Expense List</h1>
-          {/* card */}
-          <div className="px-2 py-3 bg-white w-full rounded-xl flex gap-2 shadow-md">
-            {/* icon */}
-            <img src={dummyImage} className=" size-12 rounded-xl" alt="" />
-            {/* text data */}
-            <div className="flex-1">
-              <h2 className="font-bold">Cooking gas Refill</h2>
-              <div className="flex gap-2 text-sm font-semibold text-gray-400">
-                <h3>2;30PM </h3>
-                <h3>category</h3>
-              </div>
-            </div>
-            {/* amount */}
-            <div className="flex justify-center items-center">
-              <h2 className="font-bold text-lg">- {formatAmount(980)}</h2>
-            </div>
-          </div>
-        </div>
+        <>
+          <h1 className="text-xl font-semibold m-2 ">Expense List</h1>
+
+          {expenseData.length > 0 ? (
+            expenseData.map((expense: expenseDataType) => (
+              <ExpenseCard key={expense._id} {...expense} />
+            ))
+          ) : (
+            <p className="text-gray-500 text-xl text-center font-semibold capitalize">
+              No expenses found.
+            </p>
+          )}
+        </>
       )}
     </div>
   );

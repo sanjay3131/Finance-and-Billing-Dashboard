@@ -116,6 +116,16 @@ export const getAllExpenses = asyncHandler(async (req, res) => {
 
   const total = await Expense.countDocuments(filter);
 
+  const totalAmountAgg = await Expense.aggregate([
+    { $match: filter },
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: "$amount" },
+      },
+    },
+  ]);
+
   res.status(200).json({
     success: true,
     total,
@@ -123,6 +133,7 @@ export const getAllExpenses = asyncHandler(async (req, res) => {
     limit,
     pages: Math.ceil(total / limit),
     data: expenses,
+    totalAmount: totalAmountAgg[0] ? totalAmountAgg[0].totalAmount : 0,
     message: `${expenses.length} Expenses fetched successfully`,
   });
 });

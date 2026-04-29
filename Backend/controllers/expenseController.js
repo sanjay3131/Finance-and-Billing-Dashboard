@@ -62,32 +62,63 @@ export const getExpense = asyncHandler(async (req, res) => {
 //get all expenses from to date
 export const getAllExpenses = asyncHandler(async (req, res) => {
   const shopId = req.shop._id;
-  const today = new Date();
-  const startOfToday = new Date(today.setHours(0, 0, 0, 0));
-  const endOfToday = new Date(today.setHours(23, 59, 59, 999));
 
-  const { fromDate = startOfToday, toDate = endOfToday, category } = req.body;
-  // sorting
+  // ✅ default today range
+  const today = new Date();
+
+  const startOfToday = new Date(today);
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const endOfToday = new Date(today);
+  endOfToday.setHours(0, 0, 0, 0);
+  endOfToday.setDate(endOfToday.getDate() + 1); // next day (important)
+
+  // ✅ get from frontend
+  const { fromDate, toDate, category } = req.body;
+
+  // ✅ convert to Date properly
+  const from = fromDate ? new Date(fromDate) : startOfToday;
+  const to = toDate ? new Date(toDate) : endOfToday;
+
+  // ✅ normalize time
+  from.setHours(0, 0, 0, 0);
+  to.setHours(0, 0, 0, 0);
+  to.setDate(to.getDate() + 1); // next day for $lt
+
+  console.log("From:", from);
+  console.log("To:", to);
+
+  // ✅ sorting
   const sortBy = req.query.sort || "-expenseDate";
-  // pagination
+
+  // ✅ pagination
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 10;
   const skip = (page - 1) * limit;
+
+  // ✅ filter
   const filter = {
     Shop: shopId,
-    expenseDate: { $gte: fromDate, $lte: toDate },
-    category: category || { $exists: true },
+    expenseDate: {
+      $gte: from,
+      $lt: to, // 👈 important (not $lte)
+    },
+    ...(category && { category }), // cleaner category filter
   };
 
+  console.log("Filter:", filter);
+
+  // ✅ fetch data
   const expenses = await Expense.find(filter)
     .sort(sortBy)
     .skip(skip)
     .limit(limit);
 
   const total = await Expense.countDocuments(filter);
+
   res.status(200).json({
     success: true,
-    total, // total docs
+    total,
     page,
     limit,
     pages: Math.ceil(total / limit),
@@ -95,7 +126,6 @@ export const getAllExpenses = asyncHandler(async (req, res) => {
     message: `${expenses.length} Expenses fetched successfully`,
   });
 });
-
 // update expense
 export const updateExpense = asyncHandler(async (req, res) => {
   const shopId = req.shop && req.shop._id;
@@ -272,5 +302,27 @@ export const expenseAnalytics = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     data: expenseData,
+  });
+});
+
+// expense category
+export const getAllCategories = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+
+  const expenses = await Expense.find({
+    Shop: shopId,
+  });
+
+  const categories = [
+    ...new Set(
+      expenses
+        .map((expense) => expense.category)
+        .filter((category) => category !== undefined && category !== null),
+    ),
+  ];
+
+  res.status(200).json({
+    message: "Categories fetched successfully",
+    data: categories,
   });
 });

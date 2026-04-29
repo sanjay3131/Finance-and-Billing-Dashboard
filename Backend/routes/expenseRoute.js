@@ -3,6 +3,7 @@ import {
   addExpense,
   deleteExpense,
   expenseAnalytics,
+  getAllCategories,
   getAllExpenses,
   getExpense,
   updateExpense,
@@ -29,4 +30,7 @@ router.delete("/deleteExpense/:id", protect, deleteExpense);
 
 // analytics
 router.get("/expenseAnalytics", protect, expenseAnalytics);
+
+// get all categories
+router.get("/getAllCategories", protect, getAllCategories);
 export default router;

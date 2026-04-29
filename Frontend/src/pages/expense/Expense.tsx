@@ -10,7 +10,7 @@ import type { expenseDataType } from "../../utils/constants";
 const Expense = () => {
   const data = 1240;
   const categories = [
-    "Raw materiral",
+    "Raw Materials",
     "Rent",
     "Gas",
     "Electricity",
@@ -47,6 +47,13 @@ const Expense = () => {
   });
   console.log(expense);
   const expenseData = expense?.data;
+
+  const ExpenseCategory = [
+    ...new Set(
+      (expenseData || []).map((expense: expenseDataType) => expense.category),
+    ),
+  ];
+  console.log(ExpenseCategory);
 
   return (
     <div className="w-full  bg-primaryBg min-h-screen ">

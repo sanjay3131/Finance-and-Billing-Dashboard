@@ -13,15 +13,7 @@ const expenseSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: [
-        "Raw Materials",
-        "Salary",
-        "Rent",
-        "Electricity",
-        "Maintenance",
-        "Gas",
-        "Other",
-      ],
+
       default: "Other",
     },
     expenseDate: {

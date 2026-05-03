@@ -13,6 +13,7 @@ import Navbar from "../components/ui/Navbar.tsx";
 import Home from "../pages/home/Home.tsx";
 import ProductEditPage from "../pages/products/ProductEditPage.tsx";
 import AddProducts from "../pages/products/AddProducts.tsx";
+import AddExpense from "../pages/expense/AddExpense.tsx";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -22,7 +23,7 @@ const AppRoutes = () => {
   return (
     <div className="reletive ">
       {!hideNavbar && (
-        <div className="fixed top-0 left-0 w-full mb-2 ">
+        <div className="fixed top-0 left-0 w-full mb-20 ">
           <Navbar />
         </div>
       )}
@@ -34,6 +35,7 @@ const AppRoutes = () => {
             <Route path="/billHistory" element={<BillHistory />} />
             <Route path="/billing/edit/:billId" element={<EditBill />} />
             <Route path="/expense" element={<Expense />} />
+            <Route path="/expense/add" element={<AddExpense />} />
             <Route path="/products" element={<Products />} />
             <Route
               path="/products/edit/:productId"

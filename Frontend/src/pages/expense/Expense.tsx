@@ -10,6 +10,7 @@ import BillCardSkeleton from "../../components/ui/skeleton/BillCardSkeleton";
 import ExpenseCard from "../../components/ui/ExpenseCard";
 import type { expenseDataType } from "../../utils/constants";
 import CategorySkeleton from "../../components/ui/skeleton/CategorySkeleton";
+import { useNavigate } from "react-router-dom";
 
 const Expense = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -102,14 +103,8 @@ const Expense = () => {
       queryFn: getExpenseCategories,
     });
   console.log(expense, expenseCategories);
-  const expenseData = expense?.data;
 
-  const ExpenseCategory = [
-    ...new Set(
-      (expenseData || []).map((expense: expenseDataType) => expense.category),
-    ),
-  ];
-  console.log(ExpenseCategory);
+  const navigate = useNavigate();
 
   return (
     <div className="w-full  bg-primaryBg min-h-screen ">
@@ -118,7 +113,10 @@ const Expense = () => {
         <h1 className="text-2xl md:text-3xl font-bold">
           {formatAmount(expense?.totalAmount || 0)}
         </h1>
-        <button className="bg-black text-white p-1 px-3 rounded-full">
+        <button
+          className="bg-black text-white p-1 px-3 rounded-full"
+          onClick={() => navigate("/expense/add")}
+        >
           Add Expense
         </button>
       </div>

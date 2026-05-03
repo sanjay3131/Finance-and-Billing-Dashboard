@@ -89,7 +89,7 @@ const Dashboard = () => {
           </div>
           {/* net Profit */}
           <div
-            className={`flex flex-col  col-span-full sm:col-span-1 rounded-2xl  gap-2 bg-linear-45 from-black/95 from-50% ${reportData?.data?.isLoss ? "to-red-800" : "to-green-800"} px-4 py-6 shadow-md`}
+            className={`flex flex-col  col-span-full sm:col-span-1 rounded-2xl  gap-2 bg-linear-45 from-black/95 from-30% ${reportData?.data?.isLoss ? "to-red-800" : "to-green-800 "} px-4 py-6 shadow-md   min-w-25`}
           >
             <span className=" flex justify-between items-center gap-4">
               <h1 className="text-gray-400 font-semibold">Net Profit</h1>

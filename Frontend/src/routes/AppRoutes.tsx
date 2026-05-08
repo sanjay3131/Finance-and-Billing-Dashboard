@@ -14,6 +14,7 @@ import Home from "../pages/home/Home.tsx";
 import ProductEditPage from "../pages/products/ProductEditPage.tsx";
 import AddProducts from "../pages/products/AddProducts.tsx";
 import AddExpense from "../pages/expense/AddExpense.tsx";
+import EditExpense from "../pages/expense/EditExpense.tsx";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -36,6 +37,7 @@ const AppRoutes = () => {
             <Route path="/billing/edit/:billId" element={<EditBill />} />
             <Route path="/expense" element={<Expense />} />
             <Route path="/expense/add" element={<AddExpense />} />
+            <Route path="/expense/edit/:expenseId" element={<EditExpense />} />
             <Route path="/products" element={<Products />} />
             <Route
               path="/products/edit/:productId"

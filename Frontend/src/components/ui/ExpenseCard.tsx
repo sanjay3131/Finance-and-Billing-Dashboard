@@ -2,8 +2,11 @@ import { MdDelete, MdModeEdit } from "react-icons/md";
 import { formatAmount } from "../../utils/formatNumbers";
 import dummyImage from "../../assets/dummyProduct.jpg";
 import type { expenseDataType } from "../../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 const ExpenseCard = (expense: expenseDataType) => {
+  const navigate = useNavigate();
+
   return (
     <div className="">
       {/* card */}
@@ -28,7 +31,10 @@ const ExpenseCard = (expense: expenseDataType) => {
           </h2>
           <div className="flex gap-6  mt-2">
             <button className="flex items-center gap-1 text-sm font-semibold bg-blue-100 p-1  rounded-sm">
-              <MdModeEdit className=" text-blue-500 " />
+              <MdModeEdit
+                onClick={() => navigate(`/expense/edit/${expense._id}`)}
+                className=" text-blue-500 "
+              />
             </button>
             <button className="flex items-center gap-1 text-sm font-semibold bg-red-100 p-1  rounded-sm">
               <MdDelete className=" text-red-500 " />

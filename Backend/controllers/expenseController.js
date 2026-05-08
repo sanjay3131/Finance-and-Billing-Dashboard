@@ -44,8 +44,8 @@ export const getExpense = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const shopId = req.shop._id;
 
-  const expense = await expense.findOne({ _id: id, shop: shopId });
-  if (expense.shop.toString() !== shopId.toString()) {
+  const expense = await Expense.findOne({ _id: id, Shop: shopId });
+  if (expense.Shop.toString() !== shopId.toString()) {
     res.status(404).json({
       success: false,
       message: "Expense not found or not authorized",
@@ -328,7 +328,12 @@ export const getAllCategories = asyncHandler(async (req, res) => {
     ...new Set(
       expenses
         .map((expense) => expense.category)
-        .filter((category) => category !== undefined && category !== null),
+        .filter(
+          (category) =>
+            category !== undefined &&
+            category !== null &&
+            category.trim() !== "",
+        ),
     ),
   ];
 

@@ -61,3 +61,72 @@ export const AddExpenseMutation = () => {
     },
   });
 };
+
+// edit expense
+export const editExpense = async (data: {
+  id: string;
+  title: string;
+  amount: number;
+  category: string;
+  note: string;
+  date: string;
+}) => {
+  const res = await axiosInstance.put(
+    `/expense/updateExpense/${data.id}`,
+    data,
+  );
+  console.log("__________mutation data", data);
+
+  return res.data;
+};
+// edit expense mutation
+export const EditExpenseMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: {
+      id: string;
+      title: string;
+      amount: number;
+      category: string;
+      note: string;
+      date: string;
+    }) => editExpense(data),
+    onSuccess: (data) => {
+      console.log("Expense edited successfully", data);
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success("Expense edited successfully");
+    },
+    onError: (error) => {
+      console.error("Failed to edit expense", error);
+      toast.error("Failed to edit expense");
+    },
+  });
+};
+
+// delete expense
+export const deleteExpense = async (id: string) => {
+  const res = await axiosInstance.delete(`/expense/deleteExpense/${id}`);
+  return res.data;
+};
+
+// delete expense mutation
+export const DeleteExpenseMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteExpense(id),
+    onSuccess: (data) => {
+      console.log("Expense deleted successfully", data);
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success("Expense deleted successfully");
+    },
+    onError: (error) => {
+      console.error("Failed to delete expense", error);
+      toast.error("Failed to delete expense");
+    },
+  });
+};
+// get single expense
+export const getSingleExpense = async (id: string) => {
+  const res = await axiosInstance.get(`/expense/getExpense/${id}`);
+  return res.data;
+};

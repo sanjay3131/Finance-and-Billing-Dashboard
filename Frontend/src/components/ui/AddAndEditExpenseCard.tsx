@@ -4,6 +4,7 @@ const AddAndEditExpenseCard = ({
   handleSubmit,
   isExpenseCategoriesLoading,
   expenseCategories,
+  isAddingExpense,
 }: {
   formData: {
     name: string;
@@ -20,9 +21,8 @@ const AddAndEditExpenseCard = ({
   expenseCategories: {
     data: string[];
   } | null;
+  isAddingExpense: boolean;
 }) => {
-  console.log("??????", formData);
-
   return (
     <div className=" flex items-center justify-center">
       {/* form */}
@@ -97,7 +97,7 @@ const AddAndEditExpenseCard = ({
           type="submit"
           className="bg-green-500 text-white font-semibold px-4 py-2 rounded-md w-fit "
         >
-          Add Expense
+          {isAddingExpense ? "Add Expense" : "Update Expense"}
         </button>
       </form>
     </div>

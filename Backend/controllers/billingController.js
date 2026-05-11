@@ -207,7 +207,7 @@ export const billAnalytics = asyncHandler(async (req, res) => {
     59,
     999,
   );
-  const getFullYear = today.getFullYear();
+  const currentYear = today.getFullYear();
 
   const totalSalesToday = await Billing.aggregate([
     {
@@ -238,6 +238,26 @@ export const billAnalytics = asyncHandler(async (req, res) => {
       },
     },
   ]);
+  const productsSold = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: sixMonthsAgo, $lte: endOfSixMonths },
+      },
+    },
+    {
+      $unwind: "$items",
+    },
+    {
+      $group: {
+        _id: "$items.productName",
+        quantitySold: { $sum: "$items.quantity" },
+        totalRevenue: {
+          $sum: { $multiply: ["$items.quantity", "$items.price"] },
+        },
+      },
+    },
+  ]);
 
   const totalSalesLastSixMonths = await Billing.aggregate([
     {
@@ -248,12 +268,15 @@ export const billAnalytics = asyncHandler(async (req, res) => {
     },
     {
       $group: {
-        _id: { month: { $month: "$billingDate" } },
+        _id: {
+          year: { $year: "$billingDate" },
+          month: { $month: "$billingDate" },
+        },
         totalSales: { $sum: "$totalAmount" },
       },
     },
     {
-      $sort: { "_id.month": 1 },
+      $sort: { "_id.year": 1, "_id.month": 1 },
     },
   ]);
   const totalSalesThisYear = await Billing.aggregate([
@@ -261,8 +284,8 @@ export const billAnalytics = asyncHandler(async (req, res) => {
       $match: {
         Shop: shopId,
         billingDate: {
-          $gte: new Date(getFullYear, 0, 1),
-          $lte: new Date(getFullYear, 11, 31, 23, 59, 59, 999),
+          $gte: new Date(currentYear, 0, 1, 0, 0, 0, 0),
+          $lte: new Date(currentYear, 11, 31, 23, 59, 59, 999),
         },
       },
     },
@@ -275,6 +298,13 @@ export const billAnalytics = asyncHandler(async (req, res) => {
     {
       $sort: { "_id.month": 1 },
     },
+    {
+      $project: {
+        _id: 0,
+        month: "$_id.month",
+        totalSales: 1,
+      },
+    },
   ]);
 
   res.status(200).json({
@@ -286,6 +316,7 @@ export const billAnalytics = asyncHandler(async (req, res) => {
         : 0,
       totalSalesLastSixMonths,
       totalSalesThisYear,
+      productsSold,
     },
   });
 });

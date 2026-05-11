@@ -77,7 +77,7 @@ const Expense = () => {
       // Check if there are more pages
       setHasMore(query.page < (expense.pages || 1));
     }
-  }, [expense?.data, query.page]);
+  }, [expense?.data, expense?.pages, query.page]);
 
   // Intersection Observer callback for infinite scroll
   const lastElementRef = useCallback(
@@ -160,7 +160,7 @@ const Expense = () => {
         <BillCardSkeleton />
       ) : (
         <>
-          <h1 className="text-xl font-semibold m-2 ">Expense List</h1>
+          <h1 className="text-xl font-semibold ml-4 py-2 ">Expense List</h1>
 
           {allExpenses.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">

@@ -15,7 +15,7 @@ export const perdaySalesReport = asyncHandler(async (req, res) => {
   const shopId = req.shop._id;
 
   // date from params OR current date
-  const date = req.params.date || new Date();
+  const date = req.params.date ? new Date(req.params.date) : new Date();
 
   const day = new Date(date);
   const start = new Date(day.setHours(0, 0, 0, 0));

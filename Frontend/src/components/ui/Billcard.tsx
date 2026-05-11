@@ -50,7 +50,9 @@ const Billcard = ({
           ) : null}
           {/* bill number  */}
           <div className="">
-            <h1 className="font-semibold text-sm"># {bill.billNumber}</h1>
+            <h1 className="font-semibold text-xs md:text-sm ">
+              # {bill.billNumber}
+            </h1>
             <h3 className="text-gray-500 text-sm">
               {new Date(bill.updatedAt).toLocaleTimeString()}
             </h3>{" "}
@@ -58,7 +60,7 @@ const Billcard = ({
         </div>
         {/* bill amount  */}
         <div>
-          <h2 className="font-bold text-xl">
+          <h2 className="font-bold text-lg">
             {formatAmount(bill.totalAmount)}
           </h2>
           <button
@@ -94,7 +96,7 @@ const Billcard = ({
               setSelectedBill(bill);
               setModalOpen(true);
             }}
-            className=" bg-gray-200 py-1 px-4 rounded-md hover:bg-gray-300"
+            className=" bg-gray-200 py-1 px-4 rounded-md hover:bg-gray-300 text-gray-400 font-semibold hover:text-gray-800"
           >
             Details
           </button>

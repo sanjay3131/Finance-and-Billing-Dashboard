@@ -3,9 +3,17 @@ import { formatAmount } from "../../utils/formatNumbers";
 import dummyImage from "../../assets/dummyProduct.jpg";
 import type { expenseDataType } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
+import { DeleteExpenseMutation } from "../../services/expenseService";
 
 const ExpenseCard = (expense: expenseDataType) => {
   const navigate = useNavigate();
+  const deleteExpense = DeleteExpenseMutation();
+
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this expense?")) {
+      deleteExpense.mutate(expense._id);
+    }
+  };
 
   return (
     <div className="">
@@ -15,11 +23,11 @@ const ExpenseCard = (expense: expenseDataType) => {
         <img src={dummyImage} className=" size-12 rounded-xl" alt="" />
         {/* text data */}
         <div className="flex-1">
-          <h2 className="font-bold">{expense.title}</h2>
-          <div className="flex gap-2 text-sm font-semibold text-gray-400 items-center justify-center">
+          <h2 className="font-bold capitalize">{expense.title}</h2>
+          <div className="flex gap-2 text-sm font-semibold text-gray-400 items-center justify-start">
             <h3>{expense.expenseDate.split("T")[0]}</h3>
 
-            <h3 className=" bg-green-100 p-1 px-2 text-green-500 rounded-sm ">
+            <h3 className=" bg-green-100 p-1 px-2 text-green-500 rounded-sm text-xs ">
               {expense.category}
             </h3>
           </div>
@@ -29,7 +37,7 @@ const ExpenseCard = (expense: expenseDataType) => {
           <h2 className="font-bold text-lg">
             - {formatAmount(expense.amount)}
           </h2>
-          <div className="flex gap-6  mt-2">
+          <div className="flex gap-6  ">
             <button className="flex items-center gap-1 text-sm font-semibold bg-blue-100 p-1  rounded-sm">
               <MdModeEdit
                 onClick={() => navigate(`/expense/edit/${expense._id}`)}
@@ -37,7 +45,7 @@ const ExpenseCard = (expense: expenseDataType) => {
               />
             </button>
             <button className="flex items-center gap-1 text-sm font-semibold bg-red-100 p-1  rounded-sm">
-              <MdDelete className=" text-red-500 " />
+              <MdDelete onClick={handleDelete} className=" text-red-500 " />
             </button>
           </div>
         </div>

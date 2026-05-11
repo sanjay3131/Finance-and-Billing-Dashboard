@@ -24,7 +24,8 @@ const AddExpense = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const value = e.target.name === 'amount' ? Number(e.target.value) : e.target.value;
+    const value =
+      e.target.name === "amount" ? Number(e.target.value) : e.target.value;
     setFormData({ ...formData, [e.target.name]: value });
   };
   const addExpenseMutation = AddExpenseMutation();
@@ -33,7 +34,7 @@ const AddExpense = () => {
     addExpenseMutation.mutate({
       title: formData.name,
       amount: Number(formData.amount),
-      category: formData.category? formData.category : "other",
+      category: formData.category ? formData.category : "other",
       note: formData.note,
       date: formData.date,
     });
@@ -42,7 +43,14 @@ const AddExpense = () => {
   return (
     <div>
       <h1 className=" text-xl font-bold ">Add Expense</h1>
-      <AddAndEditExpenseCard handleChange={handleChange} handleSubmit={handleSubmit} isExpenseCategoriesLoading={isExpenseCategoriesLoading} expenseCategories={expenseCategories} formData={formData} />
+      <AddAndEditExpenseCard
+        isAddingExpense={true}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        isExpenseCategoriesLoading={isExpenseCategoriesLoading}
+        expenseCategories={expenseCategories}
+        formData={formData}
+      />
     </div>
   );
 };

@@ -68,13 +68,14 @@ const EditExpense = () => {
   }, [expenseData]);
   return (
     <div>
-      <h1>Edit Expense</h1>
+      <h1 className="text-xl font-semibold ml-4">Edit Expense</h1>
       <AddAndEditExpenseCard
         expenseCategories={expenseCategories}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         formData={formData}
         isExpenseCategoriesLoading={isExpenseCategoriesLoading}
+        isAddingExpense={false}
       />
     </div>
   );

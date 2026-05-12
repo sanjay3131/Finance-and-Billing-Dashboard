@@ -75,7 +75,6 @@ export const editExpense = async (data: {
     `/expense/updateExpense/${data.id}`,
     data,
   );
-  console.log("__________mutation data", data);
 
   return res.data;
 };

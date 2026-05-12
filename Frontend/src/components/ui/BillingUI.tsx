@@ -107,7 +107,7 @@ const BillingUI = ({
     <div className="w-full">
       <div className="mt-8 w-full min-h-screen flex flex-col gap-4   ">
         {/* search bar */}
-        <div className="relative">
+        <div className="relative z-0">
           <IoSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             value={searchTerm}
@@ -138,7 +138,7 @@ const BillingUI = ({
           {isProductsLoading ? (
             <BillCardSkeleton />
           ) : (
-            <div className="  grid grid-cols-1 md:grid-cols-2 gap-4 justify-items-center max-h-75 overflow-y-auto  px-2 py-1 hide-scrollbar">
+            <div className="  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center max-h-75 overflow-y-auto  px-2 py-1 hide-scrollbar">
               {filteredProducts?.map((product: Product) => (
                 <ItemCard
                   key={product._id}

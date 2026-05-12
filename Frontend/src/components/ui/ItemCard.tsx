@@ -32,19 +32,19 @@ const ItemCard = ({
 
   return (
     <div
-      className={`${!product.isActive ? "grayscale-100 disabled" : ""} p-2 bg-white  shadow-md rounded-2xl flex gap-4 w-full h-fit justify-center items-center`}
+      className={` px-2 py-1   shadow-md rounded-2xl flex gap-4 w-full h-fit justify-center items-center ${!product.isActive ? " grayscale-100 disabled:" : "bg-white"}`}
     >
       {/* image */}
       <div>
         <img
           src={product.image?.url ? product.image.url : dummyImg}
           alt=""
-          className=" size-20 rounded-xl"
+          className=" size-13 rounded-xl"
         />
       </div>
       {/* name and price */}
       <div className="mt-2 flex flex-col gap-1 justify-evenly flex-1">
-        <h3 className="font-bold text-md md:text-xl capitalize">
+        <h3 className="font-semibold text-sm md:text-lg capitalize">
           {product.name}
         </h3>
         <p className="text-md font-semibold">

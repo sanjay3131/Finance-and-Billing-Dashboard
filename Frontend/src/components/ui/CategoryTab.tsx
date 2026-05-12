@@ -9,10 +9,10 @@ const CategoryTab = ({
 }) => {
   return (
     <div className=" ">
-      <div className="flex gap-4 flex-wrap pb-2">
+      <div className="flex gap-2 flex-wrap pb-2">
         <button
           onClick={() => setSelectedCategory("")}
-          className={`whitespace-nowrap px-4 py-2 rounded-2xl shadow-md transition-all font-bold capitalize  ${
+          className={` px-2 py-1 md:px-4 md:py-2 rounded-2xl shadow-md transition-all font-bold capitalize text-sm md:text-lg  ${
             selectedCategory === "" ? "bg-green-500 text-white  " : "bg-white"
           }`}
         >
@@ -22,7 +22,7 @@ const CategoryTab = ({
           <button
             onClick={() => setSelectedCategory(category)}
             key={category}
-            className={`whitespace-nowrap px-4  py-2 rounded-2xl shadow-md transition-all font-bold capitalize  ${
+            className={`whitespace-nowrap px-2 py-1 md:px-4 md:py-2 rounded-2xl shadow-md transition-all font-bold capitalize text-sm md:text-lg  ${
               selectedCategory === category
                 ? "bg-green-500 text-white "
                 : "bg-white"

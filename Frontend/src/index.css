@@ -37,6 +37,12 @@
     -moz-appearance: textfield;
   }
 }
+.zindexMax {
+  z-index: 99;
+}
+.zindexMin {
+  z-index: 0;
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

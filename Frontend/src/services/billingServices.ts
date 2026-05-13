@@ -13,9 +13,12 @@ export const addBill = async (billData: CreateBillInterface) => {
 
 // mution function for adding bill
 export const CreateBill = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (billData: CreateBillInterface) => addBill(billData),
     onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["bills"] });
       console.log("Bill created successfully", data);
     },
     onError: (error) => {

@@ -10,7 +10,10 @@ import Billcard from "../../components/ui/Billcard";
 import BillCardSkeleton from "../../components/ui/skeleton/BillCardSkeleton";
 import DatePicker from "../../components/ui/DatePicker";
 
-const BillHistory = () => {
+const BillHistory = (isHistoryPage?: boolean) => {
+  const pathName = window.location.pathname;
+  console.log("bill history page", pathName);
+
   const navigate = useNavigate();
   const today = new Date();
   const isoToday = today.toISOString().split("T")[0];
@@ -36,6 +39,12 @@ const BillHistory = () => {
   });
   const bills = data?.data || [];
   console.log("bills data", bills, date);
+
+  if (pathName === "/billHistory") {
+    isHistoryPage = true;
+  } else {
+    isHistoryPage = false;
+  }
 
   // toglgeStatus
 
@@ -74,32 +83,34 @@ const BillHistory = () => {
         </div>
       )}
       {/* header */}
-      <div className="bg-white p-2 flex flex-col gap-4 rounded-lg">
-        <nav className="flex justify-between  items-center gap-5 ">
-          <button
-            className=" cursor-pointer bg-gray-50 p-2  rounded-md hover:bg-gray-300 transition-all duration-500 ease-in-out"
-            onClick={() => navigate(-1)}
-          >
-            <FaArrowLeft />
-          </button>
-          <h1 className=" font-bold text-xl">Bill History</h1>
-          <span></span>
-        </nav>
-        {/* search bill */}
-        <div>
-          <div className="flex items-center gap-2  z-0 relative">
-            <CiSearch className="text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2 font-bold" />
-            <input
-              type="text"
-              placeholder=" Search bill no"
-              className="border border-gray-300 rounded-full font-semibold  px-8 py-2 w-full bg-primary-foreground max-w-md"
-            />
-          </div>
+      {isHistoryPage && (
+        <div className="bg-white p-2 flex flex-col gap-4 rounded-lg">
+          <nav className="flex justify-between  items-center gap-5 ">
+            <button
+              className=" cursor-pointer bg-gray-50 p-2  rounded-md hover:bg-gray-300 transition-all duration-500 ease-in-out"
+              onClick={() => navigate(-1)}
+            >
+              <FaArrowLeft />
+            </button>
+            <h1 className=" font-bold text-xl">Bill History</h1>
+            <span></span>
+          </nav>
+          {/* search bill */}
+          <div>
+            <div className="flex items-center gap-2  z-0 relative">
+              <CiSearch className="text-gray-500 absolute left-3 top-1/2 transform -translate-y-1/2 font-bold" />
+              <input
+                type="text"
+                placeholder=" Search bill no"
+                className="border border-gray-300 rounded-full font-semibold  px-8 py-2 w-full bg-primary-foreground max-w-md"
+              />
+            </div>
 
-          {/* date range picker */}
-          <DatePicker date={date} setDate={setDate} />
+            {/* date range picker */}
+            <DatePicker date={date} setDate={setDate} />
+          </div>
         </div>
-      </div>
+      )}
       {/*   bill list  */}
       <div className="">
         <h2 className="font-bold text-lg">Bill List</h2>

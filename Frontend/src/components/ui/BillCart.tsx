@@ -7,7 +7,7 @@ import type {
 import { CreateBill, useUpdateBill } from "../../services/billingServices";
 import { toast } from "sonner";
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 type BillCartProps = {
   BillingItems: BillItem[];
@@ -101,7 +101,8 @@ const BillCart = ({
       {
         onSuccess: () => {
           toast.success("Bill updated successfully!");
-          navigate("/billHistory");
+          clearCart();
+          navigate("/billing");
         },
         onError: () => {
           toast.error("Failed to update bill. Please try again.");

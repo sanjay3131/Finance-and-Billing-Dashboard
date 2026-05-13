@@ -95,7 +95,7 @@ export const viewAllProducts = asyncHandler(async (req, res) => {
   if (itemCategory) query.itemCategory = itemCategory;
   console.log("query after itemCategory:", query);
 
-  const allProducts = await Product.find(query);
+  const allProducts = await Product.find(query).sort({ sellingPrice: 1 });
 
   if (!allProducts || allProducts.length === 0)
     return res.status(404).json({ message: "No Products Available" });

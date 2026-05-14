@@ -229,7 +229,7 @@ const BillingUI = ({
           {/* recent bills */}
           <div>
             <div className="">
-              <h2 className="font-bold text-lg">Recent Bills</h2>
+              <h2 className="font-semibold text-lg ">Recent Bills</h2>
               {isLoading ? (
                 <BillCardSkeleton />
               ) : (
@@ -257,7 +257,7 @@ const BillingUI = ({
                   ) : (
                     <div className=" ">
                       <p className="text-xl font-semibold text-gray-500 text-center py-10">
-                        No bills available for the selected date range.
+                        No bills available
                       </p>
                     </div>
                   )}

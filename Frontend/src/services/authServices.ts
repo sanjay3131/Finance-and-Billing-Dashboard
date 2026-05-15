@@ -36,3 +36,12 @@ export const logOut = async () => {
   const response = await axiosInstance.get("/auth/logout");
   return response;
 };
+
+// Google OAuth login service
+export const googleLoginService = async () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  // Remove /api suffix if present to get base URL
+  const baseUrl = backendUrl.replace(/\/api\/?$/, "");
+  // Redirect to backend Google OAuth endpoint
+  window.location.href = `${baseUrl}/api/auth/google`;
+};

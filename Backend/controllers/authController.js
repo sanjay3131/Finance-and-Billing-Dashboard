@@ -184,3 +184,22 @@ export const updateShopPassword = asyncHandler(async (req, res) => {
   await shop.save();
   res.status(200).json({ message: "Password updated successfully" });
 });
+
+// Google OAuth callback handler
+export const googleCallback = asyncHandler(async (req, res) => {
+  const shop = req.user;
+  if (!shop) {
+    return res.status(401).json({ message: "Authentication failed" });
+  }
+
+  const token = generateToken(shop._id, res);
+  if (!token) {
+    return res
+      .status(500)
+      .json({ message: "Something went wrong in token generation" });
+  }
+
+  // Redirect to frontend with token in URL
+  const frontendURL = process.env.FRONTEND_URL;
+  res.redirect(`${frontendURL}/auth-success?token=${token}&shopId=${shop._id}`);
+});

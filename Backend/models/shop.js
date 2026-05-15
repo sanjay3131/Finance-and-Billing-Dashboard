@@ -6,13 +6,13 @@ const shopSchema = new mongoose.Schema(
     ShopAddress: { type: String, required: true },
     ShopPhoneNumber: { type: String, required: true },
     ShopEmail: { type: String, unique: true, required: true },
-    ShopPassword: { type: String, required: true }, 
+    ShopPassword: { type: String },
     ShopOwnerName: { type: String, required: true },
     ShopOwnerPhoneNumber: { type: String, required: true },
     ShopOwnerEmail: { type: String, unique: true, required: true },
     ShopGstNumber: { type: String },
 
-    ShopLogo: { type: String }, 
+    ShopLogo: { type: String },
     ShopCoverPhoto: { type: String },
     ShopDescription: { type: String },
 
@@ -30,10 +30,14 @@ const shopSchema = new mongoose.Schema(
       website: { type: String },
     },
 
+    // Google OAuth fields
+    googleId: { type: String },
+    googlePhotoUrl: { type: String },
+    authProvider: { type: String, enum: ["email", "google"], default: "email" },
 
     CreatedAt: { type: Date, default: Date.now },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Shop = mongoose.model("Shop", shopSchema);

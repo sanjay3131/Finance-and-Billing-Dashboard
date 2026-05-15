@@ -15,11 +15,14 @@ import ProductEditPage from "../pages/products/ProductEditPage.tsx";
 import AddProducts from "../pages/products/AddProducts.tsx";
 import AddExpense from "../pages/expense/AddExpense.tsx";
 import EditExpense from "../pages/expense/EditExpense.tsx";
+import AuthSuccess from "../pages/auth/AuthSuccess.tsx";
 
 const AppRoutes = () => {
   const location = useLocation();
   const hideNavbar =
-    location.pathname === "/login" || location.pathname === "/register";
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname === "/auth-success";
 
   return (
     <div className="reletive ">
@@ -49,6 +52,7 @@ const AppRoutes = () => {
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/auth-success" element={<AuthSuccess />} />
           <Route path="/" element={<Home />} />
         </Routes>
       </div>

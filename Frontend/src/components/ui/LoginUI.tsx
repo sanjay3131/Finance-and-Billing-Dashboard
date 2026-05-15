@@ -4,6 +4,8 @@ import { FaLockOpen, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAuth } from "../../hooks/useAuthContext";
+import { googleLoginService } from "../../services/authServices";
+import { FcGoogle } from "react-icons/fc";
 
 const LoginUI = () => {
   const { login } = useAuth();
@@ -37,6 +39,16 @@ const LoginUI = () => {
       },
     );
   };
+
+  const handleGoogleLogin = () => {
+    try {
+      googleLoginService();
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast.error("Google login failed. Please try again.");
+    }
+  };
+
   return (
     <form
       className=" mt-8 flex flex-col justify-center items-center gap-4 px-4"
@@ -97,9 +109,22 @@ const LoginUI = () => {
           {loginMutation.isPending ? "Logging in..." : "Login"}
         </button>
       </span>
+
+      {/* Divider */}
+      <div className="w-2/5 flex items-center gap-2 my-4">
+        <div className="flex-1 h-px bg-gray-300"></div>
+        <span className="text-gray-500 text-sm">Or</span>
+        <div className="flex-1 h-px bg-gray-300"></div>
+      </div>
+
       {/* google login */}
-      <div className=" flex flex-col justify-center items-center mt-4">
-        <button className=" bg-blue-600 text-white font-semibold rounded-xl w-fit h-8 px-4 mt-4">
+      <div className=" flex flex-col justify-center items-center">
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className=" bg-white border border-gray-300 text-gray-800 font-semibold rounded-xl w-fit h-10 px-6 mt-2 hover:bg-gray-50 flex items-center gap-2"
+        >
+          <FcGoogle size={20} />
           Login with Google
         </button>
       </div>

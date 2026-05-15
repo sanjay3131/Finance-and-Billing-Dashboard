@@ -26,6 +26,33 @@ export const perdaySalesReport = asyncHandler(async (req, res) => {
     billingDate: { $gte: start, $lte: end }, // FIXED
   });
 
+  const itemsSold = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    { $unwind: "$items" },
+    {
+      $group: {
+        _id: "$items.productName",
+        quantity: { $sum: "$items.quantity" },
+        totalSales: {
+          $sum: { $multiply: ["$items.quantity", "$items.price"] },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        productName: "$_id",
+        quantity: 1,
+        totalSales: 1,
+      },
+    },
+  ]);
+
   const expense = await Expense.find({
     Shop: shopId,
     expenseDate: { $gte: start, $lte: end },
@@ -51,6 +78,7 @@ export const perdaySalesReport = asyncHandler(async (req, res) => {
     profit: Math.abs(profit),
     isLoss,
     profitPercentage: profitPercentage,
+    productsSold: itemsSold,
   });
 });
 
@@ -67,6 +95,93 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
     billingDate: { $gte: start, $lte: end },
   });
   console.log(sales);
+
+  const itemsSold = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: {
+          $gte: start,
+          $lte: end,
+        },
+      },
+    },
+
+    { $unwind: "$items" },
+
+    {
+      $group: {
+        _id: {
+          date: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$billingDate",
+            },
+          },
+          productName: "$items.productName",
+        },
+
+        quantity: {
+          $sum: "$items.quantity",
+        },
+      },
+    },
+
+    {
+      $project: {
+        _id: 0,
+        date: "$_id.date",
+        productName: "$_id.productName",
+        quantity: 1,
+      },
+    },
+
+    {
+      $sort: {
+        date: 1,
+      },
+    },
+  ]);
+
+  const salesPerDay = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$billingDate",
+          },
+        },
+        totalSales: { $sum: "$totalAmount" },
+      },
+    },
+  ]);
+
+  const expensePerDay = await Expense.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        expenseDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$expenseDate",
+          },
+        },
+        totalExpense: { $sum: "$amount" },
+      },
+    },
+  ]);
 
   const sevenDaysSales = Array(7).fill(0);
 
@@ -102,6 +217,9 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
     totalExpense,
     profit,
     profitPercentage,
+    productsSold: itemsSold,
+    salesPerDay,
+    expensePerDay,
   });
 });
 

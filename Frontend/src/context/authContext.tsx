@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useCallback } from "react";
 
 type User = {
   id: string;
@@ -16,14 +16,15 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const login = (user: User) => {
+  const login = useCallback((user: User) => {
     setUser(user);
     console.log("auth context ==> " + JSON.stringify(user));
-  };
-  const logout = () => {
+  }, []);
+
+  const logout = useCallback(() => {
     setUser(null);
     console.log("user logout");
-  };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

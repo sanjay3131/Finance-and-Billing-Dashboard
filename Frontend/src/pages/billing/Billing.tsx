@@ -1,29 +1,11 @@
 import type { BillItem } from "../../utils/constants";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BillingUI from "../../components/ui/BillingUI";
 
-const STORAGE_KEY = "billing_cart_items";
-
-const getInitialBillItems = (): BillItem[] => {
-  if (typeof window === "undefined") return [];
-
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    return stored ? (JSON.parse(stored) as BillItem[]) : [];
-  } catch {
-    return [];
-  }
-};
-
 const Billing = () => {
   const navigate = useNavigate();
-  const [billItems, setBillItems] = useState<BillItem[]>(getInitialBillItems);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(billItems));
-  }, [billItems]);
+  const [billItems, setBillItems] = useState<BillItem[]>([]);
 
   return (
     <div className="px-4 py-8 bg-primaryBg w-full min-h-screen min-w-75">

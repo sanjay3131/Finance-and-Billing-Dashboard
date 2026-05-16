@@ -32,7 +32,7 @@ const ItemCard = ({
 
   return (
     <div
-      className={` px-2 py-1   shadow-md rounded-2xl flex gap-4 w-full h-fit justify-center items-center ${!product.isActive ? " grayscale-100 disabled:" : "bg-white"}`}
+      className={` px-2 py-1  transition-all duration-300 ease-in-out ${quantity && quantity > 0 ? " shadow-green-300" : ""} shadow-md rounded-2xl flex gap-4 w-full h-fit justify-center items-center ${!product.isActive ? " grayscale-100 disabled:" : "bg-white"}`}
     >
       {/* image */}
       <div>

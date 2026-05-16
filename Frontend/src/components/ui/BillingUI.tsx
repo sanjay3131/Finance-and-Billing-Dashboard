@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoClose, IoSearch } from "react-icons/io5";
 import {
   ViewAllProducts,
@@ -115,6 +115,22 @@ const BillingUI = ({
     queryFn: () => ViewAllProducts(selectedCategory),
   });
 
+  // store products locally to avoid refetching when switching categories
+  const [localProducts, setLocalProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    if (Products?.data?.allProducts) {
+      localStorage.setItem(
+        "products",
+        JSON.stringify(Products.data.allProducts),
+      );
+      setLocalProducts(
+        localStorage.getItem("products")
+          ? JSON.parse(localStorage.getItem("products")!)
+          : [],
+      );
+    }
+  }, [Products]);
   const { data: Categories } = useQuery({
     queryKey: ["categories"],
     queryFn: () => ViewProductsCategory(),
@@ -127,10 +143,7 @@ const BillingUI = ({
     setSearchTerm(e.target.value);
   };
 
-  const filteredProducts = useSearch(
-    Products?.data?.allProducts || [],
-    searchTerm,
-  );
+  const filteredProducts = useSearch(localProducts, searchTerm);
 
   return (
     <div className="w-full">

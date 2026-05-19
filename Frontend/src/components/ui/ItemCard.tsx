@@ -53,7 +53,9 @@ const ItemCard = ({
       </div>
       {/* increment and decrement buttons */}
       {card === "billing" ? (
-        <div className="flex  justify-between gap-2 py-1 px-1 items-center  bg-primaryBg min-w-24 h-12 rounded-md">
+        <div
+          className={`flex  justify-between gap-2 py-1 px-1 items-center ${quantity && quantity > 0 ? " bg-linear-45 from-65% from-green-200 to-white" : "bg-primaryBg"}   min-w-24 h-12 rounded-md`}
+        >
           <button
             onClick={() => {
               onRemove?.(product._id);

@@ -132,37 +132,39 @@ const BillCart = ({
         </div>
 
         {totalItemsInCart > 0 ? (
-          BillingItems.map((item) => (
-            <div
-              key={item.productName}
-              className="flex gap-0 justify-between items-center "
-            >
-              {/* item name */}
-              <div className="flex-1">
-                <h1 className="font-semibold capitalize ">
-                  {item.productName}{" "}
-                </h1>
+          <div className=" flex flex-col gap-2">
+            {BillingItems.map((item) => (
+              <div
+                key={item.productName}
+                className="flex gap-0 bg-gray-100 px-1 rounded-md  justify-between items-center "
+              >
+                {/* item name */}
+                <div className="flex-1">
+                  <h1 className="font-semibold capitalize ">
+                    {item.productName}{" "}
+                  </h1>
+                </div>
+
+                {/* item quantity and price */}
+                <div className="grid grid-cols-3 flex-2 w-full ">
+                  <h2 className="w-full max-w-36 overflow-x-scroll hide-scrollbar flex justify-between items-centerpx-4">
+                    {" "}
+                    {item.quantity}
+                    <span>*</span>
+                  </h2>
+
+                  <h2 className="w-full max-w-36 overflow-x-scroll hide-scrollbar font-semibold flex justify-between items-center px-4">
+                    {item.price}
+                    <span>=</span>
+                  </h2>
+
+                  <h2 className="w-full max-w-36 overflow-x-scroll hide-scrollbar font-semibold text-center">
+                    {item.quantity * item.price}
+                  </h2>
+                </div>
               </div>
-
-              {/* item quantity and price */}
-              <div className="grid grid-cols-3 flex-2 w-full ">
-                <h2 className="w-full max-w-36 overflow-x-scroll hide-scrollbar flex justify-between items-centerpx-4">
-                  {" "}
-                  {item.quantity}
-                  <span>*</span>
-                </h2>
-
-                <h2 className="w-full max-w-36 overflow-x-scroll hide-scrollbar font-semibold flex justify-between items-center px-4">
-                  {item.price}
-                  <span>=</span>
-                </h2>
-
-                <h2 className="w-full max-w-36 overflow-x-scroll hide-scrollbar font-semibold text-center">
-                  {item.quantity * item.price}
-                </h2>
-              </div>
-            </div>
-          ))
+            ))}
+          </div>
         ) : (
           <div className="text-center text-gray-500 items-center">
             No items in cart

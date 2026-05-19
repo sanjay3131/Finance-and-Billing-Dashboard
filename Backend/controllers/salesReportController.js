@@ -124,6 +124,11 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
         quantity: {
           $sum: "$items.quantity",
         },
+        sales: {
+          $sum: {
+            $multiply: ["$items.quantity", "$items.price"],
+          },
+        },
       },
     },
 
@@ -133,6 +138,7 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
         date: "$_id.date",
         productName: "$_id.productName",
         quantity: 1,
+        sales: 1,
       },
     },
 
@@ -161,6 +167,18 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
         totalSales: { $sum: "$totalAmount" },
       },
     },
+    {
+      $project: {
+        _id: 0,
+        date: "$_id",
+        totalSales: 1,
+      },
+    },
+    {
+      $sort: {
+        date: 1,
+      },
+    },
   ]);
 
   const expensePerDay = await Expense.aggregate([
@@ -179,6 +197,18 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
           },
         },
         totalExpense: { $sum: "$amount" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: "$_id",
+        totalExpense: 1,
+      },
+    },
+    {
+      $sort: {
+        date: 1,
       },
     },
   ]);

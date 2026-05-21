@@ -270,6 +270,119 @@ export const thirtyDaysSalesReport = asyncHandler(async (req, res) => {
     Shop: shopId,
     expenseDate: { $gte: start, $lte: end },
   });
+
+  const itemsSold = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    { $unwind: "$items" },
+    {
+      $group: {
+        _id: "$items.productName",
+        quantity: { $sum: "$items.quantity" },
+        totalSales: {
+          $sum: { $multiply: ["$items.quantity", "$items.price"] },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        productName: "$_id",
+        quantity: 1,
+        totalSales: 1,
+      },
+    },
+    {
+      $sort: {
+        date: 1,
+      },
+    },
+  ]);
+
+  const perdaySales = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$billingDate",
+          },
+        },
+        totalSales: { $sum: "$totalAmount" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: "$_id",
+        totalSales: 1,
+      },
+    },
+    {
+      $sort: {
+        date: 1,
+      },
+    },
+  ]);
+
+  const perdayExpense = await Expense.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        expenseDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: "%Y-%m-%d",
+            date: "$expenseDate",
+          },
+        },
+        totalExpense: { $sum: "$amount" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        date: "$_id",
+        totalExpense: 1,
+      },
+    },
+    {
+      $sort: {
+        date: 1,
+      },
+    },
+  ]);
+  const perdayProfit = perdaySales.map((sale) => {
+    const expense =
+      perdayExpense.find((exp) => exp.date === sale.date)?.totalExpense || 0;
+    const profit = sale.totalSales - expense;
+    const profitPercentage = calculateProfitLossPercentage(
+      sale.totalSales,
+      expense,
+    );
+    return {
+      date: sale.date,
+      totalSales: sale.totalSales,
+      totalExpense: expense,
+      profit,
+      profitPercentage,
+    };
+  });
+
   if (!expense || (expense.length === 0 && !sales) || sales.length === 0) {
     return res.status(404).json({
       success: false,
@@ -298,6 +411,10 @@ export const thirtyDaysSalesReport = asyncHandler(async (req, res) => {
     totalExpense,
     profit,
     profitPercentage,
+    productsSold: itemsSold,
+    perdaySales,
+    perdayExpense,
+    perdayProfit,
   });
 });
 
@@ -324,7 +441,112 @@ export const sixMonthsSalesReport = asyncHandler(async (req, res) => {
       message: "No sales or expense data available for the last six months",
     });
   }
+  const itemsSold = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    { $unwind: "$items" },
+    {
+      $group: {
+        _id: "$items.productName",
+        quantity: { $sum: "$items.quantity" },
+        totalSales: {
+          $sum: { $multiply: ["$items.quantity", "$items.price"] },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        productName: "$_id",
+        quantity: 1,
+        totalSales: 1,
+      },
+    },
+    {
+      $sort: {
+        totalSales: -1,
+      },
+    },
+  ]);
 
+  const totalSalesThisYear = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: { month: { $month: "$billingDate" } },
+        totalSales: { $sum: "$totalAmount" },
+      },
+    },
+    {
+      $sort: { "_id.month": 1 },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: "$_id.month",
+        totalSales: 1,
+      },
+    },
+  ]);
+
+  const salesPerMonth = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: { month: { $month: "$billingDate" } },
+        totalSales: { $sum: "$totalAmount" },
+      },
+    },
+    {
+      $sort: { "_id.month": 1 },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: "$_id.month",
+        totalSales: 1,
+      },
+    },
+  ]);
+
+  const expensePerMonth = await Expense.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        expenseDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: { month: { $month: "$expenseDate" } },
+        totalExpense: { $sum: "$amount" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: "$_id.month",
+        totalExpense: 1,
+      },
+    },
+    {
+      $sort: { month: 1 },
+    },
+  ]);
   const totalExpense = expense.reduce((acc, exp) => acc + exp.amount, 0);
 
   const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
@@ -341,6 +563,10 @@ export const sixMonthsSalesReport = asyncHandler(async (req, res) => {
     endDate: end.toDateString(),
 
     billsCount: sales.length,
+    itemsSold,
+    totalSalesThisYear,
+    salesPerMonth,
+    expensePerMonth,
 
     totalSales,
     totalExpense,
@@ -382,6 +608,69 @@ export const customSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
   );
+  const itemsSold = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: "$productName",
+        quantity: { $sum: "$quantity" },
+      },
+    },
+  ]);
+  const totalSalesPerMonth = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: { month: { $month: "$billingDate" } },
+        totalSales: { $sum: "$totalAmount" },
+      },
+    },
+    {
+      $sort: { "_id.month": 1 },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: "$_id.month",
+        totalSales: 1,
+      },
+    },
+  ]);
+
+  const totalExpensePerMonth = await Expense.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        expenseDate: { $gte: start, $lte: end },
+      },
+    },
+    {
+      $group: {
+        _id: { month: { $month: "$expenseDate" } },
+        totalExpense: { $sum: "$amount" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        month: "$_id.month",
+        totalExpense: 1,
+      },
+    },
+    {
+      $sort: { month: 1 },
+    },
+  ]);
 
   res.status(200).json({
     success: true,
@@ -393,6 +682,8 @@ export const customSalesReport = asyncHandler(async (req, res) => {
 
     totalSales,
     totalExpense,
+    salesPerMonth: totalSalesPerMonth,
+    expensePerMonth: totalExpensePerMonth,
     profit,
     profitPercentage,
   });

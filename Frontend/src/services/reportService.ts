@@ -6,3 +6,26 @@ export const getSingleDayReport = async (
   const response = await axiosInstance.get(`report/perdaySalesReport/${date}`);
   return response;
 };
+
+export const weeklyReport = async () => {
+  const response = await axiosInstance.get(`report/sevenDaysSalesReport`);
+  return response;
+};
+
+export const monthlyReport = async () => {
+  const response = await axiosInstance.get(`report/thirtyDaysSalesReport`);
+  return response;
+};
+
+export const sixMonthReport = async () => {
+  const response = await axiosInstance.get(`report/sixMonthsSalesReport`);
+  return response;
+};
+
+export const customerReport = async (startDate: string, endDate: string) => {
+  const response = await axiosInstance.post(`report/customSalesReport`, {
+    startDate,
+    endDate,
+  });
+  return response;
+};

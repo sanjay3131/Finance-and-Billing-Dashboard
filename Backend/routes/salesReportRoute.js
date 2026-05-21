@@ -23,6 +23,6 @@ router.get("/thirtyDaysSalesReport", protect, thirtyDaysSalesReport);
 router.get("/sixMonthsSalesReport", protect, sixMonthsSalesReport);
 
 // custom sales report
-router.get("/customSalesReport", protect, customSalesReport);
+router.post("/customSalesReport", protect, customSalesReport);
 
 export default router;

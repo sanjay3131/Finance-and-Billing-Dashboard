@@ -6,16 +6,31 @@ import { IoReceiptSharp } from "react-icons/io5";
 import { LuNotebookPen } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getSingleDayReport } from "../../services/reportService";
+import {
+  customerReport,
+  getSingleDayReport,
+  sixMonthReport,
+  weeklyReport,
+} from "../../services/reportService";
 import { formatAmount } from "../../utils/formatNumbers";
+import { useState } from "react";
 
 const Dashboard = () => {
   const { data } = useAuth();
-  console.log("auth data", data);
 
+  console.log("auth data", data);
+  const [customeDateRange, setCustomerDateRange] = useState<{
+    startDate: string;
+    endDate: string;
+  }>({
+    startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0],
+    endDate: new Date().toISOString().split("T")[0],
+  });
   const { shop } = data || {};
   const navigate = useNavigate();
-
+  // daily repost
   const {
     data: reportData,
     isLoading,
@@ -24,8 +39,25 @@ const Dashboard = () => {
     queryKey: ["dailyReport"],
     queryFn: () => getSingleDayReport(),
   });
-  console.log("repot data", reportData);
-
+  // customer report
+  const { data: customerReportData } = useQuery({
+    queryKey: ["customerReport"],
+    queryFn: () =>
+      customerReport(customeDateRange.startDate, customeDateRange.endDate),
+  });
+  console.log("customer report data", customerReportData);
+  // weekly report
+  const { data: weeklyReportData } = useQuery({
+    queryKey: ["weeklyReport"],
+    queryFn: () => weeklyReport(),
+  });
+  console.log("weekly report data", weeklyReportData);
+  // six month report
+  const { data: sixMonthReportData } = useQuery({
+    queryKey: ["sixMonthReport"],
+    queryFn: () => sixMonthReport(),
+  });
+  console.log("six month report data", sixMonthReportData);
   return (
     <div className=" bg-primaryBg w-full min-h-screen p-4 min-w-75">
       {/* logged in user details */}

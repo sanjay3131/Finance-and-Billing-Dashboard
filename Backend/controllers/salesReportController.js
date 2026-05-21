@@ -1,6 +1,11 @@
 import asyncHandler from "express-async-handler";
 import Billing from "../models/billing.js";
 import Expense from "../models/expense.js";
+import {
+  expensePerDayHelperFunction,
+  itemsSoldHelperFunction,
+  salesPerDayHelperFunction,
+} from "../utils/helperFunctions.js";
 
 // Helper function to calculate profit/loss percentage
 const calculateProfitLossPercentage = (totalSales, totalExpense) => {
@@ -26,33 +31,7 @@ export const perdaySalesReport = asyncHandler(async (req, res) => {
     billingDate: { $gte: start, $lte: end }, // FIXED
   });
 
-  const itemsSold = await Billing.aggregate([
-    {
-      $match: {
-        Shop: shopId,
-        billingDate: { $gte: start, $lte: end },
-      },
-    },
-    { $unwind: "$items" },
-    {
-      $group: {
-        _id: "$items.productName",
-        quantity: { $sum: "$items.quantity" },
-        totalSales: {
-          $sum: { $multiply: ["$items.quantity", "$items.price"] },
-        },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        productName: "$_id",
-        quantity: 1,
-        totalSales: 1,
-      },
-    },
-  ]);
-
+  const itemsSold = await itemsSoldHelperFunction(start, end, shopId);
   const expense = await Expense.find({
     Shop: shopId,
     expenseDate: { $gte: start, $lte: end },
@@ -96,122 +75,11 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
   });
   console.log(sales);
 
-  const itemsSold = await Billing.aggregate([
-    {
-      $match: {
-        Shop: shopId,
-        billingDate: {
-          $gte: start,
-          $lte: end,
-        },
-      },
-    },
+  const itemsSold = await itemsSoldHelperFunction(start, end, shopId);
 
-    { $unwind: "$items" },
+  const salesPerDay = await salesPerDayHelperFunction(start, end, shopId);
 
-    {
-      $group: {
-        _id: {
-          date: {
-            $dateToString: {
-              format: "%Y-%m-%d",
-              date: "$billingDate",
-            },
-          },
-          productName: "$items.productName",
-        },
-
-        quantity: {
-          $sum: "$items.quantity",
-        },
-        sales: {
-          $sum: {
-            $multiply: ["$items.quantity", "$items.price"],
-          },
-        },
-      },
-    },
-
-    {
-      $project: {
-        _id: 0,
-        date: "$_id.date",
-        productName: "$_id.productName",
-        quantity: 1,
-        sales: 1,
-      },
-    },
-
-    {
-      $sort: {
-        date: 1,
-      },
-    },
-  ]);
-
-  const salesPerDay = await Billing.aggregate([
-    {
-      $match: {
-        Shop: shopId,
-        billingDate: { $gte: start, $lte: end },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          $dateToString: {
-            format: "%Y-%m-%d",
-            date: "$billingDate",
-          },
-        },
-        totalSales: { $sum: "$totalAmount" },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        date: "$_id",
-        totalSales: 1,
-      },
-    },
-    {
-      $sort: {
-        date: 1,
-      },
-    },
-  ]);
-
-  const expensePerDay = await Expense.aggregate([
-    {
-      $match: {
-        Shop: shopId,
-        expenseDate: { $gte: start, $lte: end },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          $dateToString: {
-            format: "%Y-%m-%d",
-            date: "$expenseDate",
-          },
-        },
-        totalExpense: { $sum: "$amount" },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        date: "$_id",
-        totalExpense: 1,
-      },
-    },
-    {
-      $sort: {
-        date: 1,
-      },
-    },
-  ]);
+  const expensePerDay = await expensePerDayHelperFunction(start, end, shopId);
 
   const sevenDaysSales = Array(7).fill(0);
 
@@ -271,101 +139,9 @@ export const thirtyDaysSalesReport = asyncHandler(async (req, res) => {
     expenseDate: { $gte: start, $lte: end },
   });
 
-  const itemsSold = await Billing.aggregate([
-    {
-      $match: {
-        Shop: shopId,
-        billingDate: { $gte: start, $lte: end },
-      },
-    },
-    { $unwind: "$items" },
-    {
-      $group: {
-        _id: "$items.productName",
-        quantity: { $sum: "$items.quantity" },
-        totalSales: {
-          $sum: { $multiply: ["$items.quantity", "$items.price"] },
-        },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        productName: "$_id",
-        quantity: 1,
-        totalSales: 1,
-      },
-    },
-    {
-      $sort: {
-        date: 1,
-      },
-    },
-  ]);
-
-  const perdaySales = await Billing.aggregate([
-    {
-      $match: {
-        Shop: shopId,
-        billingDate: { $gte: start, $lte: end },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          $dateToString: {
-            format: "%Y-%m-%d",
-            date: "$billingDate",
-          },
-        },
-        totalSales: { $sum: "$totalAmount" },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        date: "$_id",
-        totalSales: 1,
-      },
-    },
-    {
-      $sort: {
-        date: 1,
-      },
-    },
-  ]);
-
-  const perdayExpense = await Expense.aggregate([
-    {
-      $match: {
-        Shop: shopId,
-        expenseDate: { $gte: start, $lte: end },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          $dateToString: {
-            format: "%Y-%m-%d",
-            date: "$expenseDate",
-          },
-        },
-        totalExpense: { $sum: "$amount" },
-      },
-    },
-    {
-      $project: {
-        _id: 0,
-        date: "$_id",
-        totalExpense: 1,
-      },
-    },
-    {
-      $sort: {
-        date: 1,
-      },
-    },
-  ]);
+  const itemsSold = await itemsSoldHelperFunction(start, end, shopId);
+  const perdaySales = await salesPerDayHelperFunction(start, end, shopId);
+  const perdayExpense = await expensePerDayHelperFunction(start, end, shopId);
   const perdayProfit = perdaySales.map((sale) => {
     const expense =
       perdayExpense.find((exp) => exp.date === sale.date)?.totalExpense || 0;
@@ -608,20 +384,7 @@ export const customSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
   );
-  const itemsSold = await Billing.aggregate([
-    {
-      $match: {
-        Shop: shopId,
-        billingDate: { $gte: start, $lte: end },
-      },
-    },
-    {
-      $group: {
-        _id: "$productName",
-        quantity: { $sum: "$quantity" },
-      },
-    },
-  ]);
+  const itemsSold = await itemsSoldHelperFunction(start, end, shopId);
   const totalSalesPerMonth = await Billing.aggregate([
     {
       $match: {
@@ -671,6 +434,24 @@ export const customSalesReport = asyncHandler(async (req, res) => {
       $sort: { month: 1 },
     },
   ]);
+  const perdaySales = await salesPerDayHelperFunction(start, end, shopId);
+  const perdayExpense = await expensePerDayHelperFunction(start, end, shopId);
+  const perdayProfit = perdaySales.map((sale) => {
+    const expense =
+      perdayExpense.find((exp) => exp.date === sale.date)?.totalExpense || 0;
+    const profit = sale.totalSales - expense;
+    const profitPercentage = calculateProfitLossPercentage(
+      sale.totalSales,
+      expense,
+    );
+    return {
+      date: sale.date,
+      totalSales: sale.totalSales,
+      totalExpense: expense,
+      profit,
+      profitPercentage,
+    };
+  });
 
   res.status(200).json({
     success: true,
@@ -686,5 +467,6 @@ export const customSalesReport = asyncHandler(async (req, res) => {
     expensePerMonth: totalExpensePerMonth,
     profit,
     profitPercentage,
+    perdayProfit,
   });
 });

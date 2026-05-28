@@ -78,6 +78,14 @@ export const salesPerDayHelperFunction = async (start, end, shopId) => {
         _id: 0,
         date: "$_id",
         totalSales: 1,
+        day: {
+          $dayOfWeek: {
+            $dateFromString: {
+              dateString: "$_id",
+              format: "%Y-%m-%d",
+            },
+          },
+        },
       },
     },
     {
@@ -113,6 +121,14 @@ export const expensePerDayHelperFunction = async (start, end, shopId) => {
         _id: 0,
         date: "$_id",
         totalExpense: 1,
+        day: {
+          $dayOfWeek: {
+            $dateFromString: {
+              dateString: "$_id",
+              format: "%Y-%m-%d",
+            },
+          },
+        },
       },
     },
     {

@@ -102,6 +102,23 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
   );
+  const perdayProfit = salesPerDay.map((sale) => {
+    const expense =
+      expensePerDay.find((exp) => exp.date === sale.date)?.totalExpense || 0;
+    const profit = sale.totalSales - expense;
+    const profitPercentage = calculateProfitLossPercentage(
+      sale.totalSales,
+      expense,
+    );
+    return {
+      date: sale.date,
+      totalSales: sale.totalSales,
+      totalExpense: expense,
+      profit,
+      profitPercentage,
+      day: new Date(sale.date).getDay() + 1,
+    };
+  });
 
   res.status(200).json({
     success: true,
@@ -118,6 +135,7 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
     productsSold: itemsSold,
     salesPerDay,
     expensePerDay,
+    perdayProfit,
   });
 });
 

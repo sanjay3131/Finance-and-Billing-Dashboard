@@ -9,24 +9,27 @@ import { useQuery } from "@tanstack/react-query";
 import {
   customerReport,
   getSingleDayReport,
+  monthlyReport,
   sixMonthReport,
   weeklyReport,
 } from "../../services/reportService";
 import { formatAmount } from "../../utils/formatNumbers";
 import { useState } from "react";
+import DatePicker from "../../components/ui/DatePicker";
+import Charts from "../../components/ui/Charts";
 
 const Dashboard = () => {
   const { data } = useAuth();
 
   console.log("auth data", data);
-  const [customeDateRange, setCustomerDateRange] = useState<{
-    startDate: string;
-    endDate: string;
+  const [customDateRange, setCustomDateRange] = useState<{
+    fromDate: string;
+    toDate: string;
   }>({
-    startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    fromDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
       .toISOString()
       .split("T")[0],
-    endDate: new Date().toISOString().split("T")[0],
+    toDate: new Date().toISOString().split("T")[0],
   });
   const { shop } = data || {};
   const navigate = useNavigate();
@@ -39,11 +42,17 @@ const Dashboard = () => {
     queryKey: ["dailyReport"],
     queryFn: () => getSingleDayReport(),
   });
+  console.log("daily report : ", reportData);
+
   // customer report
   const { data: customerReportData } = useQuery({
-    queryKey: ["customerReport"],
+    queryKey: [
+      "customerReport",
+      customDateRange.fromDate,
+      customDateRange.toDate,
+    ],
     queryFn: () =>
-      customerReport(customeDateRange.startDate, customeDateRange.endDate),
+      customerReport(customDateRange.fromDate, customDateRange.toDate),
   });
   console.log("customer report data", customerReportData);
   // weekly report
@@ -51,13 +60,29 @@ const Dashboard = () => {
     queryKey: ["weeklyReport"],
     queryFn: () => weeklyReport(),
   });
-  console.log("weekly report data", weeklyReportData);
+  console.log(
+    "weekly report data",
+    weeklyReportData,
+    weeklyReportData?.data.expensePerDay[0].date,
+  );
+
+  // monthly report
+  const { data: monthlyReportData } = useQuery({
+    queryKey: ["monthlyReport"],
+    queryFn: () => monthlyReport(),
+  });
+  console.log("monthly report data", monthlyReportData);
   // six month report
   const { data: sixMonthReportData } = useQuery({
     queryKey: ["sixMonthReport"],
     queryFn: () => sixMonthReport(),
   });
   console.log("six month report data", sixMonthReportData);
+
+  // chart button state
+  const [activeChart, setActiveChart] = useState<
+    "week" | "month" | "sixMonth" | "custom"
+  >("week");
   return (
     <div className=" bg-primaryBg w-full min-h-screen p-4 min-w-75">
       {/* logged in user details */}
@@ -179,48 +204,68 @@ const Dashboard = () => {
         </div>
 
         {/* revenue Trends */}
-        <div className="col-span-full bg-amber-400 size-56 rounded-2xl w-full"></div>
-
-        {/* recent bills */}
-        <div className="col-span-full  rounded-2xl w-full mt-4 p-4">
-          <section className="w-full flex justify-between">
-            <h1 className="font-bold text-xl">Recent</h1>
-            <button className="text-green-500 font-semibold">View All </button>
-          </section>
-          {/* recent bills list top 3 */}
-          <section>
-            <div>
-              {/* icon */}
-              <div className="flex flex-col gap-4 mt-4">
-                {[1, 2, 3].map((item) => (
-                  <div
-                    key={item}
-                    className="flex justify-between items-center bg-white p-4 rounded-xl shadow-md"
-                  >
-                    <div className="flex items-center gap-4">
-                      <span className="bg-green-100 p-2 rounded-lg text-green-500">
-                        <IoReceiptSharp className="text-2xl" />
-                      </span>
-                      <div>
-                        <h1 className="font-semibold">Bill #12345</h1>
-                        <p className="text-sm text-gray-400">Jan 15, 2024</p>
-                      </div>
-                    </div>
-                    <div>
-                      <h1 className="font-bold text-lg">$150.00</h1>
-                      <p
-                        className={`text-sm font-semibold ${
-                          item % 2 === 0 ? "text-green-500" : "text-red-500"
-                        }`}
-                      >
-                        {item % 2 === 0 ? "Paid" : "Pending"}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        <div className="col-span-full size-56 rounded-2xl w-full">
+          {/* week 30days, sixMonth and custome buttons */}
+          <div className="flex justify-between p-1 gap-2 md:justify-center font-semibold ">
+            <button
+              onClick={() => {
+                setActiveChart("week");
+              }}
+              className={`px-2 py-1 rounded-md ${activeChart === "week" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+            >
+              Week
+            </button>
+            <button
+              onClick={() => {
+                setActiveChart("month");
+              }}
+              className={`px-4 py-2 rounded-md ${activeChart === "month" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+            >
+              30 Days
+            </button>
+            <button
+              onClick={() => {
+                setActiveChart("sixMonth");
+              }}
+              className={`px-4 py-2 rounded-md ${activeChart === "sixMonth" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+            >
+              6 Months
+            </button>
+            <button
+              onClick={() => {
+                setActiveChart("custom");
+              }}
+              className={`px-4 py-2 rounded-md ${activeChart === "custom" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+            >
+              Custom
+            </button>
+          </div>
+          {/* graph  */}
+          {activeChart === "custom" && (
+            <div className="w-full max-w-full">
+              <DatePicker
+                date={{
+                  fromDate: customDateRange.fromDate,
+                  toDate: customDateRange.toDate,
+                }}
+                setDate={setCustomDateRange}
+              />
             </div>
-          </section>
+          )}
+          <div className="w-full h-[340px] sm:h-[420px] max-w-full">
+            <Charts
+              dataFor={activeChart}
+              reportData={
+                activeChart === "week"
+                  ? weeklyReportData?.data
+                  : activeChart === "month"
+                    ? monthlyReportData?.data
+                    : activeChart === "sixMonth"
+                      ? sixMonthReportData?.data
+                      : customerReportData?.data
+              }
+            />
+          </div>
         </div>
       </div>
     </div>

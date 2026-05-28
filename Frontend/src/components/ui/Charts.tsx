@@ -157,7 +157,7 @@ const padDailyData = <T extends DailyDataItem, K extends keyof T>(
 // CHART OPTIONS
 // ======================================================
 
-const options: ChartOptions = {
+const options: ChartOptions<"bar" | "line"> = {
   responsive: true,
 
   maintainAspectRatio: false,

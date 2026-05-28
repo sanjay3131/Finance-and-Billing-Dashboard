@@ -49,6 +49,7 @@ export const itemsSoldHelperFunction = async (start, end, shopId) => {
         totalSales: 1,
       },
     },
+    { $sort: { totalSales: -1 } },
   ]);
 
   return result;

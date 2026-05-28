@@ -17,6 +17,7 @@ import { formatAmount } from "../../utils/formatNumbers";
 import { useState } from "react";
 import DatePicker from "../../components/ui/DatePicker";
 import Charts from "../../components/ui/Charts";
+import ItemsSoldData from "../../components/ui/ItemsSoldData";
 
 const Dashboard = () => {
   const { data } = useAuth();
@@ -204,67 +205,80 @@ const Dashboard = () => {
         </div>
 
         {/* revenue Trends */}
-        <div className="col-span-full size-56 rounded-2xl w-full">
-          {/* week 30days, sixMonth and custome buttons */}
-          <div className="flex justify-between p-1 gap-2 md:justify-center font-semibold ">
-            <button
-              onClick={() => {
-                setActiveChart("week");
-              }}
-              className={`px-2 py-1 rounded-md ${activeChart === "week" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
-            >
-              Week
-            </button>
-            <button
-              onClick={() => {
-                setActiveChart("month");
-              }}
-              className={`px-4 py-2 rounded-md ${activeChart === "month" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
-            >
-              30 Days
-            </button>
-            <button
-              onClick={() => {
-                setActiveChart("sixMonth");
-              }}
-              className={`px-4 py-2 rounded-md ${activeChart === "sixMonth" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
-            >
-              6 Months
-            </button>
-            <button
-              onClick={() => {
-                setActiveChart("custom");
-              }}
-              className={`px-4 py-2 rounded-md ${activeChart === "custom" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
-            >
-              Custom
-            </button>
+        <div className="col-span-full rounded-2xl w-full">
+          {/* week 30days, sixMonth and custom buttons */}
+          <div className="flex flex-col gap-2 p-1 sm:flex-row sm:items-center sm:justify-between font-semibold">
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setActiveChart("week")}
+                className={`px-3 py-2 rounded-md ${activeChart === "week" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+              >
+                Week
+              </button>
+              <button
+                onClick={() => setActiveChart("month")}
+                className={`px-3 py-2 rounded-md ${activeChart === "month" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+              >
+                30 Days
+              </button>
+              <button
+                onClick={() => setActiveChart("sixMonth")}
+                className={`px-3 py-2 rounded-md ${activeChart === "sixMonth" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+              >
+                6 Months
+              </button>
+              <button
+                onClick={() => setActiveChart("custom")}
+                className={`px-3 py-2 rounded-md ${activeChart === "custom" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+              >
+                Custom
+              </button>
+            </div>
           </div>
-          {/* graph  */}
-          {activeChart === "custom" && (
-            <div className="w-full max-w-full">
-              <DatePicker
-                date={{
-                  fromDate: customDateRange.fromDate,
-                  toDate: customDateRange.toDate,
-                }}
-                setDate={setCustomDateRange}
+
+          <div className="mt-4 grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-6">
+            <div className="space-y-4">
+              {activeChart === "custom" && (
+                <div className="w-full max-w-full">
+                  <DatePicker
+                    date={{
+                      fromDate: customDateRange.fromDate,
+                      toDate: customDateRange.toDate,
+                    }}
+                    setDate={setCustomDateRange}
+                  />
+                </div>
+              )}
+
+              <div className="w-full max-w-full">
+                <Charts
+                  dataFor={activeChart}
+                  reportData={
+                    activeChart === "week"
+                      ? weeklyReportData?.data
+                      : activeChart === "month"
+                        ? monthlyReportData?.data
+                        : activeChart === "sixMonth"
+                          ? sixMonthReportData?.data
+                          : customerReportData?.data
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="w-full  mt-8">
+              <ItemsSoldData
+                productsSold={
+                  activeChart === "week"
+                    ? weeklyReportData?.data?.productsSold
+                    : activeChart === "month"
+                      ? monthlyReportData?.data?.productsSold
+                      : activeChart === "sixMonth"
+                        ? sixMonthReportData?.data?.itemsSold
+                        : customerReportData?.data?.productsSold
+                }
               />
             </div>
-          )}
-          <div className="w-full h-[340px] sm:h-[420px] max-w-full">
-            <Charts
-              dataFor={activeChart}
-              reportData={
-                activeChart === "week"
-                  ? weeklyReportData?.data
-                  : activeChart === "month"
-                    ? monthlyReportData?.data
-                    : activeChart === "sixMonth"
-                      ? sixMonthReportData?.data
-                      : customerReportData?.data
-              }
-            />
           </div>
         </div>
       </div>

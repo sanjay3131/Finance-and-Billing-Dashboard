@@ -139,12 +139,16 @@ type DailyDataItem = SalesPerDay | ExpensePerDay | ProfitPerDay;
 
 const padDailyData = <T extends DailyDataItem, K extends keyof T>(
   dates: string[] = [],
-  items: T[] = [],
+  items: Array<T | undefined | null> = [],
   valueKey: K,
 ) => {
   const map = new Map<string, number>();
 
   items.forEach((item) => {
+    if (!item?.date) {
+      return;
+    }
+
     const normalized = normalizeDate(item.date);
 
     map.set(normalized, Number(item[valueKey] ?? 0));
@@ -219,20 +223,22 @@ function AnalyticsChart({
   };
 
   return (
-    <div className="w-full h-[calc(50vh-20px)] min-h-[260px]">
+    <div className="w-full h-[calc(50vh-20px)] min-h-65 ">
       <h2 className="mb-3 text-lg font-semibold">{title}</h2>
 
-      {type === "bar" ? (
-        <Bar
-          data={chartData as ChartData<"bar", number[], string>}
-          options={options}
-        />
-      ) : (
-        <Line
-          data={chartData as ChartData<"line", number[], string>}
-          options={options}
-        />
-      )}
+      <div className="w-full h-full rounded-2xl bg-white p-4 shadow-md">
+        {type === "bar" ? (
+          <Bar
+            data={chartData as ChartData<"bar", number[], string>}
+            options={options}
+          />
+        ) : (
+          <Line
+            data={chartData as ChartData<"line", number[], string>}
+            options={options}
+          />
+        )}
+      </div>
     </div>
   );
 }
@@ -261,29 +267,35 @@ export default function Charts({
 
   const weeklyExpense = Array<number>(7).fill(0);
 
-  safeArray(reportData?.salesPerDay).forEach((sale) => {
-    const day = new Date(sale.date).getDay();
+  safeArray(reportData?.salesPerDay)
+    .filter((sale): sale is SalesPerDay => !!sale?.date)
+    .forEach((sale) => {
+      const day = new Date(sale.date).getDay();
 
-    const chartIndex = day === 0 ? 6 : day - 1;
+      const chartIndex = day === 0 ? 6 : day - 1;
 
-    weeklySales[chartIndex] = sale.totalSales ?? 0;
-  });
+      weeklySales[chartIndex] = sale.totalSales ?? 0;
+    });
 
-  safeArray(reportData?.perdayProfit).forEach((profit) => {
-    const day = new Date(profit.date).getDay();
+  safeArray(reportData?.perdayProfit)
+    .filter((profit): profit is ProfitPerDay => !!profit?.date)
+    .forEach((profit) => {
+      const day = new Date(profit.date).getDay();
 
-    const chartIndex = day === 0 ? 6 : day - 1;
+      const chartIndex = day === 0 ? 6 : day - 1;
 
-    weeklyProfit[chartIndex] = profit.profit ?? 0;
-  });
+      weeklyProfit[chartIndex] = profit.profit ?? 0;
+    });
 
-  safeArray(reportData?.perdayExpense).forEach((expense) => {
-    const day = new Date(expense.date).getDay();
+  safeArray(reportData?.perdayExpense)
+    .filter((expense): expense is ExpensePerDay => !!expense?.date)
+    .forEach((expense) => {
+      const day = new Date(expense.date).getDay();
 
-    const chartIndex = day === 0 ? 6 : day - 1;
+      const chartIndex = day === 0 ? 6 : day - 1;
 
-    weeklyExpense[chartIndex] = expense.totalExpense ?? 0;
-  });
+      weeklyExpense[chartIndex] = expense.totalExpense ?? 0;
+    });
 
   // ======================================================
   // CUSTOM / MONTH DATA
@@ -354,7 +366,7 @@ export default function Charts({
 
   if (dataFor === "week") {
     return (
-      <div className="space-y-8">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <AnalyticsChart
           title="Weekly Sales vs Expense"
           type="bar"
@@ -408,7 +420,7 @@ export default function Charts({
 
   if (dataFor === "month") {
     return (
-      <div className="space-y-8">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <AnalyticsChart
           title="30 Days Sales vs Expense"
           type="bar"
@@ -462,7 +474,7 @@ export default function Charts({
 
   if (dataFor === "custom") {
     return (
-      <div className="space-y-8">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <AnalyticsChart
           title="Custom Sales vs Expense"
           type="bar"
@@ -515,7 +527,7 @@ export default function Charts({
   // ======================================================
 
   return (
-    <div className="space-y-8">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <AnalyticsChart
         title="6 Months Sales vs Expense"
         type="bar"

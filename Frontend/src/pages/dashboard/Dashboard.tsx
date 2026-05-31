@@ -61,11 +61,6 @@ const Dashboard = () => {
     queryKey: ["weeklyReport"],
     queryFn: () => weeklyReport(),
   });
-  console.log(
-    "weekly report data",
-    weeklyReportData,
-    weeklyReportData?.data.expensePerDay[0].date,
-  );
 
   // monthly report
   const { data: monthlyReportData } = useQuery({
@@ -236,7 +231,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-6">
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
             <div className="space-y-4">
               {activeChart === "custom" && (
                 <div className="w-full max-w-full">
@@ -250,7 +245,7 @@ const Dashboard = () => {
                 </div>
               )}
 
-              <div className="w-full max-w-full">
+              <div className="w-full max-w-full flex flex-col gap-4">
                 <Charts
                   dataFor={activeChart}
                   reportData={
@@ -265,20 +260,21 @@ const Dashboard = () => {
                 />
               </div>
             </div>
+          </div>
 
-            <div className="w-full  mt-8">
-              <ItemsSoldData
-                productsSold={
-                  activeChart === "week"
-                    ? weeklyReportData?.data?.productsSold
-                    : activeChart === "month"
-                      ? monthlyReportData?.data?.productsSold
-                      : activeChart === "sixMonth"
-                        ? sixMonthReportData?.data?.itemsSold
-                        : customerReportData?.data?.productsSold
-                }
-              />
-            </div>
+          {/* item sold data */}
+          <div className="w-full  mt-8 md:mt-12">
+            <ItemsSoldData
+              productsSold={
+                activeChart === "week"
+                  ? weeklyReportData?.data?.productsSold
+                  : activeChart === "month"
+                    ? monthlyReportData?.data?.productsSold
+                    : activeChart === "sixMonth"
+                      ? sixMonthReportData?.data?.itemsSold
+                      : customerReportData?.data?.productsSold
+              }
+            />
           </div>
         </div>
       </div>

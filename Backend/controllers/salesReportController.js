@@ -486,5 +486,7 @@ export const customSalesReport = asyncHandler(async (req, res) => {
     profit,
     profitPercentage,
     perdayProfit,
+    perdaySales,
+    perdayExpense,
   });
 });

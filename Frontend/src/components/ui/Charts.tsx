@@ -224,7 +224,7 @@ function AnalyticsChart({
 
   return (
     <div className="w-full h-[calc(50vh-20px)] min-h-65 ">
-      <h2 className="mb-3 text-lg font-semibold">{title}</h2>
+      <h2 className="text-lg font-semibold">{title}</h2>
 
       <div className="w-full h-full rounded-2xl bg-white p-4 shadow-md">
         {type === "bar" ? (
@@ -366,7 +366,7 @@ export default function Charts({
 
   if (dataFor === "week") {
     return (
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1  md:grid-cols-2 gap-12">
         <AnalyticsChart
           title="Weekly Sales vs Expense"
           type="bar"
@@ -420,7 +420,7 @@ export default function Charts({
 
   if (dataFor === "month") {
     return (
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
         <AnalyticsChart
           title="30 Days Sales vs Expense"
           type="bar"
@@ -474,7 +474,7 @@ export default function Charts({
 
   if (dataFor === "custom") {
     return (
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
         <AnalyticsChart
           title="Custom Sales vs Expense"
           type="bar"
@@ -527,7 +527,7 @@ export default function Charts({
   // ======================================================
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
       <AnalyticsChart
         title="6 Months Sales vs Expense"
         type="bar"

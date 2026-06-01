@@ -61,6 +61,7 @@ const Dashboard = () => {
     queryKey: ["weeklyReport"],
     queryFn: () => weeklyReport(),
   });
+  console.log("weekly report data", weeklyReportData);
 
   // monthly report
   const { data: monthlyReportData } = useQuery({
@@ -231,7 +232,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
+          <div className="mt-4 grid grid-cols-1  gap-6 md:justify-between">
             <div className="space-y-4">
               {activeChart === "custom" && (
                 <div className="w-full max-w-full">

@@ -18,7 +18,7 @@ import { Bar, Line } from "react-chartjs-2";
 // TYPES
 // ======================================================
 
-export type ChartMode = "week" | "month" | "sixMonth" | "custom";
+export type ChartMode = "week" | "month" | "sixMonth" | "custom" | "today";
 
 export interface SalesPerDay {
   date: string;
@@ -287,7 +287,7 @@ export default function Charts({
       weeklyProfit[chartIndex] = profit.profit ?? 0;
     });
 
-  safeArray(reportData?.perdayExpense)
+  safeArray(reportData?.expensePerDay)
     .filter((expense): expense is ExpensePerDay => !!expense?.date)
     .forEach((expense) => {
       const day = new Date(expense.date).getDay();
@@ -296,6 +296,14 @@ export default function Charts({
 
       weeklyExpense[chartIndex] = expense.totalExpense ?? 0;
     });
+  console.log(
+    weeklyExpense,
+    "weeklyExpense",
+    weeklyProfit,
+    "weeklyProfit",
+    weeklySales,
+    "weeklySales",
+  );
 
   // ======================================================
   // CUSTOM / MONTH DATA
@@ -364,7 +372,7 @@ export default function Charts({
   // WEEK CHARTS
   // ======================================================
 
-  if (dataFor === "week") {
+  if (dataFor === "week" || dataFor === "today") {
     return (
       <div className="grid grid-cols-1  md:grid-cols-2 gap-12">
         <AnalyticsChart

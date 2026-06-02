@@ -102,6 +102,8 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
   );
+  const activeDays = salesPerDay.filter((day) => day.totalSales > 0).length;
+  const isLoss = profit < 0;
   const perdayProfit = salesPerDay.map((sale) => {
     const expense =
       expensePerDay.find((exp) => exp.date === sale.date)?.totalExpense || 0;
@@ -110,6 +112,7 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
       sale.totalSales,
       expense,
     );
+
     return {
       date: sale.date,
       totalSales: sale.totalSales,
@@ -136,6 +139,8 @@ export const sevenDaysSalesReport = asyncHandler(async (req, res) => {
     salesPerDay,
     expensePerDay,
     perdayProfit,
+    activeDays,
+    isLoss,
   });
 });
 
@@ -192,6 +197,8 @@ export const thirtyDaysSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
   );
+  const activeDays = perdaySales.filter((day) => day.totalSales > 0).length;
+  const isLoss = profit < 0;
 
   res.status(200).json({
     success: true,
@@ -209,6 +216,8 @@ export const thirtyDaysSalesReport = asyncHandler(async (req, res) => {
     perdaySales,
     perdayExpense,
     perdayProfit,
+    activeDays,
+    isLoss,
   });
 });
 
@@ -349,6 +358,10 @@ export const sixMonthsSalesReport = asyncHandler(async (req, res) => {
     totalSales,
     totalExpense,
   );
+  const perdaySales = await salesPerDayHelperFunction(start, end, shopId);
+
+  const activeDays = perdaySales.filter((day) => day.totalSales > 0).length;
+  const isLoss = profit < 0;
 
   res.status(200).json({
     success: true,
@@ -366,6 +379,8 @@ export const sixMonthsSalesReport = asyncHandler(async (req, res) => {
     totalExpense,
     profit,
     profitPercentage,
+    activeDays,
+    isLoss,
   });
 });
 
@@ -462,6 +477,7 @@ export const customSalesReport = asyncHandler(async (req, res) => {
       sale.totalSales,
       expense,
     );
+
     return {
       date: sale.date,
       totalSales: sale.totalSales,
@@ -470,6 +486,8 @@ export const customSalesReport = asyncHandler(async (req, res) => {
       profitPercentage,
     };
   });
+  const activeDays = perdaySales.filter((day) => day.totalSales > 0).length;
+  const isLoss = profit < 0;
 
   res.status(200).json({
     success: true,
@@ -488,5 +506,8 @@ export const customSalesReport = asyncHandler(async (req, res) => {
     perdayProfit,
     perdaySales,
     perdayExpense,
+    activeDays,
+    isLoss,
+    productsSold: itemsSold,
   });
 });

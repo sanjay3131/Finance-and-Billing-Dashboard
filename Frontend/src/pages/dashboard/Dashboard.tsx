@@ -18,6 +18,7 @@ import { useState } from "react";
 import DatePicker from "../../components/ui/DatePicker";
 import Charts from "../../components/ui/Charts";
 import ItemsSoldData from "../../components/ui/ItemsSoldData";
+import ReportCards from "../../components/ui/ReportCards";
 
 const Dashboard = () => {
   const { data } = useAuth();
@@ -78,8 +79,10 @@ const Dashboard = () => {
 
   // chart button state
   const [activeChart, setActiveChart] = useState<
-    "week" | "month" | "sixMonth" | "custom"
-  >("week");
+    "week" | "month" | "sixMonth" | "custom" | "today"
+  >("today");
+
+  // items sold data state
   return (
     <div className=" bg-primaryBg w-full min-h-screen p-4 min-w-75">
       {/* logged in user details */}
@@ -206,6 +209,12 @@ const Dashboard = () => {
           <div className="flex flex-col gap-2 p-1 sm:flex-row sm:items-center sm:justify-between font-semibold">
             <div className="flex flex-wrap gap-2">
               <button
+                onClick={() => setActiveChart("today")}
+                className={`px-3 py-2 rounded-md ${activeChart === "today" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
+              >
+                Today
+              </button>
+              <button
                 onClick={() => setActiveChart("week")}
                 className={`px-3 py-2 rounded-md ${activeChart === "week" ? "bg-blue-500/15 text-blue-700" : "bg-gray-200 text-gray-700 hover:bg-gray-300"}`}
               >
@@ -252,28 +261,142 @@ const Dashboard = () => {
                   reportData={
                     activeChart === "week"
                       ? weeklyReportData?.data
-                      : activeChart === "month"
-                        ? monthlyReportData?.data
-                        : activeChart === "sixMonth"
-                          ? sixMonthReportData?.data
-                          : customerReportData?.data
+                      : activeChart === "today"
+                        ? weeklyReportData?.data
+                        : activeChart === "month"
+                          ? monthlyReportData?.data
+                          : activeChart === "sixMonth"
+                            ? sixMonthReportData?.data
+                            : customerReportData?.data
                   }
                 />
               </div>
             </div>
           </div>
 
+          {/* total sales data  */}
+          <ReportCards
+            title={
+              activeChart === "today"
+                ? "Today's"
+                : activeChart === "week"
+                  ? "Weekly"
+                  : activeChart === "month"
+                    ? "Monthly"
+                    : activeChart === "sixMonth"
+                      ? "6 Month"
+                      : activeChart === "custom"
+                        ? "Custom"
+                        : "Today's"
+            }
+            totalSales={
+              activeChart === "today"
+                ? reportData?.data?.totalSales
+                : activeChart === "week"
+                  ? weeklyReportData?.data?.totalSales
+                  : activeChart === "month"
+                    ? monthlyReportData?.data?.totalSales
+                    : activeChart === "sixMonth"
+                      ? sixMonthReportData?.data?.totalSales
+                      : activeChart === "custom"
+                        ? customerReportData?.data?.totalSales
+                        : reportData?.data?.totalSales
+            }
+            totalExpense={
+              activeChart === "today"
+                ? reportData?.data?.totalExpense
+                : activeChart === "week"
+                  ? weeklyReportData?.data?.totalExpense
+                  : activeChart === "month"
+                    ? monthlyReportData?.data?.totalExpense
+                    : activeChart === "sixMonth"
+                      ? sixMonthReportData?.data?.totalExpense
+                      : activeChart === "custom"
+                        ? customerReportData?.data?.totalExpense
+                        : reportData?.data?.totalExpense
+            }
+            profit={
+              activeChart === "today"
+                ? reportData?.data?.profit
+                : activeChart === "week"
+                  ? weeklyReportData?.data?.profit
+                  : activeChart === "month"
+                    ? monthlyReportData?.data?.profit
+                    : activeChart === "sixMonth"
+                      ? sixMonthReportData?.data?.profit
+                      : activeChart === "custom"
+                        ? customerReportData?.data?.profit
+                        : reportData?.data?.profit
+            }
+            isLoss={
+              activeChart === "today"
+                ? reportData?.data?.isLoss
+                : activeChart === "week"
+                  ? weeklyReportData?.data?.isLoss
+                  : activeChart === "month"
+                    ? monthlyReportData?.data?.isLoss
+                    : activeChart === "sixMonth"
+                      ? sixMonthReportData?.data?.isLoss
+                      : activeChart === "custom"
+                        ? customerReportData?.data?.isLoss
+                        : reportData?.data?.isLoss
+            }
+            billsCount={
+              activeChart === "today"
+                ? reportData?.data?.billsCount
+                : activeChart === "week"
+                  ? weeklyReportData?.data?.billsCount
+                  : activeChart === "month"
+                    ? monthlyReportData?.data?.billsCount
+                    : activeChart === "sixMonth"
+                      ? sixMonthReportData?.data?.billsCount
+                      : activeChart === "custom"
+                        ? customerReportData?.data?.billsCount
+                        : reportData?.data?.billsCount
+            }
+            isLoading={isLoading}
+            isError={isError}
+            activeDays={
+              activeChart === "today"
+                ? reportData?.data?.activeDays
+                : activeChart === "week"
+                  ? weeklyReportData?.data?.activeDays
+                  : activeChart === "month"
+                    ? monthlyReportData?.data?.activeDays
+                    : activeChart === "sixMonth"
+                      ? sixMonthReportData?.data?.activeDays
+                      : activeChart === "custom"
+                        ? customerReportData?.data?.activeDays
+                        : reportData?.data?.activeDays
+            }
+            profitPercentage={
+              activeChart === "today"
+                ? reportData?.data?.profitPercentage
+                : activeChart === "week"
+                  ? weeklyReportData?.data?.profitPercentage
+                  : activeChart === "month"
+                    ? monthlyReportData?.data?.profitPercentage
+                    : activeChart === "sixMonth"
+                      ? sixMonthReportData?.data?.profitPercentage
+                      : activeChart === "custom"
+                        ? customerReportData?.data?.profitPercentage
+                        : reportData?.data?.profitPercentage
+            }
+          />
+
           {/* item sold data */}
-          <div className="w-full  mt-8 md:mt-12">
+          <div className="w-full  mt-12 md:mt-12">
             <ItemsSoldData
               productsSold={
-                activeChart === "week"
-                  ? weeklyReportData?.data?.productsSold
-                  : activeChart === "month"
-                    ? monthlyReportData?.data?.productsSold
-                    : activeChart === "sixMonth"
-                      ? sixMonthReportData?.data?.itemsSold
-                      : customerReportData?.data?.productsSold
+                activeChart === "today"
+                  ? reportData?.data?.productsSold
+                  : activeChart === "week"
+                    ? weeklyReportData?.data?.productsSold
+                    : activeChart === "month"
+                      ? monthlyReportData?.data?.productsSold
+                      : activeChart === "sixMonth"
+                        ? sixMonthReportData?.data?.itemsSold
+                        : customerReportData?.data?.productsSold
               }
             />
           </div>

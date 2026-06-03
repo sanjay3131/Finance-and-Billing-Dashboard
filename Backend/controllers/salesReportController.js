@@ -11,7 +11,7 @@ import {
 const calculateProfitLossPercentage = (totalSales, totalExpense) => {
   if (totalExpense === 0) return 0;
   const profit = totalSales - totalExpense;
-  const percentage = (profit / totalExpense) * 100;
+  const percentage = (profit / totalSales) * 100;
   return percentage.toFixed(2);
 };
 

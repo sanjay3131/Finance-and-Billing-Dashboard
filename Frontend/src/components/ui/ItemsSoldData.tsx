@@ -9,6 +9,8 @@ const ItemsSoldData = ({ productsSold }: { productsSold?: ItemSold[] }) => {
 
   return (
     <div className="rounded-2xl bg-white p-4 shadow-md">
+      {/* top selling items */}
+
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold">Items Sold</h3>
         <span className="text-sm text-gray-500">
@@ -28,7 +30,9 @@ const ItemsSoldData = ({ productsSold }: { productsSold?: ItemSold[] }) => {
               className="flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-3"
             >
               <div className="flex items-center space-x-3">
-                <p className="font-medium text-gray-800">{item.productName}</p>
+                <p className="font-medium text-gray-800 capitalize">
+                  {item.productName}
+                </p>
                 <p className="text-sm text-gray-500 font-semibold ">
                   Qty: {item.quantity}
                 </p>

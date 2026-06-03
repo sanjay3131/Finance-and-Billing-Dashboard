@@ -30,7 +30,7 @@ const ReportCards = ({
       <h1 className="text-gray-400 font-semibold">
         <span>{title}</span> report
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
         {/* total sales */}
         <div className="bg-white px-4 py-6 rounded-2xl shadow-md shadow-blue-400/20  mt-4">
           <h1 className="font-semibold capitalize text-blue-400">

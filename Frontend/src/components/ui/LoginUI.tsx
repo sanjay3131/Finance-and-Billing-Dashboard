@@ -3,13 +3,10 @@ import { useLogin } from "../../hooks/useAuthMutation";
 import { FaLockOpen, FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useAuth } from "../../hooks/useAuthContext";
 import { googleLoginService } from "../../services/authServices";
 import { FcGoogle } from "react-icons/fc";
 
 const LoginUI = () => {
-  const { login } = useAuth();
-
   const loginMutation = useLogin();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -24,10 +21,8 @@ const LoginUI = () => {
         ShopPassword: password,
       },
       {
-        onSuccess: (data) => {
-          console.log("Login successful:", data);
+        onSuccess: () => {
           navigate("/dashboard");
-          login(data.data);
           toast.success("Login successful!");
         },
         onError: (error) => {

@@ -1,33 +1,28 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuthContext";
 import { toast } from "sonner";
 
 const AuthSuccess = () => {
   const navigate = useNavigate();
-  const { login, user } = useAuth();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const token = searchParams.get("token");
     const shopId = searchParams.get("shopId");
 
-    // Only process if user is not already logged in
-    if (token && shopId && !user) {
-      // Store token in cookies (will be done automatically by backend)
-      // Update auth context
-      login({ id: shopId, name: "Shop" });
+    if (token && shopId) {
       toast.success("Google login successful!");
 
-      // Redirect to dashboard
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
-    } else if (!token || !shopId) {
-      toast.error("Authentication failed");
-      navigate("/login");
+
+      return () => clearTimeout(timer);
     }
-  }, [searchParams, navigate, login, user]);
+
+    toast.error("Authentication failed");
+    navigate("/login");
+  }, [searchParams, navigate]);
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">

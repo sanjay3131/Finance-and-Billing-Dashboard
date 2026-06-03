@@ -3,7 +3,7 @@ import LoginUI from "../../components/ui/LoginUI";
 import RegisterUI from "../../components/ui/RegisterUI";
 
 const Login = () => {
-  const [isSelected, setIsSelected] = useState<string>("register");
+  const [isSelected, setIsSelected] = useState<string>("login");
 
   return (
     <div className=" h-screen w-full  relative py-4 px-2 min-w-90">

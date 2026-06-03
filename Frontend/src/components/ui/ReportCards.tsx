@@ -91,8 +91,8 @@ const ReportCards = ({
           </h2>
         </div>
         {/* profit percentage */}
-        <div className="bg-white px-4 py-6 rounded-2xl shadow-md shadow-purple-400/20  mt-4">
-          <h1 className="font-semibold capitalize text-purple-400">
+        <div className="bg-white px-4 py-6 rounded-2xl shadow-md shadow-orange-400/20  mt-4">
+          <h1 className="font-semibold capitalize text-orange-400">
             Profit Percentage
           </h1>
           <h2 className="text-2xl font-bold">
@@ -102,6 +102,19 @@ const ReportCards = ({
                 ? "Error"
                 : profitPercentage || 0}
             %
+          </h2>
+        </div>
+        {/* average profit per day */}
+        <div className="bg-white px-4 py-6 rounded-2xl shadow-md shadow-indigo-400/20  mt-4">
+          <h1 className="font-semibold capitalize text-indigo-400">
+            Average Profit Per Day
+          </h1>
+          <h2 className="text-2xl font-bold">
+            {isLoading
+              ? "Loading..."
+              : isError
+                ? "Error"
+                : formatAmount((profit || 0) / (activeDays || 1))}
           </h2>
         </div>
       </div>

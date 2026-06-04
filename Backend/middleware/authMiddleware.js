@@ -4,10 +4,13 @@ import jwt from "jsonwebtoken";
 export const protect = async (req, res, next) => {
   const tokenFromCookie = req.cookies?.token;
   const authHeader = req.headers.authorization || "";
-  const tokenFromHeader = authHeader.startsWith("Bearer ")
+  const tokenFromHeader = (await authHeader.startsWith("Bearer "))
     ? authHeader.slice(7)
     : "";
+  console.log("Token from cookie:", tokenFromCookie);
+  console.log("Token from header:", tokenFromHeader);
   const token = tokenFromCookie || tokenFromHeader;
+  console.log("Using token:", token);
 
   if (!token) {
     return res.status(401).json({ message: "not authorized, no token" });

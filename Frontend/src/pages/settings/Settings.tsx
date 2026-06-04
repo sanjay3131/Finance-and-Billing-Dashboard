@@ -1,15 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { logOut } from "../../services/authServices";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Settings = () => {
   const navigate = useNavigate();
-
+  const queryClient = useQueryClient();
   const handleLogout = async () => {
     try {
       await logOut();
       localStorage.removeItem("token");
       localStorage.removeItem("shopId");
+      queryClient.clear();
+
       navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout failed:", error);

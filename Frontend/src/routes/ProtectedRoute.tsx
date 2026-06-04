@@ -1,6 +1,7 @@
 // routes/ProtectedRoute.tsx
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import AuthCheckLoadingUI from "../components/ui/AuthCheckLoadingUI";
 
 const ProtectedRoute = () => {
   const { data, isLoading, isError } = useAuth();
@@ -8,7 +9,7 @@ const ProtectedRoute = () => {
   console.log("auth data ==>:", data?.shop);
 
   if (isLoading) {
-    return <p>Checking auth...</p>;
+    return <AuthCheckLoadingUI />;
   }
 
   if (isError || !data) {

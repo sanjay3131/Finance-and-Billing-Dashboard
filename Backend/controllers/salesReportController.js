@@ -9,10 +9,15 @@ import {
 
 // Helper function to calculate profit/loss percentage
 const calculateProfitLossPercentage = (totalSales, totalExpense) => {
-  if (totalExpense === 0) return 0;
+  if (totalSales === 0) return 0;
   const profit = totalSales - totalExpense;
   const percentage = (profit / totalSales) * 100;
-  return percentage.toFixed(2);
+
+  if (percentage > 0) {
+    return percentage.toFixed(2);
+  } else {
+    return (percentage = 0);
+  }
 };
 
 // Per Day Sales Report

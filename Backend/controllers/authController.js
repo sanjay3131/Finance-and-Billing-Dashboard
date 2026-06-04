@@ -114,12 +114,27 @@ export const checkShop = asyncHandler(async (req, res) => {
 // logout the shop
 
 export const logout = asyncHandler(async (req, res) => {
-  res.clearCookie("token", {
+  const cookieOptions = {
     httpOnly: true,
-    sameSite: "none",
-    secure: true,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
     path: "/",
+  };
+
+  await new Promise((resolve, reject) => {
+    req.logout((error) => {
+      if (error) return reject(error);
+      resolve();
+    });
   });
+
+  await new Promise((resolve) => {
+    req.session.destroy(() => resolve());
+  });
+
+  res.clearCookie("token", cookieOptions);
+  res.clearCookie("connect.sid", cookieOptions);
+
   res.status(200).json({
     message: "shop is logged out",
   });

@@ -10,18 +10,26 @@ const AuthSuccess = () => {
     const token = searchParams.get("token");
     const shopId = searchParams.get("shopId");
 
+    if (token) {
+      localStorage.setItem("token", token);
+    }
+
+    if (shopId) {
+      localStorage.setItem("shopId", shopId);
+    }
+
     if (token && shopId) {
       toast.success("Google login successful!");
 
       const timer = setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
       }, 1000);
 
       return () => clearTimeout(timer);
     }
 
     toast.error("Authentication failed");
-    navigate("/login");
+    navigate("/login", { replace: true });
   }, [searchParams, navigate]);
 
   return (

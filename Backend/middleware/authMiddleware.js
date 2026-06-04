@@ -2,7 +2,12 @@ import Shop from "../models/shop.js";
 import jwt from "jsonwebtoken";
 
 export const protect = async (req, res, next) => {
-  const token = req.cookies.token;
+  const tokenFromCookie = req.cookies?.token;
+  const authHeader = req.headers.authorization || "";
+  const tokenFromHeader = authHeader.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : "";
+  const token = tokenFromCookie || tokenFromHeader;
 
   if (!token) {
     return res.status(401).json({ message: "not authorized, no token" });

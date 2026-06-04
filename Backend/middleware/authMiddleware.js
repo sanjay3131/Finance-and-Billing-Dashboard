@@ -32,3 +32,21 @@ export const protect = async (req, res, next) => {
     return res.status(401).json({ message: "not authorized, invalid token" });
   }
 };
+
+export const protectOrSession = async (req, res, next) => {
+  const tokenFromCookie = req.cookies?.token;
+  const authHeader = req.headers.authorization || "";
+
+  if (tokenFromCookie || authHeader.startsWith("Bearer ")) {
+    return protect(req, res, next);
+  }
+
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    req.shop = req.user;
+    return next();
+  }
+
+  return res
+    .status(401)
+    .json({ message: "not authorized, no token or session" });
+};

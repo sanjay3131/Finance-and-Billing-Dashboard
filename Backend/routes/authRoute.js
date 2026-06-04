@@ -7,7 +7,7 @@ import {
   logout,
   googleCallback,
 } from "../controllers/authController.js";
-import { protect } from "../middleware/authMiddleware.js";
+import { protect, protectOrSession } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 // sign up / create a shop
@@ -35,6 +35,6 @@ router.get(
 router.get("/checkshop", protect, checkShop);
 
 // logout the shop
-router.get("/logout", protect, logout);
+router.get("/logout", protectOrSession, logout);
 
 export default router;

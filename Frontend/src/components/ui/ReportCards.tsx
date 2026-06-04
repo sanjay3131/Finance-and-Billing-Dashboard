@@ -68,7 +68,7 @@ const ReportCards = ({
               : isError
                 ? "Error"
                 : isLoss
-                  ? formatAmount(profit || 0)
+                  ? formatAmount(-profit || 0)
                   : formatAmount(profit || 0)}
           </h2>
         </div>
@@ -82,14 +82,16 @@ const ReportCards = ({
           </h2>
         </div>
         {/* active days  */}
-        <div className="bg-white px-4 py-6 rounded-2xl shadow-md shadow-yellow-400/20  mt-4">
-          <h1 className="font-semibold capitalize text-yellow-400">
-            Active Days
-          </h1>
-          <h2 className="text-2xl font-bold">
-            {isLoading ? "Loading..." : isError ? "Error" : activeDays || 0}
-          </h2>
-        </div>
+        {title != "Today's" && (
+          <div className="bg-white px-4 py-6 rounded-2xl shadow-md shadow-yellow-400/20  mt-4">
+            <h1 className="font-semibold capitalize text-yellow-400">
+              Active Days
+            </h1>
+            <h2 className="text-2xl font-bold">
+              {isLoading ? "Loading..." : isError ? "Error" : activeDays || 0}
+            </h2>
+          </div>
+        )}
         {/* profit percentage */}
         <div className="bg-white px-4 py-6 rounded-2xl shadow-md shadow-orange-400/20  mt-4">
           <h1 className="font-semibold capitalize text-orange-400">
@@ -105,18 +107,20 @@ const ReportCards = ({
           </h2>
         </div>
         {/* average profit per day */}
-        <div className="bg-white px-4 py-6 rounded-2xl shadow-md shadow-indigo-400/20  mt-4">
-          <h1 className="font-semibold capitalize text-indigo-400">
-            Average Profit Per Day
-          </h1>
-          <h2 className="text-2xl font-bold">
-            {isLoading
-              ? "Loading..."
-              : isError
-                ? "Error"
-                : formatAmount((profit || 0) / (activeDays || 1))}
-          </h2>
-        </div>
+        {title != "Today's" && (
+          <div className="bg-white px-4 py-6 rounded-2xl shadow-md shadow-indigo-400/20  mt-4">
+            <h1 className="font-semibold capitalize text-indigo-400">
+              Average Profit Per Day
+            </h1>
+            <h2 className="text-2xl font-bold">
+              {isLoading
+                ? "Loading..."
+                : isError
+                  ? "Error"
+                  : formatAmount((profit || 0) / (activeDays || 1))}
+            </h2>
+          </div>
+        )}
       </div>
     </div>
   );

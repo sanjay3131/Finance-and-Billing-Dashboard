@@ -63,18 +63,21 @@ export interface editBillInterface {
 }
 
 // read bill interface
+export interface BillReadItem {
+  _id: string;
+  product: string | Product;
+  productName: string;
+  quantity: number;
+  price: number;
+  productCategory?: string;
+}
+
 export interface readBillInterface {
   shop: string;
   billNumber: string;
   billingDate: Date;
   createdAt: Date;
-  items: Array<{
-    price: number;
-    product: string | Product;
-    productName: string;
-    quantity: number;
-    _id: string;
-  }>;
+  items: BillReadItem[];
   paymentMethod: "cash" | "upi";
   status: "pending" | "closed";
   totalAmount: number;

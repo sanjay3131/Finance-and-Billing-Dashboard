@@ -3,7 +3,7 @@ import { IoQrCodeSharp, IoShareSocialOutline } from "react-icons/io5";
 import { formatAmount } from "../../utils/formatNumbers";
 import { LuPrinter } from "react-icons/lu";
 import { useUpdateBill } from "../../services/billingServices";
-import type { readBillInterface } from "../../utils/constants";
+import type { BillItem, readBillInterface } from "../../utils/constants";
 
 const Billcard = ({
   bill,
@@ -25,11 +25,22 @@ const Billcard = ({
       billDetails: {
         ...bill,
         status: newStatus,
-        items: bill.items.map((item) => ({
-          ...item,
-          product:
-            typeof item.product === "string" ? item.product : item.product._id,
-        })),
+        items: bill.items.map(
+          (item): BillItem => ({
+            product:
+              typeof item.product === "string"
+                ? item.product
+                : item.product._id,
+            productName: item.productName,
+            quantity: item.quantity,
+            price: item.price,
+            productCategory:
+              item.productCategory ||
+              (typeof item.product !== "string"
+                ? item.product.category || item.product.itemCategory || ""
+                : ""),
+          }),
+        ),
       },
     });
   };

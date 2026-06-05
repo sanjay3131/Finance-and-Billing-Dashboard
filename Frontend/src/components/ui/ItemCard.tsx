@@ -26,6 +26,7 @@ const ItemCard = ({
     quantity: number,
     price: number,
     productName: string,
+    productCategory: string,
   ) => void;
 }) => {
   const Navigate = useNavigate();
@@ -79,6 +80,7 @@ const ItemCard = ({
                 val,
                 product.sellingPrice,
                 product.name,
+                product.itemCategory,
               );
             }}
             min={0}
@@ -92,6 +94,7 @@ const ItemCard = ({
                 productName: product.name,
                 quantity: quantity ? quantity + 1 : 1,
                 price: product.sellingPrice,
+                productCategory: product.itemCategory,
               });
             }}
             className=" text-xl font-semibold bg-green-400 rounded-sm w-7"

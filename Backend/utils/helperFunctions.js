@@ -35,6 +35,7 @@ export const itemsSoldHelperFunction = async (start, end, shopId) => {
     {
       $group: {
         _id: "$items.productName",
+
         quantity: { $sum: "$items.quantity" },
         totalSales: {
           $sum: { $multiply: ["$items.quantity", "$items.price"] },

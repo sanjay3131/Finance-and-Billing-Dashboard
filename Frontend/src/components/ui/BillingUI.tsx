@@ -92,6 +92,7 @@ const BillingUI = ({
     quantity: number,
     price: number,
     productName: string,
+    productCategory: string,
   ) => {
     setBillItems((prev) => {
       if (quantity <= 0) {
@@ -106,7 +107,10 @@ const BillingUI = ({
         );
       }
 
-      return [...prev, { product: productId, quantity, price, productName }];
+      return [
+        ...prev,
+        { product: productId, quantity, price, productName, productCategory },
+      ];
     });
   };
 

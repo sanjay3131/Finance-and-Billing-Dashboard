@@ -13,11 +13,7 @@ const calculateProfitLossPercentage = (totalSales, totalExpense) => {
   const profit = totalSales - totalExpense;
   const percentage = (profit / totalSales) * 100;
 
-  if (percentage > 0) {
-    return percentage.toFixed(2);
-  } else {
-    return (percentage = 0);
-  }
+  return percentage.toFixed(2);
 };
 
 // Per Day Sales Report
@@ -514,5 +510,57 @@ export const customSalesReport = asyncHandler(async (req, res) => {
     activeDays,
     isLoss,
     productsSold: itemsSold,
+  });
+});
+
+// most sold products report
+export const mostSoldProductsReport = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+  const { startDate, endDate } = req.body;
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  end.setHours(23, 59, 59, 999);
+
+  const productsSold = await Billing.aggregate([
+    {
+      $match: {
+        Shop: shopId,
+        billingDate: { $gte: start, $lte: end },
+      },
+    },
+    { $unwind: "$items" },
+    {
+      $group: {
+        _id: "$items.productName",
+        // category: "$items.product.populate('item').itemCategory",
+        quantity: { $sum: "$items.quantity" },
+        totalSales: {
+          $sum: { $multiply: ["$items.quantity", "$items.price"] },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        productName: "$_id",
+        quantity: 1,
+        totalSales: 1,
+        // category: 1,
+      },
+    },
+    {
+      $sort: {
+        totalSales: -1,
+      },
+    },
+  ]);
+
+  res.status(200).json({
+    success: true,
+    message: "Most Sold Products Report",
+    startDate: start.toDateString(),
+    endDate: end.toDateString(),
+    productsSold,
   });
 });

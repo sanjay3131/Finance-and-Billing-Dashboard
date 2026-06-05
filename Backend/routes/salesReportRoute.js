@@ -1,6 +1,7 @@
 import express from "express";
 import {
   customSalesReport,
+  mostSoldProductsReport,
   perdaySalesReport,
   sevenDaysSalesReport,
   sixMonthsSalesReport,
@@ -25,4 +26,6 @@ router.get("/sixMonthsSalesReport", protect, sixMonthsSalesReport);
 // custom sales report
 router.post("/customSalesReport", protect, customSalesReport);
 
+// top selling products report
+router.post("/topSellingProductsReport", protect, mostSoldProductsReport);
 export default router;

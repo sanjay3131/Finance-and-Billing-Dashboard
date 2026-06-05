@@ -320,3 +320,39 @@ export const billAnalytics = asyncHandler(async (req, res) => {
     },
   });
 });
+
+// custome date range sales report and billing item details
+export const billingReport = asyncHandler(async (req, res) => {
+  const shopId = req.shop._id;
+  const { startDate, endDate } = req.body;
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  end.setHours(23, 59, 59, 999); // include the entire end date
+
+  const sales = await Billing.find({
+    Shop: shopId,
+    billingDate: { $gte: start, $lte: end },
+  }).populate({ path: "items.product", select: "name image" });
+
+  if (!sales || sales.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "No sales data available for the selected date range",
+    });
+  }
+
+  const totalSales = sales.reduce((acc, bill) => acc + bill.totalAmount, 0);
+
+  res.status(200).json({
+    success: true,
+    message: "Billing Report",
+    startDate: start.toDateString(),
+    endDate: end.toDateString(),
+
+    billsCount: sales.length,
+
+    totalSales,
+    sales,
+  });
+});

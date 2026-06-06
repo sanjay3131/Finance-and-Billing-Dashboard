@@ -48,6 +48,7 @@ export const itemsSoldHelperFunction = async (start, end, shopId) => {
         productName: "$_id",
         quantity: 1,
         totalSales: 1,
+        category: "$items.productCategory",
       },
     },
     { $sort: { totalSales: -1 } },

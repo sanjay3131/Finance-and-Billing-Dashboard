@@ -516,24 +516,34 @@ export const customSalesReport = asyncHandler(async (req, res) => {
 // most sold products report
 export const mostSoldProductsReport = asyncHandler(async (req, res) => {
   const shopId = req.shop._id;
-  const { startDate, endDate } = req.body;
+  const { startDate, endDate, category } = req.body;
 
   const start = new Date(startDate);
   const end = new Date(endDate);
   end.setHours(23, 59, 59, 999);
+  const matchQuery = {
+    Shop: shopId,
+    billingDate: { $gte: start, $lte: end },
+  };
 
   const productsSold = await Billing.aggregate([
     {
-      $match: {
-        Shop: shopId,
-        billingDate: { $gte: start, $lte: end },
-      },
+      $match: matchQuery,
     },
     { $unwind: "$items" },
+    ...(category
+      ? [
+          {
+            $match: { "items.productCategory": category },
+          },
+        ]
+      : []),
     {
       $group: {
-        _id: "$items.productName",
-        // category: "$items.product.populate('item').itemCategory",
+        _id: {
+          productName: "$items.productName",
+          productCategory: "$items.productCategory",
+        },
         quantity: { $sum: "$items.quantity" },
         totalSales: {
           $sum: { $multiply: ["$items.quantity", "$items.price"] },
@@ -543,16 +553,19 @@ export const mostSoldProductsReport = asyncHandler(async (req, res) => {
     {
       $project: {
         _id: 0,
-        productName: "$_id",
+        productName: "$_id.productName",
+        category: "$_id.productCategory",
         quantity: 1,
         totalSales: 1,
-        // category: 1,
       },
     },
     {
       $sort: {
         totalSales: -1,
       },
+    },
+    {
+      $limit: 5,
     },
   ]);
 

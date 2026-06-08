@@ -29,3 +29,16 @@ export const customerReport = async (startDate: string, endDate: string) => {
   });
   return response;
 };
+
+// top selling products
+export const topSellingProducts = async (data: {
+  startDate: string;
+  endDate: string;
+  category?: string;
+}) => {
+  const response = await axiosInstance.post(
+    `/report/topSellingProductsReport`,
+    data,
+  );
+  return response;
+};

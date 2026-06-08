@@ -6,12 +6,7 @@ const DatePicker = ({
     fromDate: string;
     toDate: string;
   };
-  setDate: React.Dispatch<
-    React.SetStateAction<{
-      fromDate: string;
-      toDate: string;
-    }>
-  >;
+  setDate: (value: { fromDate: string; toDate: string }) => void;
 }) => {
   return (
     <div className="flex items-center justify-between mt-4">

@@ -201,3 +201,10 @@ export interface ReportData {
 
   expensePerMonth?: ExpensePerMonth[];
 }
+
+export interface topsellingProductsDataType {
+  productName: string;
+  quantity: number;
+  totalSales: number;
+  category?: string;
+}

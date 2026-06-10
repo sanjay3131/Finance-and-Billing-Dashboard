@@ -5,6 +5,7 @@ import DatePicker from "./DatePicker";
 import type { topsellingProductsDataType } from "../../utils/constants";
 import CategoryTab from "./CategoryTab";
 import { ViewProductsCategory } from "../../services/productService";
+import BillCardSkeleton from "./skeleton/BillCardSkeleton";
 
 type ItemSold = {
   productName: string;
@@ -18,7 +19,10 @@ const ItemsSoldData = ({ productsSold }: { productsSold?: ItemSold[] }) => {
     endDate: new Date().toISOString().split("T")[0],
     category: "",
   });
-  const { data: topSellingProductsData } = useQuery({
+  const {
+    data: topSellingProductsData,
+    isLoading: isTopSellingProductsLoading,
+  } = useQuery({
     queryKey: ["topSellingProducts", topSellingItemsQuery],
     queryFn: () => topSellingProducts(topSellingItemsQuery),
   });
@@ -63,6 +67,10 @@ const ItemsSoldData = ({ productsSold }: { productsSold?: ItemSold[] }) => {
             <p className="text-sm text-gray-500 text-center font-semibold">
               No top selling items are available for the selected period.
             </p>
+          ) : isTopSellingProductsLoading ? (
+            <div className="w-full flex items-center justify-center">
+              <BillCardSkeleton />
+            </div>
           ) : (
             topSellingProductsData?.data.productsSold.map(
               (item: topsellingProductsDataType, index: number) => (
@@ -86,6 +94,7 @@ const ItemsSoldData = ({ productsSold }: { productsSold?: ItemSold[] }) => {
                   <p className="font-semibold text-sm bg-green-200 rounded-full text-green-600 px-4 py-1">
                     Total Sales: ₹{item.totalSales.toFixed(2)}
                   </p>
+                  <div className="w-full h-1 bg-gray-200 rounded-full mt-2"></div>
                 </div>
               ),
             )

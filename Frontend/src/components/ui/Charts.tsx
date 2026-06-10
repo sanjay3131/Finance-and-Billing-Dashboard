@@ -259,20 +259,23 @@ export default function Charts({
   // WEEK DATA
   // ======================================================
 
-  const weekLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const weekLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const weeklySales = Array<number>(7).fill(0);
 
   const weeklyProfit = Array<number>(7).fill(0);
 
   const weeklyExpense = Array<number>(7).fill(0);
+  const todayDate = new Date();
+  console.log(todayDate.toLocaleDateString());
 
   safeArray(reportData?.salesPerDay)
     .filter((sale): sale is SalesPerDay => !!sale?.date)
     .forEach((sale) => {
-      const day = new Date(sale.date).getDay();
+      // const day = new Date(sale.date).getDay();
 
-      const chartIndex = day === 0 ? 6 : day - 1;
+      const chartIndex = sale.day ? sale.day - 1 : 0;
+      console.log(chartIndex);
 
       weeklySales[chartIndex] = sale.totalSales ?? 0;
     });
@@ -280,9 +283,9 @@ export default function Charts({
   safeArray(reportData?.perdayProfit)
     .filter((profit): profit is ProfitPerDay => !!profit?.date)
     .forEach((profit) => {
-      const day = new Date(profit.date).getDay();
+      // const day = new Date(profit.date).getDay();
 
-      const chartIndex = day === 0 ? 6 : day - 1;
+      const chartIndex = profit.day ? profit.day - 1 : 0;
 
       weeklyProfit[chartIndex] = profit.profit ?? 0;
     });
@@ -290,9 +293,9 @@ export default function Charts({
   safeArray(reportData?.expensePerDay)
     .filter((expense): expense is ExpensePerDay => !!expense?.date)
     .forEach((expense) => {
-      const day = new Date(expense.date).getDay();
+      // const day = new Date(expense.date).getDay();
 
-      const chartIndex = day === 0 ? 6 : day - 1;
+      const chartIndex = expense.day ? expense.day - 1 : 0;
 
       weeklyExpense[chartIndex] = expense.totalExpense ?? 0;
     });

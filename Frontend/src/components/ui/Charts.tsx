@@ -132,6 +132,31 @@ function safeArray<T>(value: T[] | undefined | null): T[] {
 }
 
 // ======================================================
+// GENERATE LAST 7 DAYS (FIX FOR WEEK VIEW)
+// ======================================================
+
+const getLast7Days = () => {
+  const today = new Date();
+  const dates: string[] = [];
+  const labels: string[] = [];
+  const dayNameMap = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  // Generate last 7 days (ending with today)
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+
+    const normalized = normalizeDate(date.toISOString());
+    dates.push(normalized);
+
+    const dayName = dayNameMap[date.getDay()];
+    labels.push(dayName);
+  }
+
+  return { dates, labels };
+};
+
+// ======================================================
 // PAD DAILY DATA
 // ======================================================
 
@@ -256,57 +281,36 @@ export default function Charts({
   dataFor: ChartMode;
 }) {
   // ======================================================
-  // WEEK DATA
+  // WEEK DATA (FIXED)
   // ======================================================
 
-  const weekLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const { dates: weekDates, labels: weekLabels } = getLast7Days();
 
-  const weeklySales = Array<number>(7).fill(0);
-
-  const weeklyProfit = Array<number>(7).fill(0);
-
-  const weeklyExpense = Array<number>(7).fill(0);
-  const todayDate = new Date();
-  console.log(todayDate);
-
-  safeArray(reportData?.salesPerDay)
-    .filter((sale): sale is SalesPerDay => !!sale?.date)
-    .forEach((sale) => {
-      // const day = new Date(sale.date).getDay();
-
-      const chartIndex = sale.day ? sale.day - 1 : 0;
-      console.log(chartIndex, sale?.date);
-
-      weeklySales[chartIndex] = sale.totalSales ?? 0;
-    });
-
-  safeArray(reportData?.perdayProfit)
-    .filter((profit): profit is ProfitPerDay => !!profit?.date)
-    .forEach((profit) => {
-      // const day = new Date(profit.date).getDay();
-
-      const chartIndex = profit.day ? profit.day - 1 : 0;
-
-      weeklyProfit[chartIndex] = profit.profit ?? 0;
-    });
-
-  safeArray(reportData?.expensePerDay)
-    .filter((expense): expense is ExpensePerDay => !!expense?.date)
-    .forEach((expense) => {
-      // const day = new Date(expense.date).getDay();
-
-      const chartIndex = expense.day ? expense.day - 1 : 0;
-
-      weeklyExpense[chartIndex] = expense.totalExpense ?? 0;
-    });
-  console.log(
-    weeklyExpense,
-    "weeklyExpense",
-    weeklyProfit,
-    "weeklyProfit",
-    weeklySales,
-    "weeklySales",
+  const weeklySales = padDailyData(
+    weekDates,
+    reportData?.salesPerDay || [],
+    "totalSales",
   );
+
+  const weeklyProfit = padDailyData(
+    weekDates,
+    reportData?.perdayProfit || [],
+    "profit",
+  );
+
+  const weeklyExpense = padDailyData(
+    weekDates,
+    reportData?.expensePerDay || [],
+    "totalExpense",
+  );
+
+  console.log({
+    weekDates,
+    weekLabels,
+    weeklySales,
+    weeklyProfit,
+    weeklyExpense,
+  });
 
   // ======================================================
   // CUSTOM / MONTH DATA

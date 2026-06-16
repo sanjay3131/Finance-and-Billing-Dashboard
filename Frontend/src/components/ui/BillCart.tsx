@@ -174,7 +174,7 @@ const BillCart = ({
       <div className="mt-4 border-b-2 border-dashed border-gray-400  py-4">
         <h2 className="font-semibold text-lg border-t-2 border-dashed border-gray-400 pt-2">
           Total Bill Amount : ₹{" "}
-          <span className="font-extrabold text-lg">
+          <span className="font-extrabold text-lg ">
             {Math.trunc(totalBillAmount(BillingItems))}
           </span>
         </h2>

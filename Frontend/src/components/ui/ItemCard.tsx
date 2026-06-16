@@ -71,9 +71,26 @@ const ItemCard = ({
             type="number"
             className="w-8 text-center font-bold text-md focus:outline-none hide-scrollbar"
             value={quantity}
+            min={0}
+            step={1}
             onChange={(e) => {
-              const val = Number(e.target.value);
-              if (Number.isNaN(val)) return;
+              const value = e.target.value;
+
+              // Allow empty input while typing
+              if (value === "") {
+                onSetQuantity?.(
+                  product._id,
+                  0,
+                  product.sellingPrice,
+                  product.name,
+                  product.itemCategory,
+                );
+                return;
+              }
+
+              const val = parseInt(value, 10);
+
+              if (!Number.isInteger(val) || val < 0) return;
 
               onSetQuantity?.(
                 product._id,
@@ -83,7 +100,6 @@ const ItemCard = ({
                 product.itemCategory,
               );
             }}
-            min={0}
             disabled={!product.isActive && quantity === 0}
           />
           <button
@@ -103,7 +119,7 @@ const ItemCard = ({
           </button>
         </div>
       ) : (
-        <div className="flex gap-4 flex-col justify-center items-center ">
+        <div className="flex gap-2 flex-col justify-center items-center ">
           {/* edit product */}
           <button
             onClick={() => Navigate(`/products/edit/${product._id}`)}
@@ -114,7 +130,7 @@ const ItemCard = ({
           {/* isActive */}
           <button
             onClick={() => toogleProductStatus?.(product)}
-            className={`${product.isActive ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"} capitalize py-2 px-4 rounded-md`}
+            className={`${product.isActive ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"} capitalize py-1 px-4 text-sm font-semibold rounded-md`}
           >
             {product.isActive ? "disable" : "available"}
           </button>

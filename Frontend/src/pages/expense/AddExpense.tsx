@@ -44,6 +44,7 @@ const AddExpense = () => {
     <div>
       <h1 className=" text-xl font-bold ">Add Expense</h1>
       <AddAndEditExpenseCard
+        addLoadingState={addExpenseMutation.isPending}
         isAddingExpense={true}
         handleChange={handleChange}
         handleSubmit={handleSubmit}

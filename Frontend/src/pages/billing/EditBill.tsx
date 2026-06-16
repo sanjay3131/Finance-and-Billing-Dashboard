@@ -21,12 +21,8 @@ const EditBill = () => {
     const items = data?.data?.data?.items;
     if (items) {
       setEditBillItems(items);
-      console.log("bill set===>", items);
     }
   }, [data]);
-
-  console.log("edit data: ", editBillData);
-  console.log("edit items ::: ", editBillItems);
 
   return (
     <div className="px-4 py-8 bg-primaryBg w-full min-h-screen min-w-75">

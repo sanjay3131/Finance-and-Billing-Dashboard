@@ -267,7 +267,7 @@ export default function Charts({
 
   const weeklyExpense = Array<number>(7).fill(0);
   const todayDate = new Date();
-  console.log(todayDate.toLocaleDateString());
+  console.log(todayDate);
 
   safeArray(reportData?.salesPerDay)
     .filter((sale): sale is SalesPerDay => !!sale?.date)
@@ -275,7 +275,7 @@ export default function Charts({
       // const day = new Date(sale.date).getDay();
 
       const chartIndex = sale.day ? sale.day - 1 : 0;
-      console.log(chartIndex);
+      console.log(chartIndex, sale?.date);
 
       weeklySales[chartIndex] = sale.totalSales ?? 0;
     });

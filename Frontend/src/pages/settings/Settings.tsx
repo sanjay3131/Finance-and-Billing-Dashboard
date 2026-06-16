@@ -22,6 +22,9 @@ const Settings = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">Settings</h1>
+      <div>
+        <h1>Edit Shop Details</h1>
+      </div>
       <Button variant="destructive" onClick={handleLogout}>
         Logout
       </Button>

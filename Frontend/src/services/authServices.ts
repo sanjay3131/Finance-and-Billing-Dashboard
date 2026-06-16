@@ -36,6 +36,7 @@ export const logOut = async () => {
   localStorage.removeItem("token");
   localStorage.removeItem("shopId");
   const response = await axiosInstance.get("/auth/logout");
+
   return response;
 };
 

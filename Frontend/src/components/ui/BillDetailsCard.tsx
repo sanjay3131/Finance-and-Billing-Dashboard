@@ -6,6 +6,8 @@ import dummyProductImage from "../../assets/dummyProduct.jpg";
 import { MdDelete } from "react-icons/md";
 import { useDeleteBill } from "../../services/billingServices";
 import type React from "react";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface BillDetailsCardProps {
   bill: readBillInterface;
@@ -13,12 +15,18 @@ interface BillDetailsCardProps {
 }
 
 const BillDetailsCard = ({ bill, setModelOpen }: BillDetailsCardProps) => {
+  const queryClient = useQueryClient();
   const deleteProduct = useDeleteBill();
   const navigate = useNavigate();
   const handelDeleteBill = () => {
     if (window.confirm("Are you sure you want to delete this bill?")) {
-      deleteProduct.mutate(bill._id);
-      setModelOpen(false);
+      deleteProduct.mutate(bill._id, {
+        onSuccess: () => {
+          setModelOpen(false);
+          queryClient.invalidateQueries({ queryKey: ["bills"] });
+          toast.success("Bill deleted successfully");
+        },
+      });
     }
   };
   return (

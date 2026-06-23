@@ -10,7 +10,7 @@ const App = () => {
     <div>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <Toaster />
+          <Toaster position="top-right" />
           <AppRoutes />
         </BrowserRouter>
       </QueryClientProvider>
